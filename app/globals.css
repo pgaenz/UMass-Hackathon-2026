@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #f8fafc;
+    color: #0f172a;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Clear, high-contrast focus ring for keyboard and assistive tech users. */
+  :focus-visible {
+    outline: 3px solid #0369a1;
+    outline-offset: 2px;
+  }
+
+  /* Native report dialog backdrop. */
+  dialog::backdrop {
+    background-color: rgb(15 23 42 / 0.55);
+  }
+}

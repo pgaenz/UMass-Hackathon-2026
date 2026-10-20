@@ -1,0 +1,89 @@
+{
+  "stories": [
+    {
+      "id": "s-first-job",
+      "prompt": "What was your first job, and how did you get it? Would you have done anything differently in your career, and why?",
+      "questionId": "q-first-job",
+      "inputType": "audio",
+      "rawAudioPath": null,
+      "transcript": "The summer I turned sixteen, I walked into Miller's Drugstore on Main Street and asked the owner for a job. I had rehearsed the question the whole walk over and still stumbled on it. Mr. Miller hired me to stock shelves and run the register for a dollar and fifteen cents an hour.",
+      "metadata": {
+        "topic": "Career",
+        "summary": "A first job behind a drugstore counter taught the value of showing up and earning trust."
+      },
+      "article": "# My first job at the corner drugstore\n\nThe summer I turned sixteen, I walked into Miller's Drugstore on Main Street and asked the owner for a job. I had rehearsed the question the whole walk over, and I still stumbled on it.\n\nMr. Miller hired me to stock shelves and run the register for a dollar and fifteen cents an hour. I learned more in that first year than in any classroom:\n\n- Show up early, every single time.\n- If you do not know the answer, ask someone who does.\n- Say thank you when a customer is patient with you.\n\nI would not change a thing. That job taught me that work is mostly about trust, and trust is built one small promise at a time.",
+      "groundingScore": 5,
+      "piiDetected": false,
+      "status": "published",
+      "createdAt": "2026-01-11T10:00:00.000Z"
+    },
+    {
+      "id": "s-true-love",
+      "prompt": "Do you have any tips for finding your true love?",
+      "questionId": "q-true-love",
+      "inputType": "text",
+      "rawAudioPath": null,
+      "transcript": "People ask me for a secret and I have to tell them there is not one. I met my wife at a church supper in 1968. She was carrying a tray of pies and I was holding the door.",
+      "metadata": {
+        "topic": "Relationships",
+        "summary": "Lasting love is built from ordinary days, small apologies, and paying attention."
+      },
+      "article": "# Finding love one ordinary day at a time\n\nPeople ask me for a secret, and I have to tell them there is not one. I met my wife at a church supper in 1968. She was carrying a tray of pies and I was holding the door.\n\nWhat kept us together for fifty years was not grand gestures. It was:\n\n- Laughing at the same small jokes.\n- Saying sorry before the sun went down.\n- Choosing each other again on the ordinary days.\n\nIf you are looking, stop performing and start paying attention. The right person usually shows up while you are busy being yourself.",
+      "groundingScore": 5,
+      "piiDetected": false,
+      "status": "published",
+      "createdAt": "2026-01-11T10:05:00.000Z"
+    },
+    {
+      "id": "s-best-advice",
+      "prompt": "What is the best piece of advice you ever received, and who gave it to you?",
+      "questionId": "q-best-advice",
+      "inputType": "audio",
+      "rawAudioPath": null,
+      "transcript": "My father was a quiet man, but one afternoon while we were fixing a fence he told me something I never forgot. Measure twice, cut once, he said. And that goes for words, too.",
+      "metadata": {
+        "topic": "Advice",
+        "summary": "A father's simple woodworking rule became a lifelong lesson about patience and words."
+      },
+      "article": "# The advice my father gave me\n\nMy father was a quiet man, but one afternoon while we were fixing a fence, he told me something I never forgot.\n\n\"Measure twice, cut once,\" he said. \"And that goes for words, too.\"\n\nI did not understand it as a boy. As a man, I have used it a hundred times — before signing a contract, before saying something in anger, before giving up on something worth keeping.\n\nThe best advice is rarely complicated. It just arrives at the right moment and waits for you to grow into it.",
+      "groundingScore": 5,
+      "piiDetected": false,
+      "status": "published",
+      "createdAt": "2026-01-11T10:10:00.000Z"
+    },
+    {
+      "id": "971f601f-2017-4b9f-b92b-226c91e3c1b0",
+      "prompt": "What was the proudest moment of your life, and what made it so special?",
+      "questionId": null,
+      "inputType": "audio",
+      "rawAudioPath": "data/uploads/971f601f-2017-4b9f-b92b-226c91e3c1b0.webm",
+      "transcript": " Well, that is a good question.  Hmm.  I think the proudest moment of my life was probably when my daughter graduated from university.  Although, you know,  I nearly didn't go.  We didn't have much money back then and I was always worrying about how we'd pay for everything.  My husband Frank worked at the factory and I worked at a little bakery for a while.  Oh, the smell of fresh bread in the morning.  Anyway, when Susan told us she wanted to go to university, I thought:  Goodness me, how are we going to afford that?  We had two children.  builds to pay and the roof was leaking at the time.  I remember putting a bucket in the hallway whenever it rained.  Frank was always tripping over the thing.  But Susan was determined she wanted to become a teacher even when she was little.  She used to line up her dolls and pretend to teach them. We took out alone and she worked part-time while studying.  There were some difficult leaders, I can tell you.  But she never gave up.  And then on graduation day, there she was standing in that black gown.  When they called her name, I just...  started crying.  Frank handed me his old handkerchief because he knew I'd get emotional.  typical of him.  Always prepared.  I think...  What made me so proud was just that she earned a degree.  It was knowing how hard she'd worked and that we'd somehow managed to give her that opportunity, despite having not much ourselves.  Frank passed away 12 years ago and I wish I could see what Susan has it  I wish that he could see what Susan has achieved since then.  It beats so proud.  You know, when you are young, you worry so much about money and whether you are successful enough.  But looking back, I don't remember the things I couldn't afford.  I remember that day, sitting next to Frank, watching our daughter walk across that stage.  Yeah.  I suppose that's what I'm proudest of, knowing that together we'd help someone we loved get somewhere they wanted to go.",
+      "metadata": {
+        "topic": "Family",
+        "summary": "The proudest moment of my life was probably when my daughter graduated from university."
+      },
+      "article": "",
+      "groundingScore": 0,
+      "piiDetected": false,
+      "status": "draft",
+      "createdAt": "2026-10-20T16:06:32.979Z"
+    },
+    {
+      "id": "0e4625ef-26ec-42d7-82dc-bc4dfa18012e",
+      "prompt": "What was your first job, and how did you get it? Would you have done anything differently in your career, and why?",
+      "questionId": null,
+      "inputType": "text",
+      "rawAudioPath": null,
+      "transcript": "test",
+      "metadata": {
+        "topic": "",
+        "summary": ""
+      },
+      "article": "",
+      "groundingScore": 0,
+      "piiDetected": false,
+      "status": "draft",
+      "createdAt": "2026-10-20T16:53:12.720Z"
+    }
+  ]
+}
