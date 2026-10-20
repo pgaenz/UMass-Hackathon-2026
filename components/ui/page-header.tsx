@@ -11,8 +11,8 @@ export function PageHeader({
 }) {
   return (
     <div className="space-y-3">
-      <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">{title}</h1>
-      {description ? <p className="max-w-3xl text-xl text-slate-600">{description}</p> : null}
+      <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">{title}</h1>
+      {description ? <p className="max-w-3xl text-xl text-ink/70">{description}</p> : null}
       {children}
     </div>
   );

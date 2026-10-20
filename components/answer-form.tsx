@@ -144,12 +144,12 @@ export function AnswerForm({
   }
 
   return (
-    <section aria-labelledby="answer-heading" className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section aria-labelledby="answer-heading" className="space-y-5 rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm">
       <div className="space-y-2">
-        <h2 id="answer-heading" className="text-2xl font-semibold text-slate-900">
+        <h2 id="answer-heading" className="text-2xl font-semibold text-ink">
           Your answer
         </h2>
-        <p className="text-lg text-slate-600">
+        <p className="text-lg text-ink/70">
           Record it out loud or type it. You can review it before it is published.
         </p>
       </div>
@@ -164,8 +164,8 @@ export function AnswerForm({
             className={cn(
               "min-h-12 rounded-xl border-2 px-5 py-2.5 text-lg font-semibold transition",
               mode === option
-                ? "border-sky-700 bg-sky-700 text-white"
-                : "border-slate-300 bg-white text-slate-700 hover:border-sky-700 hover:bg-sky-50",
+                ? "border-brand bg-brand text-white"
+                : "border-orange-200 bg-surface text-ink hover:border-brand hover:bg-orange-50",
             )}
           >
             {option === "text" ? "Type" : "Record"}
@@ -176,7 +176,7 @@ export function AnswerForm({
       {mode === "text" ? (
         <form onSubmit={handleTextSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="answer-text" className="text-lg font-semibold text-slate-900">
+            <label htmlFor="answer-text" className="text-lg font-semibold text-ink">
               Your answer
             </label>
             <textarea
@@ -185,7 +185,7 @@ export function AnswerForm({
               onChange={(event) => setText(event.target.value)}
               rows={8}
               placeholder="Tell the story in your own words…"
-              className="w-full rounded-xl border-2 border-slate-300 p-4 text-lg leading-relaxed text-slate-900 placeholder:text-slate-400 focus:border-sky-700"
+              className="w-full rounded-xl border-2 border-orange-200 p-4 text-lg leading-relaxed text-ink placeholder:text-gray-400 focus:border-brand"
             />
           </div>
           <Button type="submit" size="lg" disabled={submitting}>
@@ -209,7 +209,7 @@ export function AnswerForm({
               aria-live="off"
               className={cn(
                 "text-2xl font-bold tabular-nums",
-                recording ? "text-red-700" : "text-slate-700",
+                recording ? "text-red-700" : "text-ink",
               )}
             >
               {formatSeconds(seconds)}
@@ -223,7 +223,7 @@ export function AnswerForm({
 
           {audioUrl ? (
             <div className="space-y-2">
-              <p className="text-lg font-medium text-slate-800">Preview your recording</p>
+              <p className="text-lg font-medium text-ink">Preview your recording</p>
               {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
               <audio controls src={audioUrl} className="w-full" />
               <Button size="lg" onClick={handleAudioSubmit} disabled={submitting}>

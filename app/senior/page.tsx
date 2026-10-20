@@ -31,7 +31,7 @@ export default async function SeniorPage({
 
   if (questionId && !selected) {
     return (
-      <div className="space-y-6">
+      <div className="mx-auto w-full max-w-5xl space-y-6 px-6 py-10">
         <PageHeader title="Answer a question" description="We could not find that question." />
         <ButtonLink href="/senior">Choose another question</ButtonLink>
       </div>
@@ -40,15 +40,15 @@ export default async function SeniorPage({
 
   if (selected) {
     return (
-      <div className="space-y-8">
-        <Link href="/senior" className="text-lg font-semibold text-sky-800 hover:underline">
+      <div className="mx-auto w-full max-w-5xl space-y-8 px-6 py-10">
+        <Link href="/senior" className="text-lg font-semibold text-brand hover:underline">
           ← Choose a different question
         </Link>
 
         <PageHeader title="Answer this question" />
 
-        <div className="rounded-2xl border-l-4 border-sky-700 bg-sky-50 p-6">
-          <p className="text-2xl font-semibold leading-snug text-slate-900">{selected.text}</p>
+        <div className="rounded-2xl border-l-4 border-brand bg-orange-50 p-6">
+          <p className="text-2xl font-semibold leading-snug text-ink">{selected.text}</p>
         </div>
 
         <AnswerForm questionId={selected.id} questionText={selected.text} />
@@ -60,7 +60,7 @@ export default async function SeniorPage({
   const suggestions = (unanswered.length > 0 ? unanswered : questions).slice(0, 6);
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto w-full max-w-5xl space-y-8 px-6 py-10">
       <PageHeader
         title="Answer a question"
         description="Pick a question a young person asked, then record or type your answer."
