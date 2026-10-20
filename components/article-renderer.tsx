@@ -27,14 +27,14 @@ export function ArticleRenderer({ markdown }: { markdown: string }) {
       {blocks.map((block, index) => {
         if (block.startsWith("## ")) {
           return (
-            <h3 key={index} className="text-xl font-semibold text-slate-900">
+            <h3 key={index} className="text-xl font-semibold text-ink">
               {renderInline(block.slice(3), `h3-${index}`)}
             </h3>
           );
         }
         if (block.startsWith("# ")) {
           return (
-            <h2 key={index} className="text-2xl font-bold text-slate-900">
+            <h2 key={index} className="text-2xl font-bold text-ink">
               {renderInline(block.slice(2), `h2-${index}`)}
             </h2>
           );
@@ -42,7 +42,7 @@ export function ArticleRenderer({ markdown }: { markdown: string }) {
         const lines = block.split(/\n/);
         if (lines.every((line) => /^[-*]\s+/.test(line))) {
           return (
-            <ul key={index} className="list-disc space-y-2 pl-6 text-lg text-slate-800">
+            <ul key={index} className="list-disc space-y-2 pl-6 text-lg text-ink">
               {lines.map((line, lineIndex) => (
                 <li key={lineIndex}>
                   {renderInline(line.replace(/^[-*]\s+/, ""), `li-${index}-${lineIndex}`)}
@@ -52,7 +52,7 @@ export function ArticleRenderer({ markdown }: { markdown: string }) {
           );
         }
         return (
-          <p key={index} className="text-lg leading-relaxed text-slate-800">
+          <p key={index} className="text-lg leading-relaxed text-ink">
             {renderInline(block, `p-${index}`)}
           </p>
         );

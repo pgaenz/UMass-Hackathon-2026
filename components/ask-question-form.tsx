@@ -53,17 +53,17 @@ export function AskQuestionForm({ topics }: { topics: Topic[] }) {
   }
 
   return (
-    <section aria-labelledby="ask-question-heading" className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 id="ask-question-heading" className="text-2xl font-semibold text-slate-900">
+    <section aria-labelledby="ask-question-heading" className="rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm">
+      <h2 id="ask-question-heading" className="text-2xl font-semibold text-ink">
         Ask a question
       </h2>
-      <p className="mt-2 text-lg text-slate-600">
+      <p className="mt-2 text-lg text-ink/70">
         Ask something you would genuinely like a senior&apos;s perspective on.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-5 space-y-5">
         <div className="space-y-2">
-          <label htmlFor="question-text" className="text-lg font-semibold text-slate-900">
+          <label htmlFor="question-text" className="text-lg font-semibold text-ink">
             Your question
           </label>
           <textarea
@@ -74,15 +74,15 @@ export function AskQuestionForm({ topics }: { topics: Topic[] }) {
             maxLength={300}
             placeholder="What was your first job, and how did you get it?"
             aria-describedby="question-hint"
-            className="w-full rounded-xl border-2 border-slate-300 p-4 text-lg text-slate-900 placeholder:text-slate-400 focus:border-sky-700"
+            className="w-full rounded-xl border-2 border-orange-200 p-4 text-lg text-ink placeholder:text-gray-400 focus:border-brand"
           />
-          <p id="question-hint" className="text-base text-slate-500">
+          <p id="question-hint" className="text-base text-gray-500">
             Up to 300 characters.
           </p>
         </div>
 
         <fieldset className="space-y-3">
-          <legend className="text-lg font-semibold text-slate-900">Topics (choose any)</legend>
+          <legend className="text-lg font-semibold text-ink">Topics (choose any)</legend>
           <div className="flex flex-wrap gap-2">
             {topics.map((topic) => {
               const active = selectedTopics.includes(topic.id);
@@ -92,8 +92,8 @@ export function AskQuestionForm({ topics }: { topics: Topic[] }) {
                   className={cn(
                     "flex min-h-11 cursor-pointer items-center gap-2 rounded-full border-2 px-4 py-2 text-lg font-medium transition",
                     active
-                      ? "border-sky-700 bg-sky-50 text-sky-900"
-                      : "border-slate-300 bg-white text-slate-700 hover:border-sky-700",
+                      ? "border-brand bg-orange-50 text-orange-700"
+                      : "border-orange-200 bg-surface text-ink hover:border-brand",
                   )}
                 >
                   <input

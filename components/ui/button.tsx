@@ -10,10 +10,10 @@ const base =
   "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition disabled:cursor-not-allowed disabled:opacity-60";
 
 const variantClasses: Record<Variant, string> = {
-  primary: "bg-sky-700 text-white hover:bg-sky-800",
+  primary: "bg-brand text-white hover:bg-orange-600",
   secondary:
-    "border-2 border-slate-300 bg-white text-slate-900 hover:border-sky-700 hover:bg-sky-50",
-  ghost: "text-sky-800 hover:bg-sky-50",
+    "border-2 border-orange-200 bg-surface text-ink hover:border-brand hover:bg-orange-50",
+  ghost: "text-brand hover:bg-orange-50",
 };
 
 const sizeClasses: Record<Size, string> = {

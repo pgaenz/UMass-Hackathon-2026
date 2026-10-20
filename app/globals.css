@@ -1,20 +1,28 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand: #f97316;
+  --color-accent: #f59e08;
+  --color-canvas: #fff7ed;
+  --color-surface: #ffffff;
+  --color-ink: #1f2937;
+}
+
 @layer base {
   body {
-    background-color: #f8fafc;
-    color: #0f172a;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
     -webkit-font-smoothing: antialiased;
   }
 
   /* Clear, high-contrast focus ring for keyboard and assistive tech users. */
   :focus-visible {
-    outline: 3px solid #0369a1;
+    outline: 3px solid #ea580c;
     outline-offset: 2px;
   }
 
   /* Native report dialog backdrop. */
   dialog::backdrop {
-    background-color: rgb(15 23 42 / 0.55);
+    background-color: rgb(31 41 55 / 0.55);
   }
 }

@@ -64,8 +64,8 @@ export function UpvoteButton({
       className={cn(
         "flex min-h-16 w-16 shrink-0 flex-col items-center justify-center rounded-xl border-2 font-bold transition",
         voted
-          ? "border-sky-700 bg-sky-700 text-white"
-          : "border-slate-300 bg-white text-slate-700 hover:border-sky-700 hover:bg-sky-50",
+          ? "border-brand bg-brand text-white"
+          : "border-orange-200 bg-surface text-brand hover:border-brand hover:bg-orange-50",
       )}
     >
       <span aria-hidden="true" className="text-xl leading-none">

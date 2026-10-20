@@ -41,7 +41,7 @@ export default async function QuestionsPage({
   }
 
   return (
-    <div className="space-y-10">
+    <div className="mx-auto w-full max-w-5xl space-y-10 px-6 py-10">
       <PageHeader
         title="Questions"
         description="Ask a question, add topics, and upvote the ones you want answered."
@@ -50,7 +50,7 @@ export default async function QuestionsPage({
       <AskQuestionForm topics={topics} />
 
       <section aria-labelledby="browse-heading" className="space-y-5">
-        <h2 id="browse-heading" className="text-2xl font-bold tracking-tight text-slate-900">
+        <h2 id="browse-heading" className="text-2xl font-bold tracking-tight text-ink">
           Browse questions
         </h2>
         <QuestionFilterBar topics={topics} activeTopic={topic} activeSort={sort} />

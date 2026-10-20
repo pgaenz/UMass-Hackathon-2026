@@ -57,12 +57,12 @@ export function ReportButton({
       <button
         type="button"
         onClick={() => dialogRef.current?.showModal()}
-        className="rounded-lg px-2 py-1 text-base font-medium text-slate-600 underline decoration-slate-400 underline-offset-4 hover:text-slate-900 hover:decoration-slate-900"
+        className="rounded-lg px-2 py-1 text-base font-medium text-ink/70 underline decoration-orange-300 underline-offset-4 hover:text-ink hover:decoration-ink"
       >
         Report
       </button>
       {status ? (
-        <span role="status" className="text-sm text-slate-600">
+        <span role="status" className="text-sm text-ink/70">
           {status}
         </span>
       ) : null}
@@ -70,24 +70,24 @@ export function ReportButton({
       <dialog
         ref={dialogRef}
         aria-labelledby={titleId}
-        className="w-[min(92vw,32rem)] rounded-2xl border border-slate-200 bg-white p-0 shadow-xl"
+        className="w-[min(92vw,32rem)] rounded-2xl border border-orange-100 bg-surface p-0 shadow-xl"
       >
         <form onSubmit={handleSubmit} className="space-y-5 p-6">
           <div className="space-y-2">
-            <h2 id={titleId} className="text-2xl font-bold text-slate-900">
+            <h2 id={titleId} className="text-2xl font-bold text-ink">
               Report this {targetType}
             </h2>
-            <p className="text-base text-slate-600">
+            <p className="text-base text-ink/70">
               Reports are private. Tell us what is wrong and we will take a look.
             </p>
           </div>
 
           <fieldset className="space-y-3">
-            <legend className="text-lg font-semibold text-slate-900">Reason</legend>
+            <legend className="text-lg font-semibold text-ink">Reason</legend>
             {REASONS.map((option) => (
               <label
                 key={option}
-                className="flex min-h-11 cursor-pointer items-center gap-3 rounded-lg px-2 text-lg text-slate-800 hover:bg-slate-100"
+                className="flex min-h-11 cursor-pointer items-center gap-3 rounded-lg px-2 text-lg text-ink hover:bg-orange-50"
               >
                 <input
                   type="radio"
@@ -103,7 +103,7 @@ export function ReportButton({
           </fieldset>
 
           <div className="space-y-2">
-            <label htmlFor={`${titleId}-details`} className="text-lg font-semibold text-slate-900">
+            <label htmlFor={`${titleId}-details`} className="text-lg font-semibold text-ink">
               More details (optional)
             </label>
             <textarea
@@ -111,7 +111,7 @@ export function ReportButton({
               value={details}
               onChange={(event) => setDetails(event.target.value)}
               rows={3}
-              className="w-full rounded-xl border-2 border-slate-300 p-3 text-lg text-slate-900 focus:border-sky-700"
+              className="w-full rounded-xl border-2 border-orange-200 p-3 text-lg text-ink focus:border-brand"
             />
           </div>
 

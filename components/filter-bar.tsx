@@ -36,7 +36,7 @@ export function QuestionFilterBar({
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-slate-900">Filter by topic</h2>
+        <h2 className="text-lg font-semibold text-ink">Filter by topic</h2>
         <ul className="mt-2 flex flex-wrap gap-2">
           <li>
             <FilterLink href={href({ topic: null })} active={!activeTopic}>
@@ -54,7 +54,7 @@ export function QuestionFilterBar({
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-slate-900">Sort</h2>
+        <h2 className="text-lg font-semibold text-ink">Sort</h2>
         <ul className="mt-2 flex flex-wrap gap-2">
           {SORTS.map((option) => (
             <li key={option.id}>
@@ -85,8 +85,8 @@ function FilterLink({
       className={cn(
         "inline-flex min-h-10 items-center rounded-full border-2 px-4 py-1.5 text-base font-medium transition",
         active
-          ? "border-sky-700 bg-sky-700 text-white"
-          : "border-slate-300 bg-white text-slate-700 hover:border-sky-700 hover:bg-sky-50",
+          ? "border-brand bg-brand text-white"
+          : "border-orange-200 bg-surface text-ink hover:border-brand hover:bg-orange-50",
       )}
     >
       {children}

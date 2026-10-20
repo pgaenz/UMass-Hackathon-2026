@@ -16,7 +16,7 @@ export default async function YouthPage() {
   const stories = await getPublishedStories();
 
   return (
-    <div className="space-y-10">
+    <div className="mx-auto w-full max-w-5xl space-y-10 px-6 py-10">
       <PageHeader
         title="Stories from seniors"
         description="Every story here was published by a senior, with no invented facts."

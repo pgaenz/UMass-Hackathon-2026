@@ -43,8 +43,8 @@ export default async function QuestionDetailPage({
     .filter((label): label is string => Boolean(label));
 
   return (
-    <article className="space-y-10">
-      <Link href="/questions" className="text-lg font-semibold text-sky-800 hover:underline">
+    <article className="mx-auto w-full max-w-5xl space-y-10 px-6 py-10">
+      <Link href="/questions" className="text-lg font-semibold text-brand hover:underline">
         ← All questions
       </Link>
 
@@ -52,7 +52,7 @@ export default async function QuestionDetailPage({
         <div className="flex gap-4 sm:gap-6">
           <UpvoteButton questionId={question.id} initialCount={question.upvotes} />
           <div className="min-w-0 flex-1 space-y-3">
-            <h1 className="text-3xl font-bold leading-snug tracking-tight text-slate-900 sm:text-4xl">
+            <h1 className="text-3xl font-bold leading-snug tracking-tight text-ink sm:text-4xl">
               {question.text}
             </h1>
             {labels.length > 0 ? (
@@ -64,7 +64,7 @@ export default async function QuestionDetailPage({
                 ))}
               </ul>
             ) : null}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-base text-slate-600">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-base text-ink/70">
               <span>{answers.length === 1 ? "1 answer" : `${answers.length} answers`}</span>
               <span aria-hidden="true">·</span>
               <time dateTime={question.createdAt}>{formatDate(question.createdAt)}</time>
@@ -79,7 +79,7 @@ export default async function QuestionDetailPage({
       </header>
 
       <section aria-labelledby="answers-heading" className="space-y-5">
-        <h2 id="answers-heading" className="text-2xl font-bold tracking-tight text-slate-900">
+        <h2 id="answers-heading" className="text-2xl font-bold tracking-tight text-ink">
           {answers.length === 1 ? "1 answer" : `${answers.length} answers`}
         </h2>
 
@@ -87,9 +87,9 @@ export default async function QuestionDetailPage({
           <ul className="space-y-5">
             {answers.map((answer) => (
               <li key={answer.id}>
-                <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <article className="rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm">
                   <ArticleRenderer markdown={answer.article} />
-                  <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-200 pt-4 text-base text-slate-500">
+                  <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-orange-100 pt-4 text-base text-gray-500">
                     <time dateTime={answer.createdAt}>{formatDate(answer.createdAt)}</time>
                     <ReportButton targetType="answer" targetId={answer.id} />
                   </div>
