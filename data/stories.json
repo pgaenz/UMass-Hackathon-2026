@@ -15,7 +15,9 @@
       "groundingScore": 5,
       "piiDetected": false,
       "status": "published",
-      "createdAt": "2026-01-11T10:00:00.000Z"
+      "createdAt": "2026-01-11T10:00:00.000Z",
+      "review": null,
+      "feedback": []
     },
     {
       "id": "s-true-love",
@@ -32,7 +34,9 @@
       "groundingScore": 5,
       "piiDetected": false,
       "status": "published",
-      "createdAt": "2026-01-11T10:05:00.000Z"
+      "createdAt": "2026-01-11T10:05:00.000Z",
+      "review": null,
+      "feedback": []
     },
     {
       "id": "s-best-advice",
@@ -49,7 +53,9 @@
       "groundingScore": 5,
       "piiDetected": false,
       "status": "published",
-      "createdAt": "2026-01-11T10:10:00.000Z"
+      "createdAt": "2026-01-11T10:10:00.000Z",
+      "review": null,
+      "feedback": []
     },
     {
       "id": "971f601f-2017-4b9f-b92b-226c91e3c1b0",
@@ -66,7 +72,9 @@
       "groundingScore": 0,
       "piiDetected": false,
       "status": "draft",
-      "createdAt": "2026-10-20T16:06:32.979Z"
+      "createdAt": "2026-10-20T16:06:32.979Z",
+      "review": null,
+      "feedback": []
     },
     {
       "id": "0e4625ef-26ec-42d7-82dc-bc4dfa18012e",
@@ -83,7 +91,146 @@
       "groundingScore": 0,
       "piiDetected": false,
       "status": "draft",
-      "createdAt": "2026-10-20T16:53:12.720Z"
+      "createdAt": "2026-10-20T16:53:12.720Z",
+      "review": null,
+      "feedback": []
+    },
+    {
+      "id": "c8e8ec96-2aa3-4e04-bc40-6e744054edbb",
+      "prompt": "What was the proudest moment of your life, and what made it so special?",
+      "questionId": "q-proudest-moment",
+      "inputType": "text",
+      "rawAudioPath": null,
+      "transcript": "Well, that's a good question. Hmm, I think the proudest moment of my life was probably when my daughter graduated from university. Although, you know, I nearly didn't go. We didn't have much money back then, and I was always worrying about how we'd pay for everything.\nMy husband Frank worked at a factory, and I worked at a little bakery for a while. Oh, the smell of fresh bread in the morning! Anyway, when Susan told us she wanted to go to university, I thought, goodness me, how are we going to afford that? We had two children, bills to pay, and the roof was leaking at the time. I remember putting a bucket in the hallway whenever it rained. Frank was always tripping over the thing!\nBut Susan was determined. She wanted to become a teacher, even when she was little. She used to line up her dolls and pretend to teach them. We took out a loan, and she worked part-time while studying. There were some difficult years, I can tell you. But she never gave up.\nAnd then, on graduation day, there she was, standing in that black gown. When they called her name, I just started crying. Frank handed me his old handkerchief because he knew I'd get emotional. Typical of him, always prepared!\nI think what made me so proud wasn't just that she'd earned a degree. It was knowing how hard she'd worked, and that we'd somehow managed to give her that opportunity, despite not having much ourselves.\nFrank passed away twelve years ago, and I wish he could see what Susan has achieved since then. He'd be so proud.\nYou know, when you're young, you worry so much about money and whether you're successful enough. But looking back, I don't remember the things we couldn't afford. I remember that day, sitting next to Frank, watching our daughter walk across that stage.\nI suppose that's what I'm proudest of. Knowing that, together, we'd helped someone we loved get somewhere they wanted to go.",
+      "metadata": {
+        "topic": "Family",
+        "summary": "The proudest moment of the speaker's life was when their daughter graduated from university."
+      },
+      "article": "# A Proud Moment\n\nThe proudest moment of my life was probably when my daughter graduated from university. I nearly didn't go. We didn't have much money back then, and I was always worrying about how we'd pay for everything.\n\nMy husband Frank worked at a factory, and I worked at a little bakery for a while. Oh, the smell of fresh bread in the morning! When Susan told us she wanted to go to university, I thought, goodness me, how are we going to afford that? We had two children, bills to pay, and the roof was leaking at the time. I remember putting a bucket in the hallway whenever it rained. Frank was always tripping over the thing!\n\nBut Susan was determined. She wanted to become a teacher, even when she was little. She used to line up her dolls and pretend to teach them. We took out a loan, and she worked part-time while studying. There were some difficult years, I can tell you. But she never gave up.\n\nOn graduation day, there she was, standing in that black gown. When they called her name, I just started crying. Frank handed me his old handkerchief because he knew I'd get emotional. Typical of him, always prepared!\n\nWhat made me so proud wasn't just that she'd earned a degree. It was knowing how hard she'd worked, and that we'd somehow managed to give her that opportunity, despite not having much ourselves.\n\nFrank passed away twelve years ago, and I wish he could see what Susan has achieved since then. He'd be so proud. Looking back, I don't remember the things we couldn't afford. I remember that day, sitting next to Frank, watching our daughter walk across that stage. Knowing that, together, we'd helped someone we loved get somewhere they wanted to go.",
+      "review": {
+        "score": 5,
+        "verdict": "pass",
+        "summary": "The article accurately reflects your feelings about your daughter's graduation and your family's journey. It captures your pride and the challenges you faced together.",
+        "issues": [],
+        "createdAt": "2026-10-21T17:32:12.541Z"
+      },
+      "feedback": [],
+      "groundingScore": 5,
+      "piiDetected": false,
+      "status": "published",
+      "createdAt": "2026-10-21T17:32:03.307Z"
+    },
+    {
+      "id": "494c10c5-5eb0-499d-a554-a2866abe17f0",
+      "prompt": "How did you meet your closest lifelong friend, and what has kept you close?",
+      "questionId": "q-lifelong-friend",
+      "inputType": "text",
+      "rawAudioPath": null,
+      "transcript": "I met my best friend Peter about 55 years ago, when we both started working at a car repair shop. To be honest, I didn't liked him much at first. He was always joking and making fun of me, especially when I made mistakes at work.\n\nOne day my car broke down on the way home, and it was raining really bad. Peter happened to drive past and stopped to help me. We spent nearly two hours fixing the car, and we got completely wet. After that we started going for beers after work and became really close friends.\n\nOver the years, we both got married, had children and went through many difficult times. When I lost my job, Peter helped me with groceries, even though he didn't had much money himself. And when my wife passed away six years ago, he visited me almost every Sunday. Sometimes we didn't even talk much, we just watched football together.\n\nI think what kept us close is that we was always there for each other. We don't agree on everything, especially football, because he supports the wrong team, obviously! But a real friendship isn't about agreeing on everything. It's about showing up when someone needs you.\n\nAfter 55 years, he's more like a brother to me. And I think that's what friendship is really about, being there for each other, even when life gets hard.",
+      "metadata": {
+        "topic": "Friendship",
+        "summary": "The speaker reflects on a 55-year friendship with Peter, marked by support during tough times."
+      },
+      "article": "# A Lifelong Friendship\n\nI met my best friend Peter about 55 years ago when we both started working at a car repair shop. To be honest, I didn't like him much at first. He was always joking and making fun of me, especially when I made mistakes at work.\n\nOne day my car broke down on the way home, and it was raining really bad. Peter happened to drive past and stopped to help me. We spent nearly two hours fixing the car, and we got completely wet. After that, we started going for beers after work and became really close friends.\n\nOver the years, we both got married, had children, and went through many difficult times. When I lost my job, Peter helped me with groceries, even though he didn't have much money himself. And when my wife passed away six years ago, he visited me almost every Sunday. Sometimes we didn't even talk much; we just watched football together.\n\nI think what kept us close is that we were always there for each other. We don't agree on everything, especially football, because he supports the wrong team, obviously! But a real friendship isn't about agreeing on everything. It's about showing up when someone needs you.\n\nAfter 55 years, he's more like a brother to me. And I think that's what friendship is really about: being there for each other, even when life gets hard.",
+      "review": {
+        "score": 5,
+        "verdict": "pass",
+        "summary": "The article accurately reflects your story about your friendship with Peter and is clear. There are no issues to fix.",
+        "issues": [],
+        "createdAt": "2026-10-21T17:39:10.341Z"
+      },
+      "feedback": [],
+      "groundingScore": 5,
+      "piiDetected": false,
+      "status": "published",
+      "createdAt": "2026-10-21T17:39:05.130Z"
+    },
+    {
+      "id": "b535c2ff-0d49-4ed5-a37c-c7469bdd6d0f",
+      "prompt": "How did you decide what to do with your life when you were young?",
+      "questionId": "q-chose-path",
+      "inputType": "text",
+      "rawAudioPath": null,
+      "transcript": "Oh, this is a difficult question, because when I was young I really not know what I want to do with my life. Everybody was asking me, what you want to become, what is your plan, and I was thinking, how should I know this? I was only seventeen years old!\n\nMy father, he wanted that I become a mechanic, because he was working with cars and he say it is a good and safe work. But I was not so interested in cars, I like more to talk with people and doing things outside. In school I was also not the best student, especially mathematics, oh my goodness, this was a disaster. My teacher always say I need to be more serious with my future.\n\nAfter school I take a job in a small shop, just because I need money and I don't have a better idea. At the beginning I think I will do this only for some months, but then I meet many people and I start to enjoy the work. One older man who was coming every week, he told me once, you are good with people, you should do something with this. And somehow I remember this words for many years.\n\nSo I was working in shops for a long time, and later I become a manager. It was not a big dream I had since childhood, you know. It was more like one thing come after another and suddenly I was there.\n\nI think young people today worry too much about choosing the perfect thing. Maybe you don't need to know everything when you are young. Just try something, make some mistakes, and see where life is taking you. Sometimes the wrong road bring you to a good place, you know what I mean?",
+      "metadata": {
+        "topic": "Career",
+        "summary": "The speaker reflects on their uncertain career path in youth and the importance of exploring options."
+      },
+      "article": "# Finding Your Path\n\nChoosing a career can be tough, especially when you're young. \n\n- \"Oh, this is a difficult question, because when I was young I really not know what I want to do with my life.\"\n- At seventeen, the pressure to have a plan felt overwhelming. \n- The speaker's father wanted them to become a mechanic, but they preferred talking to people and being outdoors. \n- School wasn't easy, especially math, which the speaker described as a disaster. \n- After school, they took a job in a small shop just to earn some money. \n- Initially, they thought it would be a short-term gig, but they began to enjoy it after meeting many people. \n- An older man once told them, \"you are good with people, you should do something with this,\" and those words stuck with them. \n- Over time, they worked their way up to a manager position, not through a grand plan, but by taking things one step at a time. \n\nThe speaker believes that young people today worry too much about making the perfect choice. They advise: \"Just try something, make some mistakes, and see where life is taking you. Sometimes the wrong road bring you to a good place, you know what I mean?\"",
+      "review": {
+        "score": 4,
+        "verdict": "pass",
+        "summary": "The article accurately reflects your thoughts on choosing a career and the importance of exploring options. It could be improved by clarifying some phrases.",
+        "issues": [
+          {
+            "type": "clarity",
+            "detail": "The phrase 'the pressure to have a plan felt overwhelming' could be clearer. It might be better to say 'I felt pressure to have a plan, which was overwhelming.'",
+            "excerpt": "the pressure to have a plan felt overwhelming"
+          }
+        ],
+        "createdAt": "2026-10-21T17:43:21.095Z"
+      },
+      "feedback": [],
+      "groundingScore": 4,
+      "piiDetected": false,
+      "status": "reviewed",
+      "createdAt": "2026-10-21T17:43:13.672Z"
+    },
+    {
+      "id": "24aa29f4-67b3-46ba-a2c1-b23e11b47754",
+      "prompt": "How did you decide what to do with your life when you were young?",
+      "questionId": "q-chose-path",
+      "inputType": "text",
+      "rawAudioPath": null,
+      "transcript": "Oh, this is a difficult question, because when I was young I really not know what I want to do with my life. Everybody was asking me, what you want to become, what is your plan, and I was thinking, how should I know this? I was only seventeen years old!\n\nMy father, he wanted that I become a mechanic, because he was working with cars and he say it is a good and safe work. But I was not so interested in cars, I like more to talk with people and doing things outside. In school I was also not the best student, especially mathematics, oh my goodness, this was a disaster. My teacher always say I need to be more serious with my future.\n\nAfter school I take a job in a small shop, just because I need money and I don't have a better idea. At the beginning I think I will do this only for some months, but then I meet many people and I start to enjoy the work. One older man who was coming every week, he told me once, you are good with people, you should do something with this. And somehow I remember this words for many years.\n\nSo I was working in shops for a long time, and later I become a manager. It was not a big dream I had since childhood, you know. It was more like one thing come after another and suddenly I was there.\n\nI think young people today worry too much about choosing the perfect thing. Maybe you don't need to know everything when you are young. Just try something, make some mistakes, and see where life is taking you. Sometimes the wrong road bring you to a good place, you know what I mean?",
+      "metadata": {
+        "topic": "Career",
+        "summary": "The speaker reflects on their uncertain career path in youth."
+      },
+      "article": "# Finding My Path\n\nWhen I was young, I really didn’t know what I wanted to do with my life. Everyone asked me, \"What do you want to become?\" and I thought, \"How should I know? I was only seventeen!\"\n\nMy father wanted me to become a mechanic, as he worked with cars and thought it was a good and safe job. But I wasn’t interested in cars. I preferred talking with people and doing things outside. In school, I wasn’t the best student, especially in mathematics. My teacher always said I needed to be more serious about my future.\n\nAfter school, I took a job in a small shop just to earn some money. I thought I would do it for a few months, but then I met many people and started to enjoy the work. An older man who came in every week once told me, \"You are good with people; you should do something with this.\" I remembered his words for many years.\n\nI ended up working in shops for a long time and eventually became a manager. It wasn’t a big dream I had since childhood; it was more like one thing led to another, and suddenly I was there.\n\nI think young people today worry too much about choosing the perfect path. You don’t need to know everything when you’re young. Just try something, make some mistakes, and see where life takes you. Sometimes the wrong road can lead you to a good place.",
+      "review": {
+        "score": 4,
+        "verdict": "pass",
+        "summary": "The article reflects your thoughts well, but it could be clearer in some parts. Consider simplifying some sentences for better understanding.",
+        "issues": [],
+        "createdAt": "2026-10-21T17:52:32.665Z"
+      },
+      "feedback": [],
+      "groundingScore": 4,
+      "piiDetected": false,
+      "status": "reviewed",
+      "createdAt": "2026-10-21T17:52:25.023Z"
+    },
+    {
+      "id": "cd3029b1-0042-47b5-98c1-13cdeb165eb9",
+      "prompt": "How did you decide what to do with your life when you were young?",
+      "questionId": "q-chose-path",
+      "inputType": "text",
+      "rawAudioPath": null,
+      "transcript": "When I was young, I dont know what I want to do in my life. People always ask me, what you want to be later? And I say, I dont know, maybe something good. I was 17 years old and I think this is too young for decide all your life.\n\nMy father want I become mechanic, because he work with cars and he say this is good job, you have money and always work. But I dont like so much cars. I like talk with people and go outside with my friends. In school I was not very good student. The math was very difficult for me and the teacher always angry because I dont understand things fast.\n\nAfter school I start work in a small shop. I dont choose this because I love it, I just need money. I think I stay there only few months, but then I like the people and the work was not so bad. One old man come every week to the shop and he talk with me very much. One day he say, you are good with people, maybe you can do something with this. I remember this, even after many years.\n\nLater I become manager in another shop. Sometimes I think, how this happen? I never plan this life. I just do one thing, then another thing, and suddenly many years are gone.\n\nI think young people today worry too much about future. They think they must know everything and make perfect decision. But life is not like this. You try something, maybe it not work, then you try something else. I make many mistakes in my life, but this is also how I learn. You dont need have all answers when you are young. Just start somewhere and see what happen.",
+      "metadata": {
+        "topic": "Career",
+        "summary": "The speaker reflects on their uncertain career path and the importance of trying new things."
+      },
+      "article": "# Embracing Uncertainty in Career Choices\n\nWhen I was young, I didn’t know what I wanted to do in my life. People always asked me, \"What do you want to be later?\" and I would say, \"I don’t know, maybe something good.\" At 17, I thought it was too young to decide my entire future.\n\nMy father wanted me to become a mechanic because he worked with cars and said it was a good job with money and stability. But I didn’t like cars much. I preferred talking with people and hanging out with my friends. In school, I wasn’t a very good student. Math was difficult for me, and my teacher was often angry because I didn’t understand things quickly.\n\nAfter school, I started working in a small shop. I didn’t choose this job because I loved it; I just needed money. I thought I would stay there only a few months, but I ended up liking the people, and the work wasn’t so bad. An old man came to the shop every week and talked with me a lot. One day, he said, \"You are good with people; maybe you can do something with this.\" I remember that even after many years.\n\nLater, I became a manager in another shop. Sometimes I think, how did this happen? I never planned this life. I just did one thing, then another, and suddenly many years had passed.\n\nI think young people today worry too much about the future. They feel they must know everything and make perfect decisions. But life isn’t like that. You try something; maybe it doesn’t work, then you try something else. I made many mistakes in my life, but that’s also how I learned. You don’t need to have all the answers when you’re young. Just start somewhere and see what happens.",
+      "review": {
+        "score": 4,
+        "verdict": "pass",
+        "summary": "The article accurately reflects your experiences and thoughts about career choices and uncertainty. It could be improved slightly for clarity, but overall it captures your voice well.",
+        "issues": [
+          {
+            "type": "clarity",
+            "detail": "The phrase 'I thought I would stay there only a few months, but I ended up liking the people' could be clearer by specifying that you initially intended to leave but changed your mind due to the people you met.",
+            "excerpt": "I thought I would stay there only a few months, but I ended up liking the people, and the work wasn’t so bad."
+          }
+        ],
+        "createdAt": "2026-10-21T17:55:01.451Z"
+      },
+      "feedback": [],
+      "groundingScore": 4,
+      "piiDetected": false,
+      "status": "published",
+      "createdAt": "2026-10-21T17:54:52.853Z"
     }
   ]
 }

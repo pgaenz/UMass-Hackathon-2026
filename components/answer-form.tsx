@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 
 type Mode = "text" | "audio";
-type Status = { kind: "idle" | "error" | "success"; message?: string };
+type Status = { kind: "idle" | "error" | "success" | "loading"; message?: string };
 
 function formatSeconds(total: number): string {
   const minutes = Math.floor(total / 60);
@@ -103,10 +103,27 @@ export function AnswerForm({
     setStatus({ kind: "idle" });
     try {
       const res = await fetch("/api/intake", { method: "POST", headers, body });
-      const data = (await res.json().catch(() => null)) as { error?: string } | null;
-      if (!res.ok) throw new Error(data?.error ?? "We could not save your answer.");
-      setStatus({ kind: "success", message: "Thank you — your answer was sent for review." });
-      router.refresh();
+      const data = (await res.json().catch(() => null)) as {
+        error?: string;
+        story?: { id: string };
+      } | null;
+      if (!res.ok || !data?.story) {
+        throw new Error(data?.error ?? "We could not save your answer.");
+      }
+
+      // Submission triggers the whole pipeline: write the article, then review it.
+      setStatus({ kind: "loading", message: "Writing your story and checking it for accuracy…" });
+      const genRes = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: data.story.id }),
+      });
+      const genData = (await genRes.json().catch(() => null)) as { error?: string } | null;
+      if (!genRes.ok) {
+        throw new Error(genData?.error ?? "We could not write your story.");
+      }
+
+      router.push(`/senior/review/${data.story.id}`);
     } catch (err) {
       setStatus({
         kind: "error",
@@ -236,6 +253,11 @@ export function AnswerForm({
 
       {status.kind === "error" ? (
         <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-lg font-medium text-red-800">
+          {status.message}
+        </p>
+      ) : null}
+      {status.kind === "loading" ? (
+        <p role="status" className="rounded-lg bg-blue-50 px-4 py-3 text-lg font-medium text-blue-900">
           {status.message}
         </p>
       ) : null}

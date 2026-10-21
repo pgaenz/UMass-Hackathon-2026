@@ -9,6 +9,36 @@ export interface StoryMetadata {
   summary: string;
 }
 
+// ---------------------------------------------------------------------------
+// Review agent output (shown to the senior; drives the publish gate)
+// ---------------------------------------------------------------------------
+
+export type ReviewIssueType = "invented_fact" | "distortion" | "tone" | "clarity";
+
+export interface ReviewIssue {
+  type: ReviewIssueType;
+  detail: string;
+  excerpt?: string;
+}
+
+export interface ReviewResult {
+  score: number; // 1 (fabricated) – 5 (faithful and clear)
+  verdict: "pass" | "revise";
+  summary: string;
+  issues: ReviewIssue[];
+  createdAt: string;
+}
+
+// A senior's feedback on a generated article, used to drive a re-creation.
+// Text and/or audio (the audio is transcribed and stored where possible).
+export interface FeedbackEntry {
+  id: string;
+  source: "user";
+  text: string;
+  rawAudioPath: string | null;
+  createdAt: string;
+}
+
 export interface Story {
   id: string;
   prompt: string;
@@ -18,6 +48,8 @@ export interface Story {
   transcript: string;
   metadata: StoryMetadata;
   article: string;
+  review: ReviewResult | null;
+  feedback: FeedbackEntry[];
   groundingScore: number;
   piiDetected: boolean;
   status: StoryStatus;
@@ -66,18 +98,21 @@ export interface IntakeResponse {
   story: Story;
 }
 
-// POST /api/generate
+// POST /api/generate — first call creates the article; a call with feedback
+// re-creates it from the original answer + current article + all feedback.
 export interface GenerateRequest {
   id: string;
+  feedback?: string;
 }
 
 export interface GenerateResponse {
   story: Story;
 }
 
-// POST /api/approve
+// POST /api/approve. `override` publishes a story whose review did not pass.
 export interface ApproveRequest {
   id: string;
+  override?: boolean;
 }
 
 export interface ApproveResponse {

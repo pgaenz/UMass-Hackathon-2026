@@ -1,7 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
-import { extractMetadata } from "@/lib/agents";
 import { getQuestion, linkStoryToQuestion } from "@/lib/questions";
 import { createStory, updateStory } from "@/lib/store";
 import { transcribe } from "@/lib/transcribe";
@@ -71,9 +70,7 @@ async function handleText(request: Request): Promise<Response> {
   if (questionId) {
     await linkStoryToQuestion(questionId, story.id);
   }
-  const metadata = await extractMetadata(text);
-  const updated = await updateStory(story.id, { metadata });
-  return Response.json({ story: updated ?? story }, { status: 201 });
+  return Response.json({ story }, { status: 201 });
 }
 
 async function handleAudio(request: Request): Promise<Response> {
@@ -106,10 +103,8 @@ async function handleAudio(request: Request): Promise<Response> {
   await fs.writeFile(path.join(UPLOAD_DIR, storedName), buffer);
 
   const transcript = await transcribe(audio, filename);
-  const metadata = await extractMetadata(transcript);
   const updated = await updateStory(story.id, {
     transcript,
-    metadata,
     rawAudioPath: `data/uploads/${storedName}`,
   });
   return Response.json({ story: updated ?? story }, { status: 201 });

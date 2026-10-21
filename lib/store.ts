@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import path from "node:path";
 
 import { mutateJson, readJson } from "./json-file";
-import type { Story, StoryStatus } from "./types";
+import type { FeedbackEntry, Story, StoryStatus } from "./types";
 
 interface StoreData {
   stories: Story[];
@@ -11,8 +11,19 @@ interface StoreData {
 const STORE_PATH = path.join(process.cwd(), "data", "stories.json");
 const EMPTY: StoreData = { stories: [] };
 
+/** Fills fields added after a story was first persisted (no DB migration needed). */
+function normalizeStory(story: Story): Story {
+  return {
+    ...story,
+    metadata: story.metadata ?? { topic: "", summary: "" },
+    review: story.review ?? null,
+    feedback: Array.isArray(story.feedback) ? story.feedback : [],
+  };
+}
+
 function normalize(parsed: Partial<StoreData>): StoreData {
-  return { stories: Array.isArray(parsed.stories) ? parsed.stories : [] };
+  const stories = Array.isArray(parsed.stories) ? parsed.stories : [];
+  return { stories: stories.map(normalizeStory) };
 }
 
 async function readStore(): Promise<StoreData> {
@@ -47,6 +58,8 @@ export async function createStory(input: Partial<Story> = {}): Promise<Story> {
       transcript: input.transcript ?? "",
       metadata: input.metadata ?? { topic: "", summary: "" },
       article: input.article ?? "",
+      review: input.review ?? null,
+      feedback: input.feedback ?? [],
       groundingScore: input.groundingScore ?? 0,
       piiDetected: input.piiDetected ?? false,
       status: input.status ?? "draft",
@@ -65,6 +78,25 @@ export async function updateStory(id: string, patch: Partial<Story>): Promise<St
     const index = data.stories.findIndex((story) => story.id === id);
     if (index !== -1) {
       updated = { ...data.stories[index], ...patch, id };
+      data.stories[index] = updated;
+    }
+    return data;
+  });
+  return updated;
+}
+
+/** Appends one feedback entry under the file lock so concurrent writes never clobber. */
+export async function appendFeedback(
+  id: string,
+  entry: FeedbackEntry,
+): Promise<Story | null> {
+  let updated: Story | null = null;
+  await mutateJson<StoreData>(STORE_PATH, EMPTY, (current) => {
+    const data = normalize(current);
+    const index = data.stories.findIndex((story) => story.id === id);
+    if (index !== -1) {
+      const story = data.stories[index];
+      updated = { ...story, feedback: [...story.feedback, entry] };
       data.stories[index] = updated;
     }
     return data;
