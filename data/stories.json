@@ -17,7 +17,8 @@
       "status": "published",
       "createdAt": "2026-01-11T10:00:00.000Z",
       "review": null,
-      "feedback": []
+      "feedback": [],
+      "conversationId": null
     },
     {
       "id": "s-true-love",
@@ -36,7 +37,8 @@
       "status": "published",
       "createdAt": "2026-01-11T10:05:00.000Z",
       "review": null,
-      "feedback": []
+      "feedback": [],
+      "conversationId": null
     },
     {
       "id": "s-best-advice",
@@ -55,7 +57,8 @@
       "status": "published",
       "createdAt": "2026-01-11T10:10:00.000Z",
       "review": null,
-      "feedback": []
+      "feedback": [],
+      "conversationId": null
     },
     {
       "id": "971f601f-2017-4b9f-b92b-226c91e3c1b0",
@@ -74,7 +77,8 @@
       "status": "draft",
       "createdAt": "2026-10-20T16:06:32.979Z",
       "review": null,
-      "feedback": []
+      "feedback": [],
+      "conversationId": null
     },
     {
       "id": "0e4625ef-26ec-42d7-82dc-bc4dfa18012e",
@@ -93,7 +97,8 @@
       "status": "draft",
       "createdAt": "2026-10-20T16:53:12.720Z",
       "review": null,
-      "feedback": []
+      "feedback": [],
+      "conversationId": null
     },
     {
       "id": "c8e8ec96-2aa3-4e04-bc40-6e744054edbb",
@@ -118,7 +123,8 @@
       "groundingScore": 5,
       "piiDetected": false,
       "status": "published",
-      "createdAt": "2026-10-21T17:32:03.307Z"
+      "createdAt": "2026-10-21T17:32:03.307Z",
+      "conversationId": null
     },
     {
       "id": "494c10c5-5eb0-499d-a554-a2866abe17f0",
@@ -143,7 +149,8 @@
       "groundingScore": 5,
       "piiDetected": false,
       "status": "published",
-      "createdAt": "2026-10-21T17:39:05.130Z"
+      "createdAt": "2026-10-21T17:39:05.130Z",
+      "conversationId": null
     },
     {
       "id": "b535c2ff-0d49-4ed5-a37c-c7469bdd6d0f",
@@ -174,7 +181,8 @@
       "groundingScore": 4,
       "piiDetected": false,
       "status": "reviewed",
-      "createdAt": "2026-10-21T17:43:13.672Z"
+      "createdAt": "2026-10-21T17:43:13.672Z",
+      "conversationId": null
     },
     {
       "id": "24aa29f4-67b3-46ba-a2c1-b23e11b47754",
@@ -199,7 +207,8 @@
       "groundingScore": 4,
       "piiDetected": false,
       "status": "reviewed",
-      "createdAt": "2026-10-21T17:52:25.023Z"
+      "createdAt": "2026-10-21T17:52:25.023Z",
+      "conversationId": null
     },
     {
       "id": "cd3029b1-0042-47b5-98c1-13cdeb165eb9",
@@ -230,7 +239,102 @@
       "groundingScore": 4,
       "piiDetected": false,
       "status": "published",
-      "createdAt": "2026-10-21T17:54:52.853Z"
+      "createdAt": "2026-10-21T17:54:52.853Z",
+      "conversationId": null
+    },
+    {
+      "id": "52b9e81b-9a78-4f7e-b2d6-2856cdb55c8a",
+      "prompt": "What did you do for fun as a teenager before smartphones and the internet?",
+      "questionId": "q-teenage-fun",
+      "inputType": "conversation",
+      "rawAudioPath": null,
+      "transcript": "",
+      "metadata": {
+        "topic": "",
+        "summary": ""
+      },
+      "article": "",
+      "review": null,
+      "feedback": [],
+      "groundingScore": 0,
+      "piiDetected": false,
+      "status": "draft",
+      "conversationId": "b7fcf7a6-441d-4e84-9cd5-4e5b43549fd4",
+      "createdAt": "2026-10-21T20:42:23.539Z"
+    },
+    {
+      "id": "ffe8db14-cd35-48ef-b4a0-f331254bfb1f",
+      "prompt": "What did you do for fun as a teenager before smartphones and the internet?",
+      "questionId": "q-teenage-fun",
+      "inputType": "conversation",
+      "rawAudioPath": null,
+      "transcript": "All we have plenty of.  fun, you know?  We didn't have smartphones or internet back then.  If you wanted to see your friends, you just went to their house and knocked on the door.  Sometimes they weren't even home, so you walked all the way back again.  -  Thank you.\n\nWhen I was about 16, I spent most afternoons playing football with my friends on this little fiat near our neighborhood.  It wasn't a proper field, just some grass and two old jackets for goalposts.  We played until it got dark and my mother would stand outside shouting my name. I always pretended I couldn't hear her.  Thank you.  Thank you.\n\nI remember one summer evening when we sat by the river listening to music.  on a little radio. One of my friends brought it to the bar.  and we try to guess these thoughts.  If you miss your favorite song, well...  You just had to wait until you play the game.  .",
+      "metadata": {
+        "topic": "Childhood",
+        "summary": "The speaker shares memories of playing football and spending time with friends before smartphones and the internet."
+      },
+      "article": "# Nostalgic Days\n\nWe had plenty of fun back then. We didn't have smartphones or the internet. If you wanted to see your friends, you just went to their house and knocked on the door. Sometimes they weren't even home, so you walked all the way back again.\n\nWhen I was about 16, I spent most afternoons playing football with my friends on this little field near our neighborhood. It wasn't a proper field, just some grass and two old jackets for goalposts. We played until it got dark, and my mother would stand outside shouting my name. I always pretended I couldn't hear her.\n\nI remember one summer evening when we sat by the river listening to music on a little radio. One of my friends brought it to the bar, and we tried to guess the songs. If you missed your favorite song, well... you just had to wait until it played again.",
+      "review": {
+        "score": 3,
+        "verdict": "revise",
+        "summary": "The article captures the essence of your memories but distorts some details. Specifically, it misrepresents the location of your football games and the context of listening to music.",
+        "issues": [
+          {
+            "type": "distortion",
+            "detail": "The article states 'little field' instead of 'little fiat,' which changes the meaning. It should say 'little fiat near our neighborhood.'",
+            "excerpt": "little field near our neighborhood"
+          },
+          {
+            "type": "distortion",
+            "detail": "The phrase 'brought it to the bar' is misleading; the original transcript does not mention a bar. It should clarify that the radio was brought to where they were sitting by the river.",
+            "excerpt": "brought it to the bar"
+          },
+          {
+            "type": "distortion",
+            "detail": "The article says 'we tried to guess the songs,' while the original transcript mentions 'try to guess these thoughts,' which is unclear. It should reflect the uncertainty in the original wording.",
+            "excerpt": "we tried to guess the songs"
+          }
+        ],
+        "createdAt": "2026-10-21T20:46:07.043Z"
+      },
+      "feedback": [],
+      "groundingScore": 3,
+      "piiDetected": false,
+      "status": "published",
+      "conversationId": "7afbb661-7bd2-417b-b667-86a93b22babf",
+      "createdAt": "2026-10-21T20:44:06.584Z"
+    },
+    {
+      "id": "296bb2ff-e540-4d0a-9ce1-74aad4b91720",
+      "prompt": "What is your happiest memory of your parents or grandparents?",
+      "questionId": "q-happiest-family-memory",
+      "inputType": "conversation",
+      "rawAudioPath": null,
+      "transcript": "Okay.  I have to think  because now I'm very old and my parents have  about the Pinerari.  for quite a while, but my,  happiest memory of my parents.  would probably be when I was  like six years old, and my grandfather  Actually,  uh,  taught me how to  grab a chicken and its eggs and how to  take care of them and it was something that passed on generation to generation of farmers.  Yeah.  Thank you.\n\n*Loud noise*  I remember that he was,  very, very personal culture.  He was a person very intelligent.  He was smart.  was sensitive.  He taught me all the life, major life lesson that I brought.  all along my journey since I was Benedicto.",
+      "metadata": {
+        "topic": "Family",
+        "summary": "The happiest memory involves learning from a grandfather about farming."
+      },
+      "article": "# A Lesson in Farming\n\nI have to think because now I'm very old. My happiest memory of my parents would probably be when I was like six years old. My grandfather taught me how to grab a chicken and its eggs and how to take care of them. It was something that passed on from generation to generation of farmers.\n\nHe was very personal and intelligent. He was smart and sensitive. He taught me all the major life lessons that I brought along my journey since I was Benedicto.",
+      "review": {
+        "score": 4,
+        "verdict": "pass",
+        "summary": "The article captures your memories well, but it could be clearer in some parts. Please clarify the phrase about your grandfather's lessons.",
+        "issues": [
+          {
+            "type": "clarity",
+            "detail": "The phrase 'the major life lessons that I brought along my journey since I was Benedicto' is unclear. It would be better to specify what those lessons were or how they impacted you.",
+            "excerpt": "the major life lessons that I brought along my journey since I was Benedicto"
+          }
+        ],
+        "createdAt": "2026-10-21T20:57:00.535Z"
+      },
+      "feedback": [],
+      "groundingScore": 4,
+      "piiDetected": false,
+      "status": "reviewed",
+      "conversationId": "9673d0b5-fbaf-4364-b685-e4a5758db777",
+      "createdAt": "2026-10-21T20:55:04.177Z"
     }
   ]
 }

@@ -58,13 +58,14 @@ async function runPipeline(
   const draft = hasArticle
     ? await reviseArticle({
         transcript: story.transcript,
+        conversationContext: story.conversationContext,
         article: story.article,
         review: story.review,
         feedback: [...story.feedback.map((entry) => entry.text), ...(feedbackEntry ? [feedbackEntry.text] : [])].filter(
           Boolean,
         ),
       })
-    : await writeArticle(story.transcript);
+    : await writeArticle(story.transcript, story.conversationContext);
 
   const review = await reviewArticle({ transcript: story.transcript, article: draft.article });
 

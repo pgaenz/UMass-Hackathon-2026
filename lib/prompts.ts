@@ -6,7 +6,11 @@ import path from "node:path";
  * file per agent, so they can be edited and reviewed without touching code.
  * Files are read once and cached for the life of the server process.
  */
-export type PromptName = "writing_agent" | "review_agent" | "revision_agent";
+export type PromptName =
+  | "writing_agent"
+  | "review_agent"
+  | "revision_agent"
+  | "conversation_agent";
 
 const PROMPTS_DIR = path.join(process.cwd(), "prompts");
 const cache = new Map<PromptName, string>();

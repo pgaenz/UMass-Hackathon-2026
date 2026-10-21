@@ -47,19 +47,33 @@ function toDraft(parsed: Record<string, unknown>): ArticleDraft {
 }
 
 function transcriptBlock(transcript: string): string {
-  return `ORIGINAL TRANSCRIPT:\n${transcript.slice(0, MAX_TRANSCRIPT_CHARS)}`;
+  return `ORIGINAL TRANSCRIPT (the senior's own words - the ONLY source of facts):\n${transcript.slice(0, MAX_TRANSCRIPT_CHARS)}`;
+}
+
+function contextBlock(conversationContext?: string | null): string {
+  const trimmed = conversationContext?.trim();
+  if (!trimmed) {
+    return "";
+  }
+  return `INTERVIEW CONTEXT (the interviewer's questions and acknowledgments; use this ONLY to understand what each answer was responding to and to connect the article's paragraphs - never treat anything here as a fact about the senior):\n${trimmed.slice(0, MAX_TRANSCRIPT_CHARS)}`;
 }
 
 /**
  * Initial generation: turn the senior's answer into a faithful, youthful article.
  * The writing_agent owns topic/summary too, so intake no longer needs its own call.
  */
-export async function writeArticle(transcript: string): Promise<ArticleDraft> {
+export async function writeArticle(
+  transcript: string,
+  conversationContext?: string | null,
+): Promise<ArticleDraft> {
   const system = await loadPrompt("writing_agent");
+  const user = [transcriptBlock(transcript), contextBlock(conversationContext)]
+    .filter(Boolean)
+    .join("\n\n");
   const raw = await chat(
     [
       { role: "system", content: system },
-      { role: "user", content: transcriptBlock(transcript) },
+      { role: "user", content: user },
     ],
     { temperature: 0, timeoutMs: WRITE_TIMEOUT_MS },
   );
@@ -72,6 +86,7 @@ export async function writeArticle(transcript: string): Promise<ArticleDraft> {
  */
 export async function reviseArticle(input: {
   transcript: string;
+  conversationContext?: string | null;
   article: string;
   review: ReviewResult | null;
   feedback: string[];
@@ -94,10 +109,13 @@ export async function reviseArticle(input: {
 
   const user = [
     transcriptBlock(input.transcript),
+    contextBlock(input.conversationContext),
     `CURRENT ARTICLE:\n${input.article}`,
     `REVIEW AGENT FEEDBACK:\n${reviewText}`,
     `SENIOR FEEDBACK:\n${seniorFeedback}`,
-  ].join("\n\n");
+  ]
+    .filter(Boolean)
+    .join("\n\n");
 
   const raw = await chat(
     [

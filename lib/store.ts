@@ -18,6 +18,8 @@ function normalizeStory(story: Story): Story {
     metadata: story.metadata ?? { topic: "", summary: "" },
     review: story.review ?? null,
     feedback: Array.isArray(story.feedback) ? story.feedback : [],
+    conversationId: story.conversationId ?? null,
+    conversationContext: story.conversationContext ?? null,
   };
 }
 
@@ -56,6 +58,7 @@ export async function createStory(input: Partial<Story> = {}): Promise<Story> {
       inputType: input.inputType ?? "text",
       rawAudioPath: input.rawAudioPath ?? null,
       transcript: input.transcript ?? "",
+      conversationContext: input.conversationContext ?? null,
       metadata: input.metadata ?? { topic: "", summary: "" },
       article: input.article ?? "",
       review: input.review ?? null,
@@ -63,6 +66,7 @@ export async function createStory(input: Partial<Story> = {}): Promise<Story> {
       groundingScore: input.groundingScore ?? 0,
       piiDetected: input.piiDetected ?? false,
       status: input.status ?? "draft",
+      conversationId: input.conversationId ?? null,
       createdAt: input.createdAt ?? new Date().toISOString(),
     };
     data.stories.push(created);
