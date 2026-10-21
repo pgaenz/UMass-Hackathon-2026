@@ -4,18 +4,20 @@ import { ReportButton } from "@/components/report-button";
 import { UpvoteButton } from "@/components/upvote-button";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/format";
-import type { Question, Topic } from "@/lib/types";
+import type { AuthorRef, Question, Topic } from "@/lib/types";
 
 export function QuestionCard({
   question,
   topics,
   answerCount,
   href,
+  author,
 }: {
   question: Question;
   topics: Topic[];
   answerCount: number;
   href?: string;
+  author?: AuthorRef | null;
 }) {
   const labels = question.topicIds
     .map((id) => topics.find((topic) => topic.id === id)?.label)
@@ -44,6 +46,13 @@ export function QuestionCard({
           <span>{answerCount === 1 ? "1 answer" : `${answerCount} answers`}</span>
           <span aria-hidden="true">·</span>
           <time dateTime={question.createdAt}>{formatDate(question.createdAt)}</time>
+          {author ? (
+            <Link href={`/profile/${author.id}`} className="font-medium text-brand hover:underline">
+              asked by {author.name}
+            </Link>
+          ) : (
+            <span>Asked by the community</span>
+          )}
           <ReportButton targetType="question" targetId={question.id} />
         </div>
       </div>

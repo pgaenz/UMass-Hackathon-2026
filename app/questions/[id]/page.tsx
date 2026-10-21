@@ -11,6 +11,8 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { getPublishedStories } from "@/lib/answers";
 import { formatDate, truncate } from "@/lib/format";
 import { getQuestion, getTopics } from "@/lib/questions";
+import { getCurrentUser } from "@/lib/session";
+import { getUser, toPublicUser } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +38,13 @@ export default async function QuestionDetailPage({
     getPublishedStories(),
   ]);
   if (!question) notFound();
+
+  const [asker, user] = await Promise.all([
+    question.askedBy ? getUser(question.askedBy) : Promise.resolve(null),
+    getCurrentUser(),
+  ]);
+  const askerRef = asker ? toPublicUser(asker) : null;
+  const canAnswer = user?.role === "river";
 
   const answers = stories.filter((story) => story.questionId === question.id);
   const labels = question.topicIds
@@ -68,14 +77,23 @@ export default async function QuestionDetailPage({
               <span>{answers.length === 1 ? "1 answer" : `${answers.length} answers`}</span>
               <span aria-hidden="true">·</span>
               <time dateTime={question.createdAt}>{formatDate(question.createdAt)}</time>
+              {askerRef ? (
+                <Link href={`/profile/${askerRef.id}`} className="font-medium text-brand hover:underline">
+                  asked by {askerRef.name}
+                </Link>
+              ) : (
+                <span>Asked by the community</span>
+              )}
               <ReportButton targetType="question" targetId={question.id} />
             </div>
           </div>
         </div>
 
-        <ButtonLink href={`/senior?question=${question.id}`} size="lg">
-          Answer this question
-        </ButtonLink>
+        {canAnswer ? (
+          <ButtonLink href={`/senior?question=${question.id}`} size="lg">
+            Answer this question
+          </ButtonLink>
+        ) : null}
       </header>
 
       <section aria-labelledby="answers-heading" className="space-y-5">
@@ -100,9 +118,11 @@ export default async function QuestionDetailPage({
         ) : (
           <EmptyState
             title="No answers yet"
-            description="Be the first to answer this question from a senior's point of view."
+            description="Be the first to answer this question from a River's point of view."
           >
-            <ButtonLink href={`/senior?question=${question.id}`}>Answer this question</ButtonLink>
+            {canAnswer ? (
+              <ButtonLink href={`/senior?question=${question.id}`}>Answer this question</ButtonLink>
+            ) : null}
           </EmptyState>
         )}
       </section>

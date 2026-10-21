@@ -8,6 +8,8 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { countAnswersByQuestion, getPublishedStories } from "@/lib/answers";
 import { getQuestions, getTopics } from "@/lib/questions";
+import { getCurrentUser } from "@/lib/session";
+import { getPublicUserMap } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
 
@@ -21,12 +23,14 @@ export default async function QuestionsPage({
   searchParams: Promise<{ topic?: string; sort?: string }>;
 }) {
   const { topic, sort } = await searchParams;
-  const [questions, topics, stories] = await Promise.all([
+  const [questions, topics, stories, user] = await Promise.all([
     getQuestions(),
     getTopics(),
     getPublishedStories(),
+    getCurrentUser(),
   ]);
   const counts = countAnswersByQuestion(stories);
+  const authors = await getPublicUserMap(questions.map((question) => question.askedBy));
 
   let list = topic ? questions.filter((question) => question.topicIds.includes(topic)) : [...questions];
   switch (sort) {
@@ -47,7 +51,7 @@ export default async function QuestionsPage({
         description="Ask a question, add topics, and upvote the ones you want answered."
       />
 
-      <AskQuestionForm topics={topics} />
+      <AskQuestionForm topics={topics} canAsk={user?.role === "drop"} signedIn={Boolean(user)} />
 
       <section aria-labelledby="browse-heading" className="space-y-5">
         <h2 id="browse-heading" className="text-2xl font-bold tracking-tight text-ink">
@@ -63,6 +67,7 @@ export default async function QuestionsPage({
                   question={question}
                   topics={topics}
                   answerCount={counts[question.id] ?? 0}
+                  author={question.askedBy ? authors[question.askedBy] ?? null : null}
                 />
               </li>
             ))}
