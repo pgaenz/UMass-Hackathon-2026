@@ -1,7 +1,7 @@
 // Shared data model and API contract types.
 // The Story shape mirrors MVP.md §4 exactly — keep them in sync.
 
-export type InputType = "audio" | "text";
+export type InputType = "audio" | "text" | "conversation";
 export type StoryStatus = "draft" | "reviewed" | "published";
 
 export interface StoryMetadata {
@@ -46,6 +46,9 @@ export interface Story {
   inputType: InputType;
   rawAudioPath: string | null;
   transcript: string;
+  // Full Q&A of the interview (interviewer + senior). Used only to keep the
+  // generated article connected; facts still come from `transcript`.
+  conversationContext: string | null;
   metadata: StoryMetadata;
   article: string;
   review: ReviewResult | null;
@@ -53,7 +56,62 @@ export interface Story {
   groundingScore: number;
   piiDetected: boolean;
   status: StoryStatus;
+  conversationId: string | null;
   createdAt: string;
+}
+
+// ---------------------------------------------------------------------------
+// Live voice conversation (native speech-to-speech)
+// ---------------------------------------------------------------------------
+
+export type ConversationStatus = "active" | "ended" | "abandoned";
+
+export interface ConversationUserTurn {
+  text: string;
+  audioPath: string;
+  durationMs: number;
+  transcriptionStatus: "ok" | "failed";
+}
+
+export interface ConversationAssistantTurn {
+  text: string;
+  interrupted: boolean;
+}
+
+export interface ConversationTurn {
+  id: string;
+  index: number;
+  // null for the opening assistant greeting.
+  user: ConversationUserTurn | null;
+  assistant: ConversationAssistantTurn | null;
+  createdAt: string;
+}
+
+export interface Conversation {
+  id: string;
+  storyId: string;
+  prompt: string;
+  questionId: string | null;
+  status: ConversationStatus;
+  turns: ConversationTurn[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// POST /api/conversation
+export interface CreateConversationRequest {
+  prompt: string;
+  questionId?: string | null;
+}
+
+export interface CreateConversationResponse {
+  conversation: Conversation;
+  story: Story;
+}
+
+export interface EndConversationResponse {
+  conversation: Conversation;
+  story: Story;
 }
 
 // ---------------------------------------------------------------------------

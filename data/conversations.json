@@ -1,0 +1,142 @@
+{
+  "conversations": [
+    {
+      "id": "b7fcf7a6-441d-4e84-9cd5-4e5b43549fd4",
+      "storyId": "52b9e81b-9a78-4f7e-b2d6-2856cdb55c8a",
+      "prompt": "What did you do for fun as a teenager before smartphones and the internet?",
+      "questionId": "q-teenage-fun",
+      "status": "active",
+      "turns": [
+        {
+          "id": "fd2ce75b-b885-410c-8438-a5db9c8c1525",
+          "index": 0,
+          "user": null,
+          "assistant": {
+            "text": "Hello there, and thank you for sharing your time with me today. Can you tell me, what did you enjoy doing for fun when you were a teenager, before smartphones and the internet?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-21T20:42:27.208Z"
+        }
+      ],
+      "createdAt": "2026-10-21T20:42:23.543Z",
+      "updatedAt": "2026-10-21T20:42:27.208Z"
+    },
+    {
+      "id": "7afbb661-7bd2-417b-b667-86a93b22babf",
+      "storyId": "ffe8db14-cd35-48ef-b4a0-f331254bfb1f",
+      "prompt": "What did you do for fun as a teenager before smartphones and the internet?",
+      "questionId": "q-teenage-fun",
+      "status": "ended",
+      "turns": [
+        {
+          "id": "691e988c-1ed1-4792-b7b6-c3fd66eed34d",
+          "index": 0,
+          "user": null,
+          "assistant": {
+            "text": "Hello there, I’m really glad to be talking with you today. Can you tell me, what kinds of things did you enjoy doing for fun when you were a teenager, before smartphones and the internet?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-21T20:44:08.656Z"
+        },
+        {
+          "id": "c48954e3-d2f4-4e83-81fc-1bc5581475ce",
+          "index": 1,
+          "user": {
+            "text": "All we have plenty of.  fun, you know?  We didn't have smartphones or internet back then.  If you wanted to see your friends, you just went to their house and knocked on the door.  Sometimes they weren't even home, so you walked all the way back again.  -  Thank you.",
+            "audioPath": "data/uploads/conversation-7afbb661-7bd2-417b-b667-86a93b22babf-1792615481819.wav",
+            "durationMs": 20651,
+            "transcriptionStatus": "ok"
+          },
+          "assistant": {
+            "text": "That sounds like a lot of patience—walking all the way back if they weren’t home. What was that like for you, having to go back and forth?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-21T20:44:44.195Z"
+        },
+        {
+          "id": "0de49455-68af-40c9-8bc7-95d450679941",
+          "index": 2,
+          "user": {
+            "text": "When I was about 16, I spent most afternoons playing football with my friends on this little fiat near our neighborhood.  It wasn't a proper field, just some grass and two old jackets for goalposts.  We played until it got dark and my mother would stand outside shouting my name. I always pretended I couldn't hear her.  Thank you.  Thank you.",
+            "audioPath": "data/uploads/conversation-7afbb661-7bd2-417b-b667-86a93b22babf-1792615517803.wav",
+            "durationMs": 22272,
+            "transcriptionStatus": "ok"
+          },
+          "assistant": {
+            "text": "That sounds like such a fun way to spend your afternoons. What do you remember most about those football games?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-21T20:45:21.519Z"
+        },
+        {
+          "id": "e78f1783-6b5a-4d87-a7a8-8555ba0eddb5",
+          "index": 3,
+          "user": {
+            "text": "I remember one summer evening when we sat by the river listening to music.  on a little radio. One of my friends brought it to the bar.  and we try to guess these thoughts.  If you miss your favorite song, well...  You just had to wait until you play the game.  .",
+            "audioPath": "data/uploads/conversation-7afbb661-7bd2-417b-b667-86a93b22babf-1792615548199.wav",
+            "durationMs": 16981,
+            "transcriptionStatus": "ok"
+          },
+          "assistant": {
+            "text": "That sounds like a really peaceful moment. What kind of songs were you all listening to?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-21T20:45:53.936Z"
+        }
+      ],
+      "createdAt": "2026-10-21T20:44:06.589Z",
+      "updatedAt": "2026-10-21T20:45:58.252Z"
+    },
+    {
+      "id": "9673d0b5-fbaf-4364-b685-e4a5758db777",
+      "storyId": "296bb2ff-e540-4d0a-9ce1-74aad4b91720",
+      "prompt": "What is your happiest memory of your parents or grandparents?",
+      "questionId": "q-happiest-family-memory",
+      "status": "ended",
+      "turns": [
+        {
+          "id": "f53e27d6-7e6a-4a67-b44e-1b1bb088890d",
+          "index": 0,
+          "user": null,
+          "assistant": {
+            "text": "Hello there, it’s really nice to be talking with you today. What’s one of your happiest memories of your parents or grandparents?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-21T20:55:06.304Z"
+        },
+        {
+          "id": "cdd4e6b2-5857-4980-bd32-69f48d1d8230",
+          "index": 1,
+          "user": {
+            "text": "Okay.  I have to think  because now I'm very old and my parents have  about the Pinerari.  for quite a while, but my,  happiest memory of my parents.  would probably be when I was  like six years old, and my grandfather  Actually,  uh,  taught me how to  grab a chicken and its eggs and how to  take care of them and it was something that passed on generation to generation of farmers.  Yeah.  Thank you.",
+            "audioPath": "data/uploads/conversation-9673d0b5-fbaf-4364-b685-e4a5758db777-1792616165460.wav",
+            "durationMs": 48128,
+            "transcriptionStatus": "ok"
+          },
+          "assistant": {
+            "text": "That sounds like a really special moment. What do you remember most about learning from your grandfather?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-21T20:56:08.479Z"
+        },
+        {
+          "id": "042d9dc6-3b4c-4b36-bbda-95c65303f9d8",
+          "index": 2,
+          "user": {
+            "text": "*Loud noise*  I remember that he was,  very, very personal culture.  He was a person very intelligent.  He was smart.  was sensitive.  He taught me all the life, major life lesson that I brought.  all along my journey since I was Benedicto.",
+            "audioPath": "data/uploads/conversation-9673d0b5-fbaf-4364-b685-e4a5758db777-1792616196104.wav",
+            "durationMs": 20139,
+            "transcriptionStatus": "ok"
+          },
+          "assistant": {
+            "text": "That sounds like your grandfather was a very wise and caring person. What life lesson stands out most to you from those times?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-21T20:56:41.803Z"
+        }
+      ],
+      "createdAt": "2026-10-21T20:55:04.180Z",
+      "updatedAt": "2026-10-21T20:56:56.217Z"
+    }
+  ]
+}

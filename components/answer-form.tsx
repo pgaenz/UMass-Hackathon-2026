@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 
 type Mode = "text" | "audio";
@@ -169,6 +169,21 @@ export function AnswerForm({
         <p className="text-lg text-ink/70">
           Record it out loud or type it. You can review it before it is published.
         </p>
+      </div>
+
+      <div className="flex flex-col gap-4 rounded-xl border border-orange-200 bg-orange-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-1">
+          <p className="text-lg font-semibold text-ink">Prefer a conversation?</p>
+          <p className="text-base text-ink/70">
+            Talk it through with a patient interviewer. It waits while you think.
+          </p>
+        </div>
+        <ButtonLink
+          href={`/senior/conversation?question=${encodeURIComponent(questionId)}`}
+          variant="secondary"
+        >
+          Talk with an interviewer
+        </ButtonLink>
       </div>
 
       <div className="flex flex-wrap gap-3" role="group" aria-label="Answer method">

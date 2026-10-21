@@ -86,7 +86,9 @@
       ],
       "askedBy": null,
       "upvotes": 31,
-      "storyIds": [],
+      "storyIds": [
+        "296bb2ff-e540-4d0a-9ce1-74aad4b91720"
+      ],
       "createdAt": "2026-01-10T09:15:00.000Z"
     },
     {
@@ -146,7 +148,10 @@
       ],
       "askedBy": null,
       "upvotes": 21,
-      "storyIds": [],
+      "storyIds": [
+        "52b9e81b-9a78-4f7e-b2d6-2856cdb55c8a",
+        "ffe8db14-cd35-48ef-b4a0-f331254bfb1f"
+      ],
       "createdAt": "2026-01-10T09:40:00.000Z"
     },
     {
