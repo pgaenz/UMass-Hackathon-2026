@@ -41,6 +41,13 @@ export async function getQuestion(id: string): Promise<Question | null> {
   return questions.find((question) => question.id === id) ?? null;
 }
 
+export async function getQuestionsByUser(userId: string): Promise<Question[]> {
+  const { questions } = await readStore();
+  return questions
+    .filter((question) => question.askedBy === userId)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
 export async function createQuestion(input: {
   text: string;
   topicIds?: string[];

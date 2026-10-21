@@ -3,6 +3,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 
 import { reviewArticle, reviseArticle, writeArticle } from "@/lib/agents";
+import { authorize } from "@/lib/session";
 import { appendFeedback, getStory, updateStory } from "@/lib/store";
 import { transcribe } from "@/lib/transcribe";
 import type { FeedbackEntry, Story } from "@/lib/types";
@@ -32,10 +33,14 @@ async function runPipeline(
   id: string,
   feedbackText: string,
   audio: AudioFeedback | null,
+  ownerId: string,
 ): Promise<Response> {
   const story = await getStory(id);
   if (!story) {
     return fail(404, "Unknown story");
+  }
+  if (story.authorId && story.authorId !== ownerId) {
+    return fail(403, "This story belongs to another River.");
   }
   if (!story.transcript.trim()) {
     return fail(400, "This answer has no transcript to write from");
@@ -87,7 +92,7 @@ async function runPipeline(
   );
 }
 
-async function handleJson(request: Request): Promise<Response> {
+async function handleJson(request: Request, ownerId: string): Promise<Response> {
   const body = (await request.json().catch(() => null)) as {
     id?: unknown;
     feedback?: unknown;
@@ -98,10 +103,10 @@ async function handleJson(request: Request): Promise<Response> {
     return fail(400, "Missing story id");
   }
   const feedback = typeof body?.feedback === "string" ? body.feedback.trim() : "";
-  return runPipeline(id, feedback, null);
+  return runPipeline(id, feedback, null, ownerId);
 }
 
-async function handleMultipart(request: Request): Promise<Response> {
+async function handleMultipart(request: Request, ownerId: string): Promise<Response> {
   const formData = await request.formData();
   const rawId = formData.get("id");
   const id = typeof rawId === "string" ? rawId.trim() : "";
@@ -121,20 +126,23 @@ async function handleMultipart(request: Request): Promise<Response> {
     return runPipeline(id, feedback, {
       transcript,
       rawAudioPath: `data/uploads/${storedName}`,
-    });
+    }, ownerId);
   }
 
-  return runPipeline(id, feedback, null);
+  return runPipeline(id, feedback, null, ownerId);
 }
 
 export async function POST(request: Request): Promise<Response> {
+  const auth = await authorize(["river"]);
+  if ("response" in auth) return auth.response;
+
   const contentType = request.headers.get("content-type") ?? "";
 
   try {
     if (contentType.includes("multipart/form-data")) {
-      return await handleMultipart(request);
+      return await handleMultipart(request, auth.session.userId);
     }
-    return await handleJson(request);
+    return await handleJson(request, auth.session.userId);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Generation failed";
     return fail(errorStatus(err), message);

@@ -3,6 +3,7 @@ import { base64FromBuffer } from "@/lib/audio";
 import { config } from "@/lib/config";
 import { buildGreetingMessages } from "@/lib/conversation-context";
 import { appendTurn, getConversation } from "@/lib/conversations";
+import { authorize } from "@/lib/session";
 import { sseResponse } from "@/lib/sse";
 
 export const runtime = "nodejs";
@@ -20,10 +21,16 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ): Promise<Response> {
+  const auth = await authorize(["river"]);
+  if ("response" in auth) return auth.response;
+
   const { id } = await params;
   const conversation = await getConversation(id);
   if (!conversation) {
     return fail(404, "Unknown conversation");
+  }
+  if (conversation.userId && conversation.userId !== auth.session.userId) {
+    return fail(403, "This conversation belongs to another River.");
   }
   if (conversation.status !== "active") {
     return fail(409, "This conversation has already ended");

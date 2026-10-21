@@ -1,0 +1,60 @@
+{
+  "users": [
+    {
+      "id": "u-seed-ruth",
+      "role": "river",
+      "name": "Ruth Alvarez",
+      "age": 78,
+      "bio": "Retired schoolteacher. Four decades of lessons, three grandchildren, and a garden that refuses to behave.",
+      "interests": [
+        "family",
+        "childhood",
+        "advice",
+        "hobbies"
+      ],
+      "createdAt": "2026-01-05T09:00:00.000Z"
+    },
+    {
+      "id": "u-seed-harold",
+      "role": "river",
+      "name": "Harold Kim",
+      "age": 71,
+      "bio": "Former machinist and small-business owner. Still fixing things for the neighbors.",
+      "interests": [
+        "job",
+        "money",
+        "travel",
+        "health"
+      ],
+      "createdAt": "2026-01-06T09:00:00.000Z"
+    },
+    {
+      "id": "u-seed-maya",
+      "role": "drop",
+      "name": "Maya Chen",
+      "age": 19,
+      "bio": "College sophomore trying to figure out what comes next.",
+      "interests": [
+        "advice",
+        "job",
+        "friendship",
+        "travel"
+      ],
+      "createdAt": "2026-01-07T09:00:00.000Z"
+    },
+    {
+      "id": "u-seed-diego",
+      "role": "drop",
+      "name": "Diego Santos",
+      "age": 16,
+      "bio": "High-school student who asks a lot of questions.",
+      "interests": [
+        "childhood",
+        "family",
+        "hobbies",
+        "school"
+      ],
+      "createdAt": "2026-01-08T09:00:00.000Z"
+    }
+  ]
+}

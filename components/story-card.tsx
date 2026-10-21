@@ -2,25 +2,34 @@ import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { formatDate, getArticleTitle } from "@/lib/format";
-import type { Story } from "@/lib/types";
+import type { AuthorRef, Story } from "@/lib/types";
 
-export function StoryCard({ story }: { story: Story }) {
-  const title = getArticleTitle(story.article) || story.metadata.topic || "A story from a senior";
+export function StoryCard({ story, author }: { story: Story; author?: AuthorRef | null }) {
+  const title = getArticleTitle(story.article) || story.metadata.topic || "A story from a River";
 
   return (
     <article className="rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm transition hover:border-brand hover:shadow-md">
-      <Link href={`/youth/${story.id}`} className="block space-y-3">
-        <h2 className="text-2xl font-semibold leading-snug text-ink underline-offset-4 hover:underline">
-          {title}
+      <div className="space-y-3">
+        <h2 className="text-2xl font-semibold leading-snug text-ink">
+          <Link href={`/youth/${story.id}`} className="underline-offset-4 hover:underline">
+            {title}
+          </Link>
         </h2>
         {story.metadata.summary ? (
           <p className="text-lg text-ink/70">{story.metadata.summary}</p>
         ) : null}
-        <div className="flex flex-wrap items-center gap-3 text-base text-gray-500">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-base text-gray-500">
           {story.metadata.topic ? <Badge>{story.metadata.topic}</Badge> : null}
           <time dateTime={story.createdAt}>{formatDate(story.createdAt)}</time>
+          {author ? (
+            <Link href={`/profile/${author.id}`} className="font-medium text-brand hover:underline">
+              by {author.name}
+            </Link>
+          ) : (
+            <span>HistorAI community</span>
+          )}
         </div>
-      </Link>
+      </div>
     </article>
   );
 }

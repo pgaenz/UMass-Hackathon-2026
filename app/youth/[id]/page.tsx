@@ -9,6 +9,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { formatDate, getArticleTitle } from "@/lib/format";
 import { getQuestion } from "@/lib/questions";
 import { getStory } from "@/lib/store";
+import { getUser, toPublicUser } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
 
@@ -27,8 +28,12 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
   const story = await getStory(id);
   if (!story || story.status !== "published") notFound();
 
-  const question = story.questionId ? await getQuestion(story.questionId) : null;
-  const title = getArticleTitle(story.article) || "A story from a senior";
+  const [question, author] = await Promise.all([
+    story.questionId ? getQuestion(story.questionId) : Promise.resolve(null),
+    story.authorId ? getUser(story.authorId) : Promise.resolve(null),
+  ]);
+  const authorRef = author ? toPublicUser(author) : null;
+  const title = getArticleTitle(story.article) || "A story from a River";
 
   return (
     <article className="mx-auto w-full max-w-5xl space-y-8 px-6 py-10">
@@ -43,6 +48,13 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
         <div className="flex flex-wrap items-center gap-3 text-base text-ink/70">
           {story.metadata.topic ? <Badge>{story.metadata.topic}</Badge> : null}
           <time dateTime={story.createdAt}>{formatDate(story.createdAt)}</time>
+          {authorRef ? (
+            <Link href={`/profile/${authorRef.id}`} className="font-medium text-brand hover:underline">
+              by {authorRef.name}
+            </Link>
+          ) : (
+            <span>HistorAI community</span>
+          )}
           <ReportButton targetType="story" targetId={story.id} />
         </div>
       </header>

@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 
 import { getQuestion, linkStoryToQuestion } from "@/lib/questions";
+import { authorize } from "@/lib/session";
 import { createStory, updateStory } from "@/lib/store";
 import { transcribe } from "@/lib/transcribe";
 
@@ -34,20 +35,23 @@ async function resolveQuestionId(value: unknown): Promise<string | null | Respon
 }
 
 export async function POST(request: Request): Promise<Response> {
+  const auth = await authorize(["river"]);
+  if ("response" in auth) return auth.response;
+
   const contentType = request.headers.get("content-type") ?? "";
 
   try {
     if (contentType.includes("multipart/form-data")) {
-      return await handleAudio(request);
+      return await handleAudio(request, auth.session.userId);
     }
-    return await handleText(request);
+    return await handleText(request, auth.session.userId);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Intake failed";
     return fail(errorStatus(err), message);
   }
 }
 
-async function handleText(request: Request): Promise<Response> {
+async function handleText(request: Request, authorId: string): Promise<Response> {
   const body = (await request.json().catch(() => null)) as {
     inputType?: unknown;
     prompt?: unknown;
@@ -66,14 +70,20 @@ async function handleText(request: Request): Promise<Response> {
   }
 
   const prompt = typeof body?.prompt === "string" ? body.prompt : "";
-  const story = await createStory({ inputType: "text", prompt, questionId, transcript: text });
+  const story = await createStory({
+    inputType: "text",
+    prompt,
+    questionId,
+    authorId,
+    transcript: text,
+  });
   if (questionId) {
     await linkStoryToQuestion(questionId, story.id);
   }
   return Response.json({ story }, { status: 201 });
 }
 
-async function handleAudio(request: Request): Promise<Response> {
+async function handleAudio(request: Request, authorId: string): Promise<Response> {
   const formData = await request.formData();
   const audio = formData.get("audio");
   if (!(audio instanceof File) || audio.size === 0) {
@@ -92,6 +102,7 @@ async function handleAudio(request: Request): Promise<Response> {
     inputType: "audio",
     prompt: typeof prompt === "string" ? prompt : "",
     questionId,
+    authorId,
   });
   if (questionId) {
     await linkStoryToQuestion(questionId, story.id);

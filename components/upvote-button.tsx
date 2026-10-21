@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/cn";
@@ -15,6 +16,7 @@ export function UpvoteButton({
   questionId: string;
   initialCount: number;
 }) {
+  const router = useRouter();
   const [count, setCount] = useState(initialCount);
   const [voted, setVoted] = useState(false);
   const [pending, setPending] = useState(false);
@@ -38,7 +40,13 @@ export function UpvoteButton({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: questionId }),
       });
-      if (!res.ok) throw new Error("Upvote failed");
+      if (!res.ok) {
+        if (res.status === 401) {
+          router.push("/login");
+          return;
+        }
+        throw new Error("Upvote failed");
+      }
       const data = (await res.json()) as { question?: { upvotes?: number } };
       setCount(data.question?.upvotes ?? count + 1);
       setVoted(true);

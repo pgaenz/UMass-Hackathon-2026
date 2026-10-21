@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { useState } from "react";
@@ -8,7 +9,15 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import type { Topic } from "@/lib/types";
 
-export function AskQuestionForm({ topics }: { topics: Topic[] }) {
+export function AskQuestionForm({
+  topics,
+  canAsk,
+  signedIn,
+}: {
+  topics: Topic[];
+  canAsk: boolean;
+  signedIn: boolean;
+}) {
   const router = useRouter();
   const [text, setText] = useState("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
@@ -50,6 +59,30 @@ export function AskQuestionForm({ topics }: { topics: Topic[] }) {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  if (!canAsk) {
+    return (
+      <section
+        aria-labelledby="ask-question-heading"
+        className="rounded-2xl border border-orange-100 bg-orange-50 p-6 shadow-sm"
+      >
+        <h2 id="ask-question-heading" className="text-2xl font-semibold text-ink">
+          Ask a question
+        </h2>
+        <p className="mt-2 text-lg text-ink/70">
+          {signedIn
+            ? "Rivers answer questions. To ask one, sign in as a Drop."
+            : "Sign in as a Drop to ask a question and learn from a River."}
+        </p>
+        <Link
+          href={signedIn ? "/profile" : "/login"}
+          className="mt-4 inline-flex min-h-11 items-center rounded-xl bg-brand px-5 font-semibold text-white transition hover:bg-orange-600"
+        >
+          {signedIn ? "Go to your profile" : "Sign in to ask"}
+        </Link>
+      </section>
+    );
   }
 
   return (

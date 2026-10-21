@@ -4,6 +4,7 @@ import {
   getConversation,
   setConversationStatus,
 } from "@/lib/conversations";
+import { authorize } from "@/lib/session";
 import { getStory, updateStory } from "@/lib/store";
 
 export const runtime = "nodejs";
@@ -17,10 +18,16 @@ export async function POST(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ): Promise<Response> {
+  const auth = await authorize(["river"]);
+  if ("response" in auth) return auth.response;
+
   const { id } = await params;
   const conversation = await getConversation(id);
   if (!conversation) {
     return fail(404, "Unknown conversation");
+  }
+  if (conversation.userId && conversation.userId !== auth.session.userId) {
+    return fail(403, "This conversation belongs to another River.");
   }
 
   const story = await getStory(conversation.storyId);

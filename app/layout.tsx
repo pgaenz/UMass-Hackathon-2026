@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { getCurrentUser } from "@/lib/session";
 
 import "./globals.css";
 
@@ -14,7 +15,9 @@ export const metadata: Metadata = {
     "When I was your age — seniors answer real questions and AI turns the answers into readable stories.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const user = await getCurrentUser();
+
   return (
     <html lang="en">
       <body className="flex min-h-screen flex-col">
@@ -24,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
-        <SiteHeader />
+        <SiteHeader user={user ? { id: user.id, name: user.name, role: user.role } : null} />
         <main id="main" className="flex flex-1 flex-col">
           {children}
         </main>

@@ -1,3 +1,4 @@
+import { authorize } from "@/lib/session";
 import { getStory, updateStory } from "@/lib/store";
 
 export const runtime = "nodejs";
@@ -8,6 +9,9 @@ export const runtime = "nodejs";
  * explicit `override: true` (a deliberate "publish anyway").
  */
 export async function POST(request: Request): Promise<Response> {
+  const auth = await authorize(["river"]);
+  if ("response" in auth) return auth.response;
+
   const body = (await request.json().catch(() => null)) as {
     id?: unknown;
     override?: unknown;
@@ -21,6 +25,9 @@ export async function POST(request: Request): Promise<Response> {
   const story = await getStory(id);
   if (!story) {
     return Response.json({ error: "Unknown story" }, { status: 404 });
+  }
+  if (story.authorId && story.authorId !== auth.session.userId) {
+    return Response.json({ error: "This story belongs to another River." }, { status: 403 });
   }
   if (story.status === "published") {
     return Response.json({ story });

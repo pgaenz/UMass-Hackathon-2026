@@ -28,6 +28,7 @@ function normalizeConversation(conversation: Conversation): Conversation {
   return {
     ...conversation,
     questionId: conversation.questionId ?? null,
+    userId: conversation.userId ?? null,
     status: conversation.status ?? "active",
     turns: turns
       .map(normalizeTurn)
@@ -54,6 +55,7 @@ export async function createConversation(input: {
   storyId: string;
   prompt: string;
   questionId?: string | null;
+  userId?: string | null;
 }): Promise<Conversation> {
   let created!: Conversation;
   await mutateJson<ConversationStoreData>(STORE_PATH, EMPTY, (current) => {
@@ -64,6 +66,7 @@ export async function createConversation(input: {
       storyId: input.storyId,
       prompt: input.prompt,
       questionId: input.questionId ?? null,
+      userId: input.userId ?? null,
       status: "active",
       turns: [],
       createdAt: now,

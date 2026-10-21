@@ -1,5 +1,6 @@
 import { createConversation } from "@/lib/conversations";
 import { getQuestion, linkStoryToQuestion } from "@/lib/questions";
+import { authorize } from "@/lib/session";
 import { createStory, updateStory } from "@/lib/store";
 
 export const runtime = "nodejs";
@@ -10,6 +11,9 @@ function fail(status: number, message: string): Response {
 
 // POST /api/conversation  { prompt, questionId? }
 export async function POST(request: Request): Promise<Response> {
+  const auth = await authorize(["river"]);
+  if ("response" in auth) return auth.response;
+
   const body = (await request.json().catch(() => null)) as {
     prompt?: unknown;
     questionId?: unknown;
@@ -33,6 +37,7 @@ export async function POST(request: Request): Promise<Response> {
     inputType: "conversation",
     prompt,
     questionId,
+    authorId: auth.session.userId,
   });
 
   if (questionId) {
@@ -43,6 +48,7 @@ export async function POST(request: Request): Promise<Response> {
     storyId: story.id,
     prompt,
     questionId,
+    userId: auth.session.userId,
   });
 
   const linkedStory = await updateStory(story.id, { conversationId: conversation.id });

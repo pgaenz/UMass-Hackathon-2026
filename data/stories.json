@@ -18,7 +18,9 @@
       "createdAt": "2026-01-11T10:00:00.000Z",
       "review": null,
       "feedback": [],
-      "conversationId": null
+      "conversationId": null,
+      "authorId": "u-seed-ruth",
+      "conversationContext": null
     },
     {
       "id": "s-true-love",
@@ -38,7 +40,9 @@
       "createdAt": "2026-01-11T10:05:00.000Z",
       "review": null,
       "feedback": [],
-      "conversationId": null
+      "conversationId": null,
+      "authorId": "u-seed-harold",
+      "conversationContext": null
     },
     {
       "id": "s-best-advice",
@@ -58,7 +62,9 @@
       "createdAt": "2026-01-11T10:10:00.000Z",
       "review": null,
       "feedback": [],
-      "conversationId": null
+      "conversationId": null,
+      "authorId": "u-seed-ruth",
+      "conversationContext": null
     },
     {
       "id": "971f601f-2017-4b9f-b92b-226c91e3c1b0",
@@ -78,7 +84,9 @@
       "createdAt": "2026-10-20T16:06:32.979Z",
       "review": null,
       "feedback": [],
-      "conversationId": null
+      "conversationId": null,
+      "authorId": "u-seed-harold",
+      "conversationContext": null
     },
     {
       "id": "0e4625ef-26ec-42d7-82dc-bc4dfa18012e",
@@ -98,7 +106,9 @@
       "createdAt": "2026-10-20T16:53:12.720Z",
       "review": null,
       "feedback": [],
-      "conversationId": null
+      "conversationId": null,
+      "authorId": "u-seed-ruth",
+      "conversationContext": null
     },
     {
       "id": "c8e8ec96-2aa3-4e04-bc40-6e744054edbb",
@@ -124,7 +134,9 @@
       "piiDetected": false,
       "status": "published",
       "createdAt": "2026-10-21T17:32:03.307Z",
-      "conversationId": null
+      "conversationId": null,
+      "authorId": "u-seed-harold",
+      "conversationContext": null
     },
     {
       "id": "494c10c5-5eb0-499d-a554-a2866abe17f0",
@@ -150,7 +162,9 @@
       "piiDetected": false,
       "status": "published",
       "createdAt": "2026-10-21T17:39:05.130Z",
-      "conversationId": null
+      "conversationId": null,
+      "authorId": "u-seed-ruth",
+      "conversationContext": null
     },
     {
       "id": "b535c2ff-0d49-4ed5-a37c-c7469bdd6d0f",
@@ -182,7 +196,9 @@
       "piiDetected": false,
       "status": "reviewed",
       "createdAt": "2026-10-21T17:43:13.672Z",
-      "conversationId": null
+      "conversationId": null,
+      "authorId": "u-seed-harold",
+      "conversationContext": null
     },
     {
       "id": "24aa29f4-67b3-46ba-a2c1-b23e11b47754",
@@ -208,7 +224,9 @@
       "piiDetected": false,
       "status": "reviewed",
       "createdAt": "2026-10-21T17:52:25.023Z",
-      "conversationId": null
+      "conversationId": null,
+      "authorId": "u-seed-ruth",
+      "conversationContext": null
     },
     {
       "id": "cd3029b1-0042-47b5-98c1-13cdeb165eb9",
@@ -240,7 +258,9 @@
       "piiDetected": false,
       "status": "published",
       "createdAt": "2026-10-21T17:54:52.853Z",
-      "conversationId": null
+      "conversationId": null,
+      "authorId": "u-seed-harold",
+      "conversationContext": null
     },
     {
       "id": "52b9e81b-9a78-4f7e-b2d6-2856cdb55c8a",
@@ -260,7 +280,9 @@
       "piiDetected": false,
       "status": "draft",
       "conversationId": "b7fcf7a6-441d-4e84-9cd5-4e5b43549fd4",
-      "createdAt": "2026-10-21T20:42:23.539Z"
+      "createdAt": "2026-10-21T20:42:23.539Z",
+      "authorId": "u-seed-ruth",
+      "conversationContext": null
     },
     {
       "id": "ffe8db14-cd35-48ef-b4a0-f331254bfb1f",
@@ -302,7 +324,9 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": "7afbb661-7bd2-417b-b667-86a93b22babf",
-      "createdAt": "2026-10-21T20:44:06.584Z"
+      "createdAt": "2026-10-21T20:44:06.584Z",
+      "authorId": "u-seed-harold",
+      "conversationContext": null
     },
     {
       "id": "296bb2ff-e540-4d0a-9ce1-74aad4b91720",
@@ -334,7 +358,9 @@
       "piiDetected": false,
       "status": "reviewed",
       "conversationId": "9673d0b5-fbaf-4364-b685-e4a5758db777",
-      "createdAt": "2026-10-21T20:55:04.177Z"
+      "createdAt": "2026-10-21T20:55:04.177Z",
+      "authorId": "u-seed-ruth",
+      "conversationContext": null
     }
   ]
 }

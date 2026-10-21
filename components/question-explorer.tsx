@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 
 import { UpvoteButton } from "@/components/upvote-button";
-import type { Question, Topic } from "@/lib/types";
+import type { AuthorRef, Question, Topic } from "@/lib/types";
 
 const TOPIC_ICONS: Record<string, string> = {
   job: "💼",
@@ -37,16 +37,24 @@ const QUICK_LINKS = [
   { icon: "🔥", label: "Popular questions", href: "/questions?sort=popular" },
   { icon: "❓", label: "Unanswered", href: "/questions?sort=unanswered" },
   { icon: "💬", label: "Recent answers", href: "/youth" },
-  { icon: "👤", label: "Your profile", href: "#" },
+  { icon: "👤", label: "Your profile", href: "/profile" },
 ];
 
 interface QuestionExplorerProps {
   topics: Topic[];
   questions: Question[];
   answerCounts: Record<string, number>;
+  authors: Record<string, AuthorRef>;
+  canAnswer: boolean;
 }
 
-export function QuestionExplorer({ topics, questions, answerCounts }: QuestionExplorerProps) {
+export function QuestionExplorer({
+  topics,
+  questions,
+  answerCounts,
+  authors,
+  canAnswer,
+}: QuestionExplorerProps) {
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [sort, setSort] = useState<"top" | "new">("top");
 
@@ -118,7 +126,7 @@ export function QuestionExplorer({ topics, questions, answerCounts }: QuestionEx
 
         {/* Main column — hero + question feed */}
         <div className="min-w-0 space-y-6">
-          <Hero />
+          <Hero canAnswer={canAnswer} />
 
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
@@ -150,6 +158,7 @@ export function QuestionExplorer({ topics, questions, answerCounts }: QuestionEx
                 question={question}
                 topics={topics}
                 answerCount={answerCounts[question.id] ?? 0}
+                author={question.askedBy ? authors[question.askedBy] ?? null : null}
               />
             ))}
             {visible.length === 0 && (
@@ -162,26 +171,28 @@ export function QuestionExplorer({ topics, questions, answerCounts }: QuestionEx
 
         {/* Right sidebar — community + quick links */}
         <aside className="h-fit space-y-6 lg:sticky lg:top-24">
-          <section className="rounded-2xl border border-orange-100 bg-orange-50 p-5">
-            <div className="flex items-center gap-3">
-              <span
-                className="grid h-12 w-12 place-items-center rounded-2xl bg-brand text-2xl"
-                aria-hidden="true"
+          {canAnswer ? (
+            <section className="rounded-2xl border border-orange-100 bg-orange-50 p-5">
+              <div className="flex items-center gap-3">
+                <span
+                  className="grid h-12 w-12 place-items-center rounded-2xl bg-brand text-2xl"
+                  aria-hidden="true"
+                >
+                  🤝
+                </span>
+                <h2 className="font-semibold text-ink">Share what you know</h2>
+              </div>
+              <p className="mt-3 text-sm text-ink/70">
+                Your experience is someone&apos;s answer. Add your voice to the community.
+              </p>
+              <Link
+                href="/senior"
+                className="mt-4 inline-flex text-sm font-semibold text-brand hover:underline"
               >
-                🤝
-              </span>
-              <h2 className="font-semibold text-ink">Share what you know</h2>
-            </div>
-            <p className="mt-3 text-sm text-ink/70">
-              Your experience is someone&apos;s answer. Add your voice to the community.
-            </p>
-            <Link
-              href="/senior"
-              className="mt-4 inline-flex text-sm font-semibold text-brand hover:underline"
-            >
-              Start answering →
-            </Link>
-          </section>
+                Start answering →
+              </Link>
+            </section>
+          ) : null}
 
           <nav
             aria-label="Quick links"
@@ -220,10 +231,12 @@ function QuestionRow({
   question,
   topics,
   answerCount,
+  author,
 }: {
   question: Question;
   topics: Topic[];
   answerCount: number;
+  author: AuthorRef | null;
 }) {
   return (
     <li className="flex gap-4 rounded-2xl border border-orange-100 bg-surface p-4 shadow-sm transition hover:shadow-md sm:gap-6 sm:p-5">
@@ -257,6 +270,13 @@ function QuestionRow({
         <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-brand">
           {answerCount} {answerCount === 1 ? "answer" : "answers"}
         </span>
+        {author ? (
+          <Link href={`/profile/${author.id}`} className="text-xs font-medium text-brand hover:underline">
+            {author.name}
+          </Link>
+        ) : (
+          <span className="text-xs text-gray-400">community</span>
+        )}
         <span suppressHydrationWarning className="text-xs text-gray-400">
           {relativeTime(question.createdAt)}
         </span>
@@ -278,7 +298,7 @@ function relativeTime(iso: string): string {
   return `${Math.round(months / 12)}y ago`;
 }
 
-function Hero() {
+function Hero({ canAnswer }: { canAnswer: boolean }) {
   return (
     <section className="overflow-hidden rounded-3xl bg-orange-100">
       <div className="grid items-stretch gap-6 sm:grid-cols-2">
@@ -299,12 +319,14 @@ function Hero() {
             >
               Ask a question
             </Link>
-            <Link
-              href="/senior"
-              className="inline-flex min-h-11 items-center rounded-xl border border-brand/40 bg-surface px-5 font-semibold text-brand transition hover:bg-orange-50"
-            >
-              Answer a question
-            </Link>
+            {canAnswer ? (
+              <Link
+                href="/senior"
+                className="inline-flex min-h-11 items-center rounded-xl border border-brand/40 bg-surface px-5 font-semibold text-brand transition hover:bg-orange-50"
+              >
+                Answer a question
+              </Link>
+            ) : null}
           </div>
         </div>
         <div className="relative min-h-56 sm:min-h-0">

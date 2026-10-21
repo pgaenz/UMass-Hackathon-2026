@@ -72,7 +72,7 @@
       "topicIds": [
         "advice"
       ],
-      "askedBy": null,
+      "askedBy": "u-seed-maya",
       "upvotes": 35,
       "storyIds": [],
       "createdAt": "2026-01-10T09:10:00.000Z"
@@ -84,7 +84,7 @@
         "family",
         "childhood"
       ],
-      "askedBy": null,
+      "askedBy": "u-seed-diego",
       "upvotes": 31,
       "storyIds": [
         "296bb2ff-e540-4d0a-9ce1-74aad4b91720"
@@ -121,7 +121,7 @@
       "topicIds": [
         "friendship"
       ],
-      "askedBy": null,
+      "askedBy": "u-seed-maya",
       "upvotes": 24,
       "storyIds": [
         "494c10c5-5eb0-499d-a554-a2866abe17f0"
@@ -134,7 +134,7 @@
       "topicIds": [
         "childhood"
       ],
-      "askedBy": null,
+      "askedBy": "u-seed-diego",
       "upvotes": 22,
       "storyIds": [],
       "createdAt": "2026-01-10T09:35:00.000Z"
@@ -172,7 +172,7 @@
         "job",
         "advice"
       ],
-      "askedBy": null,
+      "askedBy": "u-seed-maya",
       "upvotes": 17,
       "storyIds": [
         "b535c2ff-0d49-4ed5-a37c-c7469bdd6d0f",
@@ -187,7 +187,7 @@
       "topicIds": [
         "travel"
       ],
-      "askedBy": null,
+      "askedBy": "u-seed-diego",
       "upvotes": 15,
       "storyIds": [],
       "createdAt": "2026-01-10T09:55:00.000Z"
@@ -223,7 +223,7 @@
         "advice",
         "health"
       ],
-      "askedBy": null,
+      "askedBy": "u-seed-maya",
       "upvotes": 9,
       "storyIds": [],
       "createdAt": "2026-01-10T10:10:00.000Z"

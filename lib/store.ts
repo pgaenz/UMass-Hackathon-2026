@@ -15,6 +15,7 @@ const EMPTY: StoreData = { stories: [] };
 function normalizeStory(story: Story): Story {
   return {
     ...story,
+    authorId: story.authorId ?? null,
     metadata: story.metadata ?? { topic: "", summary: "" },
     review: story.review ?? null,
     feedback: Array.isArray(story.feedback) ? story.feedback : [],
@@ -47,6 +48,11 @@ export async function getStoriesByStatus(status: StoryStatus): Promise<Story[]> 
   return stories.filter((story) => story.status === status);
 }
 
+export async function getStoriesByAuthor(authorId: string): Promise<Story[]> {
+  const { stories } = await readStore();
+  return stories.filter((story) => story.authorId === authorId);
+}
+
 export async function createStory(input: Partial<Story> = {}): Promise<Story> {
   let created!: Story;
   await mutateJson<StoreData>(STORE_PATH, EMPTY, (current) => {
@@ -55,6 +61,7 @@ export async function createStory(input: Partial<Story> = {}): Promise<Story> {
       id: input.id ?? randomUUID(),
       prompt: input.prompt ?? "",
       questionId: input.questionId ?? null,
+      authorId: input.authorId ?? null,
       inputType: input.inputType ?? "text",
       rawAudioPath: input.rawAudioPath ?? null,
       transcript: input.transcript ?? "",

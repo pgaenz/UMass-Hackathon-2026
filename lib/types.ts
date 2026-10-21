@@ -43,6 +43,8 @@ export interface Story {
   id: string;
   prompt: string;
   questionId: string | null;
+  // The River who authored this story. null means legacy/community content.
+  authorId: string | null;
   inputType: InputType;
   rawAudioPath: string | null;
   transcript: string;
@@ -92,6 +94,8 @@ export interface Conversation {
   storyId: string;
   prompt: string;
   questionId: string | null;
+  // The River who owns this conversation.
+  userId: string | null;
   status: ConversationStatus;
   turns: ConversationTurn[];
   createdAt: string;
@@ -112,6 +116,68 @@ export interface CreateConversationResponse {
 export interface EndConversationResponse {
   conversation: Conversation;
   story: Story;
+}
+
+// ---------------------------------------------------------------------------
+// Users, roles & profiles (see plan/PROFILES.md)
+// ---------------------------------------------------------------------------
+
+// Code role ids. Water is the metaphor for wisdom:
+//   river = older adult (a long, deep accumulation of knowledge)
+//   drop  = young person (asks and learns)
+export type Role = "river" | "drop";
+
+// Public, non-identifying age bucket. Exact age is never shown publicly.
+export type AgeBand = "13-17" | "18-29" | "30-44" | "45-59" | "60-74" | "75+";
+
+export interface User {
+  id: string;
+  role: Role;
+  name: string;
+  age: number;
+  bio: string;
+  interests: string[];
+  createdAt: string;
+}
+
+// Minimal author reference used when rendering cards and lists.
+export interface AuthorRef {
+  id: string;
+  name: string;
+}
+
+// What other users are allowed to see.
+export interface PublicUser {
+  id: string;
+  role: Role;
+  name: string;
+  ageBand: AgeBand;
+  bio: string;
+  interests: string[];
+  createdAt: string;
+}
+
+// Signed-cookie session payload.
+export interface SessionData {
+  userId: string;
+  role: Role;
+}
+
+// POST /api/auth/login — passwordless: choose a role and create a profile.
+export interface LoginRequest {
+  role: Role;
+  name: string;
+  age: number;
+  bio?: string;
+  interests?: string[];
+}
+
+// PATCH /api/auth/profile — edit the signed-in user's own profile.
+export interface UpdateProfileRequest {
+  name?: string;
+  age?: number;
+  bio?: string;
+  interests?: string[];
 }
 
 // ---------------------------------------------------------------------------
