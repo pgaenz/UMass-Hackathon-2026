@@ -161,7 +161,7 @@ export function AnswerForm({
   }
 
   return (
-    <section aria-labelledby="answer-heading" className="space-y-5 rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm">
+    <section aria-labelledby="answer-heading" className="space-y-5 rounded-2xl glass shadow-water p-6 shadow-sm">
       <div className="space-y-2">
         <h2 id="answer-heading" className="text-2xl font-semibold text-ink">
           Your answer
@@ -171,7 +171,7 @@ export function AnswerForm({
         </p>
       </div>
 
-      <div className="flex flex-col gap-4 rounded-xl border border-orange-200 bg-orange-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-xl border border-seaglass bg-seaglass/25 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <p className="text-lg font-semibold text-ink">Prefer a conversation?</p>
           <p className="text-base text-ink/70">
@@ -194,10 +194,10 @@ export function AnswerForm({
             aria-pressed={mode === option}
             onClick={() => setMode(option)}
             className={cn(
-              "min-h-12 rounded-xl border-2 px-5 py-2.5 text-lg font-semibold transition",
+              "ripple min-h-12 rounded-xl border-2 px-5 py-2.5 text-lg font-semibold transition",
               mode === option
                 ? "border-brand bg-brand text-white"
-                : "border-orange-200 bg-surface text-ink hover:border-brand hover:bg-orange-50",
+                : "border-2 border-seaglass bg-white/60 text-ink backdrop-blur hover:border-brand hover:bg-white/80",
             )}
           >
             {option === "text" ? "Type" : "Record"}
@@ -217,7 +217,7 @@ export function AnswerForm({
               onChange={(event) => setText(event.target.value)}
               rows={8}
               placeholder="Tell the story in your own words…"
-              className="w-full rounded-xl border-2 border-orange-200 p-4 text-lg leading-relaxed text-ink placeholder:text-gray-400 focus:border-brand"
+              className="w-full rounded-xl border-2 border-seaglass p-4 text-lg leading-relaxed text-ink placeholder:text-ink/75 focus:border-brand"
             />
           </div>
           <Button type="submit" size="lg" disabled={submitting}>
@@ -241,13 +241,13 @@ export function AnswerForm({
               aria-live="off"
               className={cn(
                 "text-2xl font-bold tabular-nums",
-                recording ? "text-red-700" : "text-ink",
+                recording ? "text-brand" : "text-ink",
               )}
             >
               {formatSeconds(seconds)}
             </span>
             {recording ? (
-              <span className="text-lg font-medium text-red-700" aria-live="polite">
+              <span className="text-lg font-medium text-brand" aria-live="polite">
                 Recording…
               </span>
             ) : null}
@@ -267,17 +267,17 @@ export function AnswerForm({
       )}
 
       {status.kind === "error" ? (
-        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-lg font-medium text-red-800">
+        <p role="alert" className="rounded-lg bg-brand/15 px-4 py-3 text-lg font-medium text-ocean">
           {status.message}
         </p>
       ) : null}
       {status.kind === "loading" ? (
-        <p role="status" className="rounded-lg bg-blue-50 px-4 py-3 text-lg font-medium text-blue-900">
+        <p role="status" className="rounded-lg bg-brand/10 px-4 py-3 text-lg font-medium text-ocean">
           {status.message}
         </p>
       ) : null}
       {status.kind === "success" ? (
-        <p role="status" className="rounded-lg bg-green-50 px-4 py-3 text-lg font-medium text-green-900">
+        <p role="status" className="rounded-lg bg-seaglass/40 px-4 py-3 text-lg font-medium text-ocean">
           {status.message}
         </p>
       ) : null}

@@ -381,7 +381,7 @@ export function VoiceConversation({
     phase === "writing";
 
   return (
-    <section className="space-y-6 rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm sm:p-8">
+    <section className="space-y-6 rounded-2xl glass shadow-water p-6 shadow-sm sm:p-8">
       <div className="space-y-3">
         <p className="text-sm font-semibold uppercase tracking-wide text-brand">
           A conversation, not a form
@@ -393,7 +393,7 @@ export function VoiceConversation({
           A patient interviewer will greet you, ask the question, and listen. Pause as
           long as you need — it will wait for you.
         </p>
-        <p className="rounded-xl bg-orange-50 px-4 py-3 text-base text-ink/75">
+        <p className="rounded-xl bg-seaglass/25 px-4 py-3 text-base text-ink/75">
           This conversation is recorded so we can write your story. You can stop at any
           time.
         </p>
@@ -404,7 +404,7 @@ export function VoiceConversation({
           <Button size="lg" onClick={startConversation}>
             Start conversation
           </Button>
-          <span className="text-base text-ink/60">
+          <span className="text-base text-ink/75">
             Uses your microphone. You can end whenever you like.
           </span>
         </div>
@@ -416,10 +416,10 @@ export function VoiceConversation({
             className={cn(
               "flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl px-4 py-3 text-lg font-semibold",
               phase === "error"
-                ? "bg-red-50 text-red-800"
+                ? "bg-brand/15 text-ocean"
                 : phase === "recording"
-                  ? "bg-orange-50 text-orange-800"
-                  : "bg-blue-50 text-blue-900",
+                  ? "bg-seaglass/25 text-ocean"
+                  : "bg-brand/10 text-ocean",
             )}
           >
             <span>{PHASE_LABELS[phase]}</span>
@@ -433,11 +433,11 @@ export function VoiceConversation({
           </div>
 
           <div
-            className="max-h-80 space-y-3 overflow-y-auto rounded-xl border border-orange-100 bg-orange-50/40 p-4"
+            className="max-h-80 space-y-3 overflow-y-auto rounded-xl border border-seaglass/40 bg-seaglass/20 p-4"
             aria-label="Conversation transcript"
           >
             {lines.length === 0 && !draft ? (
-              <p className="text-base text-ink/60">The conversation will appear here.</p>
+              <p className="text-base text-ink/75">The conversation will appear here.</p>
             ) : null}
             {lines.map((line) => (
               <div
@@ -445,19 +445,19 @@ export function VoiceConversation({
                 className={cn(
                   "rounded-xl px-4 py-3 text-lg leading-relaxed",
                   line.role === "assistant"
-                    ? "bg-surface text-ink shadow-sm"
+                    ? "glass text-ink"
                     : "ml-6 bg-brand/10 text-ink",
                 )}
               >
-                <p className="mb-1 text-xs font-bold uppercase tracking-wide text-ink/50">
+                <p className="mb-1 text-xs font-bold uppercase tracking-wide text-ink/75">
                   {line.role === "assistant" ? "Interviewer" : "You"}
                 </p>
                 {line.text}
               </div>
             ))}
             {draft ? (
-              <div className="rounded-xl bg-surface px-4 py-3 text-lg leading-relaxed text-ink shadow-sm">
-                <p className="mb-1 text-xs font-bold uppercase tracking-wide text-ink/50">
+              <div className="rounded-xl glass px-4 py-3 text-lg leading-relaxed text-ink shadow-sm">
+                <p className="mb-1 text-xs font-bold uppercase tracking-wide text-ink/75">
                   Interviewer
                 </p>
                 {draft}
@@ -478,7 +478,7 @@ export function VoiceConversation({
                 : "End conversation & write my story"}
             </Button>
             {started ? (
-              <span className="text-base text-ink/60">
+              <span className="text-base text-ink/75">
                 The story is yours to review before anything is published.
               </span>
             ) : null}
@@ -487,7 +487,7 @@ export function VoiceConversation({
           {error ? (
             <div
               role="alert"
-              className="space-y-3 rounded-xl bg-red-50 px-4 py-3 text-lg text-red-800"
+              className="space-y-3 rounded-xl bg-brand/15 px-4 py-3 text-lg text-ocean"
             >
               <p>{error}</p>
               <div className="flex flex-wrap gap-3">

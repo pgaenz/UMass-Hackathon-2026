@@ -47,7 +47,7 @@ export default async function SeniorPage({
 
         <PageHeader title="Answer this question" />
 
-        <div className="rounded-2xl border-l-4 border-brand bg-orange-50 p-6">
+        <div className="rounded-2xl border-l-4 border-brand bg-seaglass/25 p-6">
           <p className="text-2xl font-semibold leading-snug text-ink">{selected.text}</p>
         </div>
 

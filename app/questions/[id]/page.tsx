@@ -105,9 +105,9 @@ export default async function QuestionDetailPage({
           <ul className="space-y-5">
             {answers.map((answer) => (
               <li key={answer.id}>
-                <article className="rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm">
+                <article className="rounded-2xl glass shadow-water p-6 shadow-sm">
                   <ArticleRenderer markdown={answer.article} />
-                  <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-orange-100 pt-4 text-base text-gray-500">
+                  <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-seaglass/40 pt-4 text-base text-ink/70">
                     <time dateTime={answer.createdAt}>{formatDate(answer.createdAt)}</time>
                     <ReportButton targetType="answer" targetId={answer.id} />
                   </div>

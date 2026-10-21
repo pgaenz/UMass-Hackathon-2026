@@ -60,7 +60,7 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm"
+      className="space-y-6 rounded-2xl glass shadow-water p-6 shadow-sm"
     >
       <div className="space-y-2">
         <label htmlFor="profile-name" className="text-lg font-semibold text-ink">
@@ -74,7 +74,7 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
           maxLength={80}
           autoComplete="name"
           required
-          className="w-full rounded-xl border-2 border-orange-200 p-4 text-lg text-ink placeholder:text-gray-400 focus:border-brand"
+          className="w-full rounded-xl border-2 border-seaglass p-4 text-lg text-ink placeholder:text-ink/75 focus:border-brand"
           placeholder="e.g. Ruth Alvarez"
         />
       </div>
@@ -93,17 +93,17 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
           inputMode="numeric"
           required
           aria-describedby="profile-age-hint"
-          className="w-full max-w-40 rounded-xl border-2 border-orange-200 p-4 text-lg text-ink placeholder:text-gray-400 focus:border-brand"
+          className="w-full max-w-40 rounded-xl border-2 border-seaglass p-4 text-lg text-ink placeholder:text-ink/75 focus:border-brand"
           placeholder="e.g. 78"
         />
-        <p id="profile-age-hint" className="text-base text-gray-500">
+        <p id="profile-age-hint" className="text-base text-ink/70">
           Only an age range (like &ldquo;75+&rdquo;) is ever shown on your public profile.
         </p>
       </div>
 
       <div className="space-y-2">
         <label htmlFor="profile-bio" className="text-lg font-semibold text-ink">
-          Short bio <span className="font-normal text-gray-500">(optional)</span>
+          Short bio <span className="font-normal text-ink/70">(optional)</span>
         </label>
         <textarea
           id="profile-bio"
@@ -111,7 +111,7 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
           onChange={(event) => setBio(event.target.value)}
           rows={3}
           maxLength={300}
-          className="w-full rounded-xl border-2 border-orange-200 p-4 text-lg text-ink placeholder:text-gray-400 focus:border-brand"
+          className="w-full rounded-xl border-2 border-seaglass p-4 text-lg text-ink placeholder:text-ink/75 focus:border-brand"
           placeholder="A sentence about you."
         />
       </div>
@@ -119,7 +119,7 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
       {topics.length > 0 ? (
         <fieldset className="space-y-3">
           <legend className="text-lg font-semibold text-ink">
-            Interests <span className="font-normal text-gray-500">(optional)</span>
+            Interests <span className="font-normal text-ink/70">(optional)</span>
           </legend>
           <div className="flex flex-wrap gap-2">
             {topics.map((topic) => {
@@ -130,8 +130,8 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
                   className={cn(
                     "flex min-h-11 cursor-pointer items-center gap-2 rounded-full border-2 px-4 py-2 text-lg font-medium transition",
                     active
-                      ? "border-brand bg-orange-50 text-orange-700"
-                      : "border-orange-200 bg-surface text-ink hover:border-brand",
+                      ? "border-brand bg-seaglass/25 text-ocean"
+                      : "border-2 border-seaglass bg-white/60 backdrop-blur text-ink hover:border-brand",
                   )}
                 >
                   <input
@@ -149,7 +149,7 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
       ) : null}
 
       {error ? (
-        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-lg font-medium text-red-800">
+        <p role="alert" className="rounded-lg bg-brand/15 px-4 py-3 text-lg font-medium text-ocean">
           {error}
         </p>
       ) : null}

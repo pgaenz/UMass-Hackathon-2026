@@ -34,7 +34,7 @@ export default async function ReviewStoryPage({ params }: { params: Promise<{ id
       />
 
       {story.status === "published" ? (
-        <p className="rounded-2xl bg-green-50 px-6 py-4 text-lg font-medium text-green-900">
+        <p className="rounded-2xl bg-seaglass/40 px-6 py-4 text-lg font-medium text-ocean">
           This story is published and live in the youth feed.
         </p>
       ) : null}
@@ -42,7 +42,7 @@ export default async function ReviewStoryPage({ params }: { params: Promise<{ id
       <div className="grid gap-8 lg:grid-cols-2">
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold text-ink">Your original answer</h2>
-          <div className="whitespace-pre-wrap rounded-2xl border border-orange-100 bg-surface p-6 text-lg leading-relaxed text-ink">
+          <div className="whitespace-pre-wrap rounded-2xl glass shadow-water p-6 text-lg leading-relaxed text-ink">
             {story.transcript}
           </div>
         </section>
@@ -50,11 +50,11 @@ export default async function ReviewStoryPage({ params }: { params: Promise<{ id
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold text-ink">The story we wrote</h2>
           {story.article ? (
-            <div className="rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm">
+            <div className="rounded-2xl glass shadow-water p-6 shadow-sm">
               <ArticleRenderer markdown={story.article} />
             </div>
           ) : (
-            <p className="rounded-2xl border border-orange-100 bg-surface p-6 text-lg text-ink/70">
+            <p className="rounded-2xl glass shadow-water p-6 text-lg text-ink/70">
               We have not written the story yet.
             </p>
           )}
@@ -62,11 +62,11 @@ export default async function ReviewStoryPage({ params }: { params: Promise<{ id
       </div>
 
       {review ? (
-        <section className="space-y-4 rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm">
+        <section className="space-y-4 rounded-2xl glass shadow-water p-6 shadow-sm">
           <div className="flex flex-wrap items-center gap-3">
             <h2 className="text-2xl font-semibold text-ink">Editor review</h2>
             <Badge
-              className={passed ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"}
+              className={passed ? "bg-brand/15 text-ocean" : "bg-seaglass/60 text-ocean"}
             >
               {passed ? `Passed · ${review.score}/5` : `Needs changes · ${review.score}/5`}
             </Badge>
@@ -75,13 +75,13 @@ export default async function ReviewStoryPage({ params }: { params: Promise<{ id
           {review.issues.length > 0 ? (
             <ul className="space-y-3">
               {review.issues.map((issue, index) => (
-                <li key={index} className="rounded-xl border border-orange-100 bg-orange-50 p-4">
-                  <p className="text-sm font-semibold uppercase tracking-wide text-orange-700">
+                <li key={index} className="rounded-xl border border-seaglass/40 bg-seaglass/25 p-4">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-brand">
                     {issue.type.replace("_", " ")}
                   </p>
                   <p className="mt-1 text-lg text-ink">{issue.detail}</p>
                   {issue.excerpt ? (
-                    <blockquote className="mt-2 border-l-4 border-orange-300 pl-3 text-base italic text-ink/70">
+                    <blockquote className="mt-2 border-l-4 border-seaglass pl-3 text-base italic text-ink/70">
                       “{issue.excerpt}”
                     </blockquote>
                   ) : null}
@@ -93,7 +93,7 @@ export default async function ReviewStoryPage({ params }: { params: Promise<{ id
       ) : null}
 
       {story.feedback.length > 0 ? (
-        <section className="space-y-3 rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm">
+        <section className="space-y-3 rounded-2xl glass shadow-water p-6 shadow-sm">
           <h2 className="text-2xl font-semibold text-ink">What you asked us to change</h2>
           <ul className="space-y-2">
             {story.feedback.map((entry) => (

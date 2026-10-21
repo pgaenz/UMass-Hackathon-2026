@@ -65,7 +65,7 @@ export function ProfileForm({ user, topics }: { user: User; topics: Topic[] }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm"
+      className="space-y-6 rounded-2xl glass shadow-water p-6 shadow-sm"
     >
       <h2 className="text-2xl font-semibold text-ink">Edit your profile</h2>
 
@@ -80,7 +80,7 @@ export function ProfileForm({ user, topics }: { user: User; topics: Topic[] }) {
             value={name}
             onChange={(event) => setName(event.target.value)}
             maxLength={80}
-            className="w-full rounded-xl border-2 border-orange-200 p-4 text-lg text-ink focus:border-brand"
+            className="w-full rounded-xl border-2 border-seaglass p-4 text-lg text-ink focus:border-brand"
           />
         </div>
 
@@ -96,14 +96,14 @@ export function ProfileForm({ user, topics }: { user: User; topics: Topic[] }) {
             min={13}
             max={120}
             inputMode="numeric"
-            className="w-full max-w-40 rounded-xl border-2 border-orange-200 p-4 text-lg text-ink focus:border-brand"
+            className="w-full max-w-40 rounded-xl border-2 border-seaglass p-4 text-lg text-ink focus:border-brand"
           />
         </div>
       </div>
 
       <div className="space-y-2">
         <label htmlFor="edit-bio" className="text-lg font-semibold text-ink">
-          Short bio <span className="font-normal text-gray-500">(optional)</span>
+          Short bio <span className="font-normal text-ink/70">(optional)</span>
         </label>
         <textarea
           id="edit-bio"
@@ -111,14 +111,14 @@ export function ProfileForm({ user, topics }: { user: User; topics: Topic[] }) {
           onChange={(event) => setBio(event.target.value)}
           rows={3}
           maxLength={300}
-          className="w-full rounded-xl border-2 border-orange-200 p-4 text-lg text-ink focus:border-brand"
+          className="w-full rounded-xl border-2 border-seaglass p-4 text-lg text-ink focus:border-brand"
         />
       </div>
 
       {topics.length > 0 ? (
         <fieldset className="space-y-3">
           <legend className="text-lg font-semibold text-ink">
-            Interests <span className="font-normal text-gray-500">(optional)</span>
+            Interests <span className="font-normal text-ink/70">(optional)</span>
           </legend>
           <div className="flex flex-wrap gap-2">
             {topics.map((topic) => {
@@ -129,8 +129,8 @@ export function ProfileForm({ user, topics }: { user: User; topics: Topic[] }) {
                   className={cn(
                     "flex min-h-11 cursor-pointer items-center gap-2 rounded-full border-2 px-4 py-2 text-lg font-medium transition",
                     active
-                      ? "border-brand bg-orange-50 text-orange-700"
-                      : "border-orange-200 bg-surface text-ink hover:border-brand",
+                      ? "border-brand bg-seaglass/25 text-ocean"
+                      : "border-2 border-seaglass bg-white/60 backdrop-blur text-ink hover:border-brand",
                   )}
                 >
                   <input
@@ -153,8 +153,8 @@ export function ProfileForm({ user, topics }: { user: User; topics: Topic[] }) {
           className={cn(
             "rounded-lg px-4 py-3 text-lg font-medium",
             notice.kind === "error"
-              ? "bg-red-50 text-red-800"
-              : "bg-green-50 text-green-900",
+              ? "bg-brand/15 text-ocean"
+              : "bg-seaglass/40 text-ocean",
           )}
         >
           {notice.message}

@@ -51,9 +51,9 @@ export default async function PublicProfilePage({
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-10 px-6 py-10">
-      <header className="space-y-4 rounded-3xl border border-orange-100 bg-surface p-8 shadow-sm">
+      <header className="space-y-4 rounded-3xl glass shadow-water p-8 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="grid h-16 w-16 place-items-center rounded-2xl bg-orange-50 text-4xl" aria-hidden="true">
+          <span className="grid h-16 w-16 place-items-center rounded-2xl bg-seaglass/25 text-4xl" aria-hidden="true">
             {isRiver ? "🌊" : "💧"}
           </span>
           <div>

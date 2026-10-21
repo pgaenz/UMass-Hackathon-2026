@@ -43,8 +43,8 @@ export default async function ConversationPage({
         description="Speak naturally. The interviewer will listen, wait through pauses, and ask one question at a time."
       />
 
-      <div className="rounded-2xl border-l-4 border-brand bg-orange-50 p-6">
-        <p className="text-sm font-semibold uppercase tracking-wide text-orange-700">
+      <div className="rounded-2xl border-l-4 border-brand bg-seaglass/25 p-6">
+        <p className="text-sm font-semibold uppercase tracking-wide text-brand">
           Today’s question
         </p>
         <p className="mt-2 text-2xl font-semibold leading-snug text-ink">{question.text}</p>

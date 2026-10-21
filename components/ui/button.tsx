@@ -3,17 +3,21 @@ import type { ComponentProps } from "react";
 
 import { cn } from "@/lib/cn";
 
-type Variant = "primary" | "secondary" | "ghost";
+type Variant = "primary" | "brand" | "secondary" | "ghost";
 type Size = "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition disabled:cursor-not-allowed disabled:opacity-60";
+  "ripple inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition disabled:cursor-not-allowed disabled:opacity-60";
 
 const variantClasses: Record<Variant, string> = {
-  primary: "bg-brand text-white hover:bg-orange-600",
+  // Solid sunset-gold CTA: high contrast against the dominant blues.
+  primary: "bg-sunset text-ocean shadow-water hover:brightness-[1.04]",
+  // Blue CTA for secondary paths that still need emphasis.
+  brand: "bg-brand text-white shadow-water hover:bg-accent",
+  // Frosted outline button that sits on the glass surfaces.
   secondary:
-    "border-2 border-orange-200 bg-surface text-ink hover:border-brand hover:bg-orange-50",
-  ghost: "text-brand hover:bg-orange-50",
+    "border border-seaglass bg-white/60 text-ocean backdrop-blur hover:border-brand hover:bg-white/80",
+  ghost: "text-brand hover:bg-white/70",
 };
 
 const sizeClasses: Record<Size, string> = {

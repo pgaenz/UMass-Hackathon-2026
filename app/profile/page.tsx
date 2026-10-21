@@ -60,7 +60,7 @@ export default async function ProfilePage() {
               {stories.map((story) => (
                 <li
                   key={story.id}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-orange-100 bg-surface p-5 shadow-sm"
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-2xl glass shadow-water p-5 shadow-sm"
                 >
                   <Link
                     href={story.status === "published" ? `/youth/${story.id}` : `/senior/review/${story.id}`}

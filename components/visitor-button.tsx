@@ -22,7 +22,7 @@ export function VisitorButton() {
       type="button"
       onClick={enter}
       disabled={busy}
-      className="text-lg font-semibold text-brand underline-offset-4 hover:underline disabled:opacity-60"
+      className="ripple rounded-lg text-lg font-semibold text-brand underline-offset-4 hover:underline disabled:opacity-60"
     >
       {busy ? "Opening…" : "Just browsing? Continue as a visitor →"}
     </button>

@@ -55,6 +55,29 @@
         "school"
       ],
       "createdAt": "2026-01-08T09:00:00.000Z"
+    },
+    {
+      "id": "u-199f012d-1a28-4169-9b3d-24d2eb1a454c",
+      "role": "river",
+      "name": "PPa",
+      "age": 76,
+      "bio": "",
+      "interests": [
+        "friendship",
+        "travel"
+      ],
+      "createdAt": "2026-10-21T22:52:02.252Z"
+    },
+    {
+      "id": "u-0655e4b3-6b16-4bbb-8829-1faf7262917f",
+      "role": "drop",
+      "name": "Pedro",
+      "age": 22,
+      "bio": "",
+      "interests": [
+        "travel"
+      ],
+      "createdAt": "2026-10-21T23:12:59.619Z"
     }
   ]
 }

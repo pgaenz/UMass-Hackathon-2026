@@ -1,10 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import Image from "next/image";
 
 import { UpvoteButton } from "@/components/upvote-button";
+import { WaterLines } from "@/components/water-lines";
+import { cn } from "@/lib/cn";
 import type { AuthorRef, Question, Topic } from "@/lib/types";
 
 const TOPIC_ICONS: Record<string, string> = {
@@ -21,17 +23,26 @@ const TOPIC_ICONS: Record<string, string> = {
 };
 
 const TOPIC_BADGES: Record<string, string> = {
-  job: "bg-sky-100 text-sky-700",
-  "love-life": "bg-rose-100 text-rose-700",
-  family: "bg-emerald-100 text-emerald-700",
-  childhood: "bg-violet-100 text-violet-700",
-  advice: "bg-amber-100 text-amber-700",
-  friendship: "bg-teal-100 text-teal-700",
-  travel: "bg-cyan-100 text-cyan-700",
-  money: "bg-lime-100 text-lime-700",
-  hobbies: "bg-fuchsia-100 text-fuchsia-700",
-  health: "bg-green-100 text-green-700",
+  job: "bg-brand/15 text-ocean",
+  "love-life": "bg-brand/15 text-ocean",
+  family: "bg-brand/15 text-ocean",
+  childhood: "bg-brand/15 text-ocean",
+  advice: "bg-brand/15 text-ocean",
+  friendship: "bg-brand/15 text-ocean",
+  travel: "bg-brand/15 text-ocean",
+  money: "bg-brand/15 text-ocean",
+  hobbies: "bg-brand/15 text-ocean",
+  health: "bg-brand/15 text-ocean",
 };
+
+type Sort = "top" | "new" | "insightful" | "unanswered";
+
+const QUICK_FILTERS: Array<{ id: Sort; icon: string; label: string }> = [
+  { id: "top", icon: "🔥", label: "Trending Today" },
+  { id: "insightful", icon: "💡", label: "Most Insightful" },
+  { id: "new", icon: "✨", label: "Newest" },
+  { id: "unanswered", icon: "❓", label: "Needs an answer" },
+];
 
 const QUICK_LINKS = [
   { icon: "🔥", label: "Popular questions", href: "/questions?sort=popular" },
@@ -56,7 +67,7 @@ export function QuestionExplorer({
   canAnswer,
 }: QuestionExplorerProps) {
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
-  const [sort, setSort] = useState<"top" | "new">("top");
+  const [sort, setSort] = useState<Sort>("top");
 
   const topicCounts = useMemo(() => {
     const result: Record<string, number> = {};
@@ -74,81 +85,127 @@ export function QuestionExplorer({
   }, [questions, topics]);
 
   const visible = useMemo(() => {
-    const filtered = activeTopic
+    const base = activeTopic
       ? questions.filter((question) => question.topicIds.includes(activeTopic))
-      : questions;
-    return [...filtered].sort((a, b) =>
-      sort === "top" ? b.upvotes - a.upvotes : Date.parse(b.createdAt) - Date.parse(a.createdAt),
-    );
-  }, [questions, activeTopic, sort]);
+      : [...questions];
+    const filtered =
+      sort === "unanswered"
+        ? base.filter((question) => (answerCounts[question.id] ?? 0) === 0)
+        : base;
+    return [...filtered].sort((a, b) => {
+      if (sort === "new") {
+        return Date.parse(b.createdAt) - Date.parse(a.createdAt);
+      }
+      if (sort === "insightful") {
+        return (
+          (answerCounts[b.id] ?? 0) - (answerCounts[a.id] ?? 0) || b.upvotes - a.upvotes
+        );
+      }
+      return b.upvotes - a.upvotes;
+    });
+  }, [questions, activeTopic, sort, answerCounts]);
+
+  const topUpvotes = useMemo(
+    () => visible.reduce((max, question) => Math.max(max, question.upvotes), 0),
+    [visible],
+  );
 
   return (
     <div className="grid flex-1 gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[18rem_minmax(0,1fr)_20rem]">
-        {/* Left sidebar — topic filters */}
-        <aside className="h-fit rounded-2xl border border-orange-100 bg-surface p-3 shadow-sm lg:sticky lg:top-24">
-          <h2 className="px-2 pt-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
-            Topics
-          </h2>
-          <ul className="mt-2 space-y-0.5">
-            <li>
-              <button
-                type="button"
-                aria-pressed={activeTopic === null}
-                onClick={() => setActiveTopic(null)}
-                className={filterClass(activeTopic === null)}
-              >
-                <span aria-hidden="true">🗂️</span>
-                <span className="flex-1 text-left">All topics</span>
-                <span className="text-xs font-semibold text-gray-500">{questions.length}</span>
-              </button>
-            </li>
-            {topics.map((topic) => {
-              const active = activeTopic === topic.id;
+      {/* Left sidebar — topic filters */}
+      <aside className="h-fit rounded-2xl glass shadow-water p-3 lg:sticky lg:top-24">
+        <h2 className="px-2 pt-1 text-xs font-semibold uppercase tracking-wide text-ink/70">
+          Topics
+        </h2>
+        <ul className="mt-2 space-y-0.5">
+          <li>
+            <button
+              type="button"
+              aria-pressed={activeTopic === null}
+              onClick={() => setActiveTopic(null)}
+              className={filterClass(activeTopic === null)}
+            >
+              <span aria-hidden="true">🗂️</span>
+              <span className="flex-1 text-left">All topics</span>
+              <span className="text-xs font-semibold text-ink/70">{questions.length}</span>
+            </button>
+          </li>
+          {topics.map((topic) => {
+            const active = activeTopic === topic.id;
+            return (
+              <li key={topic.id}>
+                <button
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setActiveTopic(topic.id)}
+                  className={filterClass(active)}
+                >
+                  <span aria-hidden="true">{TOPIC_ICONS[topic.id] ?? "📁"}</span>
+                  <span className="flex-1 text-left">{topic.label}</span>
+                  <span className="text-xs font-semibold text-ink/70">
+                    {topicCounts[topic.id] ?? 0}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </aside>
+
+      {/* Main column — hero + question feed */}
+      <div className="min-w-0 space-y-6">
+        <Hero canAnswer={canAnswer} />
+
+        <section aria-labelledby="feed-heading" className="space-y-4">
+          <div>
+            <h1 id="feed-heading" className="text-2xl font-bold text-ink">
+              Questions from the community
+            </h1>
+            <p className="text-sm text-ink/70">
+              {visible.length} question{visible.length === 1 ? "" : "s"}
+              {activeTopic
+                ? ` in ${topics.find((topic) => topic.id === activeTopic)?.label ?? activeTopic}`
+                : ""}
+            </p>
+          </div>
+
+          {/* Sort control, left-aligned above the feed */}
+          <label className="flex w-fit items-center gap-2 text-sm font-medium text-ink/80">
+            <span>Sort by</span>
+            <select
+              value={sort}
+              onChange={(event) => setSort(event.target.value as Sort)}
+              className="h-11 rounded-xl glass px-3 text-sm font-medium text-ink focus:border-brand focus:outline-none"
+            >
+              <option value="top">Top voted</option>
+              <option value="insightful">Most insightful</option>
+              <option value="new">Newest</option>
+              <option value="unanswered">Unanswered</option>
+            </select>
+          </label>
+
+          {/* Horizontal quick filters, directly above the feed */}
+          <div role="group" aria-label="Quick filters" className="flex flex-wrap gap-2">
+            {QUICK_FILTERS.map((filter) => {
+              const active = sort === filter.id;
               return (
-                <li key={topic.id}>
-                  <button
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => setActiveTopic(topic.id)}
-                    className={filterClass(active)}
-                  >
-                    <span aria-hidden="true">{TOPIC_ICONS[topic.id] ?? "📁"}</span>
-                    <span className="flex-1 text-left">{topic.label}</span>
-                    <span className="text-xs font-semibold text-gray-500">
-                      {topicCounts[topic.id] ?? 0}
-                    </span>
-                  </button>
-                </li>
+                <button
+                  key={filter.id}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setSort(filter.id)}
+                  className={cn(
+                    "ripple inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold transition",
+                    active
+                      ? "bg-sunset text-ocean shadow-water"
+                      : "border border-seaglass bg-white/60 text-ink backdrop-blur hover:border-brand hover:bg-white/80",
+                  )}
+                >
+                  <span aria-hidden="true">{filter.icon}</span>
+                  {filter.label}
+                </button>
               );
             })}
-          </ul>
-        </aside>
-
-        {/* Main column — hero + question feed */}
-        <div className="min-w-0 space-y-6">
-          <Hero canAnswer={canAnswer} />
-
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <h1 className="text-2xl font-bold text-ink">Questions from the community</h1>
-              <p className="text-sm text-gray-500">
-                {visible.length} question{visible.length === 1 ? "" : "s"}
-                {activeTopic
-                  ? ` in ${topics.find((topic) => topic.id === activeTopic)?.label ?? activeTopic}`
-                  : ""}
-              </p>
-            </div>
-            <label className="flex items-center gap-2 text-sm text-gray-600">
-              <span>Sort by</span>
-              <select
-                value={sort}
-                onChange={(event) => setSort(event.target.value === "new" ? "new" : "top")}
-                className="h-10 rounded-xl border border-orange-100 bg-surface px-3 text-sm font-medium text-ink focus:border-brand focus:outline-none"
-              >
-                <option value="top">Top voted</option>
-                <option value="new">Newest</option>
-              </select>
-            </label>
           </div>
 
           <ul className="space-y-4">
@@ -159,71 +216,72 @@ export function QuestionExplorer({
                 topics={topics}
                 answerCount={answerCounts[question.id] ?? 0}
                 author={question.askedBy ? authors[question.askedBy] ?? null : null}
+                highlight={sort === "top" && topUpvotes > 0 && question.upvotes === topUpvotes}
               />
             ))}
             {visible.length === 0 && (
-              <li className="rounded-2xl border border-dashed border-orange-200 bg-surface p-8 text-center text-gray-500">
-                No questions in this topic yet.
+              <li className="rounded-2xl glass border-2 border-dashed border-seaglass/70 p-8 text-center text-ink/70">
+                No questions match this filter yet.
               </li>
             )}
           </ul>
-        </div>
+        </section>
+      </div>
 
-        {/* Right sidebar — community + quick links */}
-        <aside className="h-fit space-y-6 lg:sticky lg:top-24">
-          {canAnswer ? (
-            <section className="rounded-2xl border border-orange-100 bg-orange-50 p-5">
-              <div className="flex items-center gap-3">
-                <span
-                  className="grid h-12 w-12 place-items-center rounded-2xl bg-brand text-2xl"
-                  aria-hidden="true"
-                >
-                  🤝
-                </span>
-                <h2 className="font-semibold text-ink">Share what you know</h2>
-              </div>
-              <p className="mt-3 text-sm text-ink/70">
-                Your experience is someone&apos;s answer. Add your voice to the community.
-              </p>
-              <Link
-                href="/senior"
-                className="mt-4 inline-flex text-sm font-semibold text-brand hover:underline"
+      {/* Right sidebar — community + quick links */}
+      <aside className="h-fit space-y-6 lg:sticky lg:top-24">
+        {canAnswer ? (
+          <section className="rounded-2xl glass shadow-water p-5">
+            <div className="flex items-center gap-3">
+              <span
+                className="grid h-12 w-12 place-items-center rounded-2xl bg-brand text-2xl"
+                aria-hidden="true"
               >
-                Start answering →
-              </Link>
-            </section>
-          ) : null}
+                🤝
+              </span>
+              <h2 className="font-semibold text-ink">Share what you know</h2>
+            </div>
+            <p className="mt-3 text-sm text-ink/70">
+              Your experience is someone&apos;s answer. Add your voice to the community.
+            </p>
+            <Link
+              href="/senior"
+              className="ripple mt-4 inline-flex text-sm font-semibold text-brand hover:underline"
+            >
+              Start answering →
+            </Link>
+          </section>
+        ) : null}
 
-          <nav
-            aria-label="Quick links"
-            className="rounded-2xl border border-orange-100 bg-surface p-3 shadow-sm"
-          >
-            <h2 className="px-2 pt-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
-              Quick links
-            </h2>
-            <ul className="mt-2 space-y-0.5">
-              {QUICK_LINKS.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-ink transition hover:bg-orange-50"
-                  >
-                    <span aria-hidden="true">{link.icon}</span>
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
+        <nav aria-label="Quick links" className="rounded-2xl glass shadow-water p-3">
+          <h2 className="px-2 pt-1 text-xs font-semibold uppercase tracking-wide text-ink/70">
+            Quick links
+          </h2>
+          <ul className="mt-2 space-y-0.5">
+            {QUICK_LINKS.map((link) => (
+              <li key={link.label}>
+                <Link
+                  href={link.href}
+                  className="ripple flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-ink transition hover:bg-white/70"
+                >
+                  <span aria-hidden="true">{link.icon}</span>
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
     </div>
   );
 }
 
 function filterClass(active: boolean): string {
   return [
-    "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm transition",
-    active ? "bg-orange-100 font-semibold text-brand" : "font-medium text-ink hover:bg-orange-50",
+    "ripple flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm transition",
+    active
+      ? "bg-brand font-semibold text-white shadow-water"
+      : "font-medium text-ink hover:bg-white/70",
   ].join(" ");
 }
 
@@ -232,14 +290,21 @@ function QuestionRow({
   topics,
   answerCount,
   author,
+  highlight,
 }: {
   question: Question;
   topics: Topic[];
   answerCount: number;
   author: AuthorRef | null;
+  highlight: boolean;
 }) {
   return (
-    <li className="flex gap-4 rounded-2xl border border-orange-100 bg-surface p-4 shadow-sm transition hover:shadow-md sm:gap-6 sm:p-5">
+    <li
+      className={cn(
+        "lift flex gap-4 rounded-2xl glass shadow-water p-4 sm:gap-6 sm:p-5",
+        highlight && "ring-2 ring-sunset/60",
+      )}
+    >
       <UpvoteButton questionId={question.id} initialCount={question.upvotes} />
 
       <div className="min-w-0 flex-1">
@@ -250,13 +315,18 @@ function QuestionRow({
           {question.text}
         </Link>
         <div className="mt-2 flex flex-wrap items-center gap-2">
+          {highlight ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-sunset/25 px-2.5 py-0.5 text-xs font-bold text-ocean">
+              <span aria-hidden="true">★</span> Top voted
+            </span>
+          ) : null}
           {question.topicIds.map((topicId) => {
             const topic = topics.find((candidate) => candidate.id === topicId);
             return (
               <span
                 key={topicId}
                 className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                  TOPIC_BADGES[topicId] ?? "bg-orange-100 text-orange-700"
+                  TOPIC_BADGES[topicId] ?? "bg-brand/15 text-ocean"
                 }`}
               >
                 {TOPIC_ICONS[topicId] ?? "📁"} {topic?.label ?? topicId}
@@ -267,17 +337,20 @@ function QuestionRow({
       </div>
 
       <div className="flex shrink-0 flex-col items-end justify-between gap-2 text-right">
-        <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-brand">
+        <span className="rounded-full bg-seaglass/25 px-3 py-1 text-xs font-semibold text-ocean">
           {answerCount} {answerCount === 1 ? "answer" : "answers"}
         </span>
         {author ? (
-          <Link href={`/profile/${author.id}`} className="text-xs font-medium text-brand hover:underline">
+          <Link
+            href={`/profile/${author.id}`}
+            className="text-xs font-medium text-brand hover:underline"
+          >
             {author.name}
           </Link>
         ) : (
-          <span className="text-xs text-gray-400">community</span>
+          <span className="text-xs text-ink/75">community</span>
         )}
-        <span suppressHydrationWarning className="text-xs text-gray-400">
+        <span suppressHydrationWarning className="text-xs text-ink/75">
           {relativeTime(question.createdAt)}
         </span>
       </div>
@@ -300,29 +373,30 @@ function relativeTime(iso: string): string {
 
 function Hero({ canAnswer }: { canAnswer: boolean }) {
   return (
-    <section className="overflow-hidden rounded-3xl bg-orange-100">
-      <div className="grid items-stretch gap-6 sm:grid-cols-2">
+    <section className="relative overflow-hidden rounded-3xl bg-ocean text-white shadow-water-lg">
+      <WaterLines />
+      <div className="relative z-10 grid items-stretch gap-6 sm:grid-cols-2">
         <div className="space-y-4 p-6 sm:p-8">
-          <span className="inline-flex rounded-full bg-surface/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-brand">
-            HistorAI
+          <span className="inline-flex rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-seaglass">
+            HistorAI · When I was your age
           </span>
-          <h2 className="text-3xl font-bold leading-tight text-ink">
+          <h2 className="text-3xl font-bold leading-tight text-white">
             Every question deserves a story only a lifetime can tell.
           </h2>
-          <p className="text-ink/80">
+          <p className="text-white/80">
             Ask what you have always wondered, or share the answer only you can give.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/questions"
-              className="inline-flex min-h-11 items-center rounded-xl bg-brand px-5 font-semibold text-white shadow-sm transition hover:bg-orange-600"
+              className="ripple inline-flex min-h-11 items-center rounded-xl bg-sunset px-5 font-bold text-ocean shadow-water transition hover:brightness-105"
             >
               Ask a question
             </Link>
             {canAnswer ? (
               <Link
                 href="/senior"
-                className="inline-flex min-h-11 items-center rounded-xl border border-brand/40 bg-surface px-5 font-semibold text-brand transition hover:bg-orange-50"
+                className="ripple inline-flex min-h-11 items-center rounded-xl border border-seaglass/60 bg-transparent px-5 font-semibold text-white transition hover:bg-white/10"
               >
                 Answer a question
               </Link>
@@ -330,44 +404,15 @@ function Hero({ canAnswer }: { canAnswer: boolean }) {
           </div>
         </div>
         <div className="relative min-h-56 sm:min-h-0">
-          <Image src="/hero.png" alt="Hero" fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover" />
+          <Image
+            src="/hero-ocean.png"
+            alt="Hero"
+            fill
+            sizes="(max-width: 640px) 100vw, 50vw"
+            className="object-cover"
+          />
         </div>
       </div>
     </section>
   );
 }
-
-// function HeroIllustration() {
-//   return (
-//     <svg viewBox="0 0 320 200" className="h-full w-full" aria-hidden="true">
-//       <path
-//         d="M40 140c-20-40 0-100 60-110 40-7 60 10 90 6 40-6 90 30 84 82-6 55-70 76-130 72C90 187 60 180 40 140Z"
-//         fill="#FED7AA"
-//         opacity="0.7"
-//       />
-
-//       {/* Older person */}
-//       <circle cx="112" cy="78" r="24" fill="#FFFFFF" stroke="#C2410C" strokeWidth="3" />
-//       <path d="M88 72c2-18 46-18 48 0" fill="#E5E7EB" stroke="#C2410C" strokeWidth="3" />
-//       <circle cx="104" cy="80" r="2.5" fill="#C2410C" />
-//       <circle cx="120" cy="80" r="2.5" fill="#C2410C" />
-//       <path d="M104 90q8 6 16 0" fill="none" stroke="#C2410C" strokeWidth="2.5" strokeLinecap="round" />
-//       <rect x="84" y="104" width="56" height="66" rx="24" fill="#F97316" />
-
-//       {/* Younger person */}
-//       <circle cx="214" cy="86" r="22" fill="#FFFFFF" stroke="#B45309" strokeWidth="3" />
-//       <path d="M194 80c4-16 36-16 40 0" fill="#7C2D12" stroke="#B45309" strokeWidth="3" />
-//       <circle cx="207" cy="88" r="2.5" fill="#B45309" />
-//       <circle cx="221" cy="88" r="2.5" fill="#B45309" />
-//       <path d="M207 98q7 5 14 0" fill="none" stroke="#B45309" strokeWidth="2.5" strokeLinecap="round" />
-//       <rect x="190" y="110" width="48" height="60" rx="22" fill="#F59E08" />
-
-//       {/* Question bubble */}
-//       <rect x="150" y="28" width="70" height="38" rx="14" fill="#FFFFFF" stroke="#F97316" strokeWidth="3" />
-//       <path d="M168 66l-6 12 16-12" fill="#FFFFFF" stroke="#F97316" strokeWidth="3" strokeLinejoin="round" />
-//       <circle cx="172" cy="47" r="3" fill="#F97316" />
-//       <circle cx="185" cy="47" r="3" fill="#F97316" />
-//       <circle cx="198" cy="47" r="3" fill="#F97316" />
-//     </svg>
-//   );
-// }

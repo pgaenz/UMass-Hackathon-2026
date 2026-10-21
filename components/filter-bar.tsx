@@ -83,10 +83,10 @@ function FilterLink({
       href={href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "inline-flex min-h-10 items-center rounded-full border-2 px-4 py-1.5 text-base font-medium transition",
+        "ripple inline-flex min-h-10 items-center rounded-full px-4 py-1.5 text-base font-medium transition",
         active
-          ? "border-brand bg-brand text-white"
-          : "border-orange-200 bg-surface text-ink hover:border-brand hover:bg-orange-50",
+          ? "border-2 border-brand bg-brand text-white shadow-water"
+          : "border-2 border-seaglass bg-white/60 text-ink backdrop-blur hover:border-brand hover:bg-white/80",
       )}
     >
       {children}

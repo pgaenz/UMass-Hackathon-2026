@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 import { cn } from "@/lib/cn";
 
@@ -21,6 +21,7 @@ export function UpvoteButton({
   const [voted, setVoted] = useState(false);
   const [pending, setPending] = useState(false);
   const storageKey = `historai:upvoted:${questionId}`;
+  const clipId = `drop-${useId().replace(/:/g, "")}`;
 
   useEffect(() => {
     try {
@@ -62,6 +63,8 @@ export function UpvoteButton({
     }
   }
 
+  const dropPath = "M20 3 C 20 3 35 22 35 33 A 15 15 0 1 1 5 33 C 5 22 20 3 20 3 Z";
+
   return (
     <button
       type="button"
@@ -69,18 +72,65 @@ export function UpvoteButton({
       disabled={voted || pending}
       aria-pressed={voted}
       aria-label={voted ? `Upvoted. ${count} votes` : `Upvote this question. ${count} votes`}
-      className={cn(
-        "flex min-h-16 w-16 shrink-0 flex-col items-center justify-center rounded-xl border-2 font-bold transition",
-        voted
-          ? "border-brand bg-brand text-white"
-          : "border-orange-200 bg-surface text-brand hover:border-brand hover:bg-orange-50",
-      )}
+      title={voted ? "Upvoted" : "Upvote"}
+      className="ripple group relative flex h-20 w-16 shrink-0 items-center justify-center rounded-2xl"
     >
-      <span aria-hidden="true" className="text-xl leading-none">
-        ▲
-      </span>
-      <span className="mt-1 text-lg leading-none" aria-live="polite">
-        {count}
+      <svg
+        viewBox="0 0 40 52"
+        className="h-16 w-16 transition-transform duration-200 group-hover:-translate-y-0.5 group-active:translate-y-0"
+        aria-hidden="true"
+      >
+        {/* Clip the rising water to the droplet silhouette */}
+        <defs>
+          <clipPath id={clipId}>
+            <path d={dropPath} />
+          </clipPath>
+        </defs>
+
+        {/* Empty droplet shell */}
+        <path
+          d={dropPath}
+          className="fill-white/70 stroke-seaglass stroke-2 transition-colors group-hover:stroke-accent"
+        />
+
+        {/* Liquid that fills from the bottom up */}
+        <g clipPath={`url(#${clipId})`}>
+          <rect
+            x="0"
+            y="0"
+            width="40"
+            height="52"
+            className={cn("liquid-fill fill-brand", !voted && "liquid-fill--empty")}
+          />
+        </g>
+
+        {/* Crisp outline on top of the water */}
+        <path
+          d={dropPath}
+          className="fill-none stroke-seaglass stroke-2 transition-colors group-hover:stroke-accent"
+        />
+
+        <path
+          d="M20 24 l-4 5 h8 Z"
+          className={cn(
+            "transition-colors duration-500",
+            voted ? "fill-white" : "fill-brand",
+          )}
+        />
+        <text
+          x="20"
+          y="44"
+          textAnchor="middle"
+          className={cn(
+            "text-[13px] font-bold transition-colors duration-500",
+            voted ? "fill-white" : "fill-brand",
+          )}
+        >
+          {count}
+        </text>
+      </svg>
+      <span className="sr-only" aria-live="polite">
+        {count} {count === 1 ? "vote" : "votes"}
       </span>
     </button>
   );

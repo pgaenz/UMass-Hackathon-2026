@@ -62,7 +62,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
       <ArticleRenderer markdown={story.article} />
 
       {question ? (
-        <aside className="rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm">
+        <aside className="rounded-2xl glass shadow-water p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-ink">The question behind this story</h2>
           <p className="mt-2 text-lg text-ink">{question.text}</p>
           <ButtonLink href={`/questions/${question.id}`} variant="secondary" className="mt-4">

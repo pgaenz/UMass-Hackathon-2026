@@ -8,7 +8,7 @@ export default function Error({ reset }: { error: Error; reset: () => void }) {
       <button
         type="button"
         onClick={reset}
-        className="rounded-lg bg-brand px-6 py-3 text-lg font-semibold text-white hover:bg-orange-600"
+        className="ripple rounded-xl bg-sunset px-6 py-3 text-lg font-bold text-ocean shadow-water transition hover:brightness-105"
       >
         Try again
       </button>

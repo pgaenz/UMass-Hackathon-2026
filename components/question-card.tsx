@@ -25,7 +25,7 @@ export function QuestionCard({
   const linkHref = href ?? `/questions/${question.id}`;
 
   return (
-    <article className="flex gap-4 rounded-2xl border border-orange-100 bg-surface p-5 shadow-sm sm:gap-6 sm:p-6">
+    <article className="lift flex gap-4 rounded-2xl glass shadow-water p-5 sm:gap-6 sm:p-6">
       <UpvoteButton questionId={question.id} initialCount={question.upvotes} />
       <div className="min-w-0 flex-1 space-y-3">
         <h2 className="text-xl font-semibold leading-snug text-ink sm:text-2xl">

@@ -8,7 +8,7 @@ export function StoryCard({ story, author }: { story: Story; author?: AuthorRef 
   const title = getArticleTitle(story.article) || story.metadata.topic || "A story from a River";
 
   return (
-    <article className="rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm transition hover:border-brand hover:shadow-md">
+    <article className="lift rounded-2xl glass shadow-water p-6">
       <div className="space-y-3">
         <h2 className="text-2xl font-semibold leading-snug text-ink">
           <Link href={`/youth/${story.id}`} className="underline-offset-4 hover:underline">
@@ -18,7 +18,7 @@ export function StoryCard({ story, author }: { story: Story; author?: AuthorRef 
         {story.metadata.summary ? (
           <p className="text-lg text-ink/70">{story.metadata.summary}</p>
         ) : null}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-base text-gray-500">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-base text-ink/70">
           {story.metadata.topic ? <Badge>{story.metadata.topic}</Badge> : null}
           <time dateTime={story.createdAt}>{formatDate(story.createdAt)}</time>
           {author ? (

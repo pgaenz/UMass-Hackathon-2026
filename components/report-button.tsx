@@ -57,7 +57,7 @@ export function ReportButton({
       <button
         type="button"
         onClick={() => dialogRef.current?.showModal()}
-        className="rounded-lg px-2 py-1 text-base font-medium text-ink/70 underline decoration-orange-300 underline-offset-4 hover:text-ink hover:decoration-ink"
+        className="ripple rounded-lg px-2 py-1 text-base font-medium text-ink/70 underline decoration-seaglass underline-offset-4 hover:text-ink hover:decoration-ink"
       >
         Report
       </button>
@@ -70,7 +70,7 @@ export function ReportButton({
       <dialog
         ref={dialogRef}
         aria-labelledby={titleId}
-        className="w-[min(92vw,32rem)] rounded-2xl border border-orange-100 bg-surface p-0 shadow-xl"
+        className="w-[min(92vw,32rem)] rounded-2xl glass shadow-water p-0 shadow-xl"
       >
         <form onSubmit={handleSubmit} className="space-y-5 p-6">
           <div className="space-y-2">
@@ -87,7 +87,7 @@ export function ReportButton({
             {REASONS.map((option) => (
               <label
                 key={option}
-                className="flex min-h-11 cursor-pointer items-center gap-3 rounded-lg px-2 text-lg text-ink hover:bg-orange-50"
+                className="flex min-h-11 cursor-pointer items-center gap-3 rounded-lg px-2 text-lg text-ink hover:bg-seaglass/25"
               >
                 <input
                   type="radio"
@@ -111,7 +111,7 @@ export function ReportButton({
               value={details}
               onChange={(event) => setDetails(event.target.value)}
               rows={3}
-              className="w-full rounded-xl border-2 border-orange-200 p-3 text-lg text-ink focus:border-brand"
+              className="w-full rounded-xl border-2 border-seaglass p-3 text-lg text-ink focus:border-brand"
             />
           </div>
 

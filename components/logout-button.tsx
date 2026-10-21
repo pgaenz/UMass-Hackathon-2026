@@ -7,7 +7,7 @@ import { useState } from "react";
 import { cn } from "@/lib/cn";
 
 const base =
-  "inline-flex items-center justify-center rounded-xl font-semibold transition disabled:cursor-not-allowed disabled:opacity-60";
+  "ripple inline-flex items-center justify-center rounded-xl font-semibold transition disabled:cursor-not-allowed disabled:opacity-60";
 
 export function LogoutButton({
   compact = false,
@@ -35,8 +35,8 @@ export function LogoutButton({
       className={cn(
         base,
         compact
-          ? "min-h-10 border border-orange-100 bg-canvas px-3 text-sm text-ink hover:bg-orange-50"
-          : "min-h-11 border-2 border-orange-200 bg-surface px-5 py-2.5 text-base text-ink hover:border-brand hover:bg-orange-50",
+          ? "min-h-10 border border-white/20 bg-white/10 px-3 text-sm text-white hover:bg-white/20"
+          : "min-h-11 border border-seaglass bg-white/60 px-5 py-2.5 text-base text-ocean backdrop-blur hover:border-brand hover:bg-white/80",
         className,
       )}
       {...props}

@@ -157,7 +157,7 @@ export function ReviewActions({ storyId, passed }: { storyId: string; passed: bo
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      <section aria-labelledby="recreate-heading" className="space-y-4 rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm">
+      <section aria-labelledby="recreate-heading" className="space-y-4 rounded-2xl glass shadow-water p-6 shadow-sm">
         <div className="space-y-1">
           <h2 id="recreate-heading" className="text-2xl font-semibold text-ink">
             Not quite right?
@@ -175,10 +175,10 @@ export function ReviewActions({ storyId, passed }: { storyId: string; passed: bo
               aria-pressed={mode === option}
               onClick={() => setMode(option)}
               className={cn(
-                "min-h-12 rounded-xl border-2 px-5 py-2.5 text-lg font-semibold transition",
+                "ripple min-h-12 rounded-xl border-2 px-5 py-2.5 text-lg font-semibold transition",
                 mode === option
                   ? "border-brand bg-brand text-white"
-                  : "border-orange-200 bg-surface text-ink hover:border-brand hover:bg-orange-50",
+                  : "border-2 border-seaglass bg-white/60 text-ink backdrop-blur hover:border-brand hover:bg-white/80",
               )}
             >
               {option === "text" ? "Type" : "Record"}
@@ -193,7 +193,7 @@ export function ReviewActions({ storyId, passed }: { storyId: string; passed: bo
             rows={4}
             placeholder="Optional: what would you like changed?"
             aria-label="Your feedback"
-            className="w-full rounded-xl border-2 border-orange-200 p-4 text-lg leading-relaxed text-ink placeholder:text-gray-400 focus:border-brand"
+            className="w-full rounded-xl border-2 border-seaglass p-4 text-lg leading-relaxed text-ink placeholder:text-ink/75 focus:border-brand"
           />
         ) : (
           <div className="space-y-4">
@@ -210,12 +210,12 @@ export function ReviewActions({ storyId, passed }: { storyId: string; passed: bo
               <span
                 role="timer"
                 aria-live="off"
-                className={cn("text-2xl font-bold tabular-nums", recording ? "text-red-700" : "text-ink")}
+                className={cn("text-2xl font-bold tabular-nums", recording ? "text-brand" : "text-ink")}
               >
                 {formatSeconds(seconds)}
               </span>
               {recording ? (
-                <span className="text-lg font-medium text-red-700" aria-live="polite">
+                <span className="text-lg font-medium text-brand" aria-live="polite">
                   Recording…
                 </span>
               ) : null}
@@ -232,16 +232,16 @@ export function ReviewActions({ storyId, passed }: { storyId: string; passed: bo
         </Button>
       </section>
 
-      <section aria-labelledby="publish-heading" className="space-y-4 rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm">
+      <section aria-labelledby="publish-heading" className="space-y-4 rounded-2xl glass shadow-water p-6 shadow-sm">
         <h2 id="publish-heading" className="text-2xl font-semibold text-ink">
           Happy with it?
         </h2>
         {passed ? (
-          <p className="rounded-xl bg-green-50 px-4 py-3 text-lg text-green-900">
+          <p className="rounded-xl bg-seaglass/40 px-4 py-3 text-lg text-ocean">
             The editor review passed. Publish it whenever you are ready.
           </p>
         ) : (
-          <p className="rounded-xl bg-amber-50 px-4 py-3 text-lg text-amber-900">
+          <p className="rounded-xl bg-seaglass/25 px-4 py-3 text-lg text-ocean">
             The editor review found something to fix. You can re-create the story, or publish it
             anyway — it is your story.
           </p>
@@ -261,7 +261,7 @@ export function ReviewActions({ storyId, passed }: { storyId: string; passed: bo
           role={notice.kind === "error" ? "alert" : "status"}
           className={cn(
             "rounded-lg px-4 py-3 text-lg font-medium lg:col-span-2",
-            notice.kind === "error" ? "bg-red-50 text-red-800" : "bg-green-50 text-green-900",
+            notice.kind === "error" ? "bg-brand/15 text-ocean" : "bg-seaglass/40 text-ocean",
           )}
         >
           {notice.message}

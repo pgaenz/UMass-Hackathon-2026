@@ -65,7 +65,7 @@ export function AskQuestionForm({
     return (
       <section
         aria-labelledby="ask-question-heading"
-        className="rounded-2xl border border-orange-100 bg-orange-50 p-6 shadow-sm"
+        className="rounded-2xl border border-seaglass/40 bg-seaglass/25 p-6 shadow-sm"
       >
         <h2 id="ask-question-heading" className="text-2xl font-semibold text-ink">
           Ask a question
@@ -77,7 +77,7 @@ export function AskQuestionForm({
         </p>
         <Link
           href={signedIn ? "/profile" : "/login"}
-          className="mt-4 inline-flex min-h-11 items-center rounded-xl bg-brand px-5 font-semibold text-white transition hover:bg-orange-600"
+          className="ripple mt-4 inline-flex min-h-11 items-center rounded-xl bg-sunset px-5 font-bold text-ocean shadow-water transition hover:brightness-105"
         >
           {signedIn ? "Go to your profile" : "Sign in to ask"}
         </Link>
@@ -86,7 +86,7 @@ export function AskQuestionForm({
   }
 
   return (
-    <section aria-labelledby="ask-question-heading" className="rounded-2xl border border-orange-100 bg-surface p-6 shadow-sm">
+    <section aria-labelledby="ask-question-heading" className="rounded-2xl glass shadow-water p-6 shadow-sm">
       <h2 id="ask-question-heading" className="text-2xl font-semibold text-ink">
         Ask a question
       </h2>
@@ -107,9 +107,9 @@ export function AskQuestionForm({
             maxLength={300}
             placeholder="What was your first job, and how did you get it?"
             aria-describedby="question-hint"
-            className="w-full rounded-xl border-2 border-orange-200 p-4 text-lg text-ink placeholder:text-gray-400 focus:border-brand"
+            className="w-full rounded-xl border-2 border-seaglass p-4 text-lg text-ink placeholder:text-ink/75 focus:border-brand"
           />
-          <p id="question-hint" className="text-base text-gray-500">
+          <p id="question-hint" className="text-base text-ink/70">
             Up to 300 characters.
           </p>
         </div>
@@ -125,8 +125,8 @@ export function AskQuestionForm({
                   className={cn(
                     "flex min-h-11 cursor-pointer items-center gap-2 rounded-full border-2 px-4 py-2 text-lg font-medium transition",
                     active
-                      ? "border-brand bg-orange-50 text-orange-700"
-                      : "border-orange-200 bg-surface text-ink hover:border-brand",
+                      ? "border-brand bg-seaglass/25 text-ocean"
+                      : "border-2 border-seaglass bg-white/60 backdrop-blur text-ink hover:border-brand",
                   )}
                 >
                   <input
@@ -143,12 +143,12 @@ export function AskQuestionForm({
         </fieldset>
 
         {error ? (
-          <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-lg font-medium text-red-800">
+          <p role="alert" className="rounded-lg bg-brand/15 px-4 py-3 text-lg font-medium text-ocean">
             {error}
           </p>
         ) : null}
         {success ? (
-          <p role="status" className="rounded-lg bg-green-50 px-4 py-3 text-lg font-medium text-green-900">
+          <p role="status" className="rounded-lg bg-seaglass/40 px-4 py-3 text-lg font-medium text-ocean">
             {success}
           </p>
         ) : null}

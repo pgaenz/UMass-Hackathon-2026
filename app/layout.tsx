@@ -1,29 +1,46 @@
 import type { Metadata } from "next";
+import { Inter, Playfair_Display } from "next/font/google";
 
+import { PageBackdrop } from "@/components/page-backdrop";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { WaterCursor } from "@/components/water-cursor";
 import { getCurrentUser } from "@/lib/session";
 
 import "./globals.css";
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
-    default: "HistorAI",
+    default: "HistorAI — When I was your age",
     template: "%s · HistorAI",
   },
   description:
-    "When I was your age — seniors answer real questions and AI turns the answers into readable stories.",
+    "Youth ripples joining elder currents — seniors answer real questions and AI turns the answers into readable stories.",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
 
   return (
-    <html lang="en">
-      <body className="flex min-h-screen flex-col">
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+      <body className="relative flex min-h-screen flex-col">
+        <PageBackdrop />
+        <WaterCursor />
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-brand focus:px-4 focus:py-2 focus:text-lg focus:font-semibold focus:text-white"
+          className="ripple sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-ocean focus:px-4 focus:py-2 focus:text-lg focus:font-semibold focus:text-white"
         >
           Skip to content
         </a>

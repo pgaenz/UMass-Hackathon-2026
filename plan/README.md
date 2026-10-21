@@ -25,6 +25,11 @@ The **single build plan** is [`../MVP.md`](../MVP.md). This file only tracks pro
 
 Owners: **A** = AI/backend routes, **B** = UI. 2 people × 15 h = 30 h.
 
+## Companion plans
+
+- [`PROFILES.md`](./PROFILES.md) — login, roles, profiles, ownership.
+- [`SAFETY.md`](./SAFETY.md) — content safety gate for articles, questions, and bios.
+
 ## Definition of Done (MVP)
 
 1. The demo loop in `MVP.md` runs end to end with real audio.

@@ -19,7 +19,7 @@ const ROLES = [
     description:
       "Share the stories and lessons of a lifetime. Answer questions from young people.",
     icon: "🌊",
-    accent: "border-brand hover:bg-orange-50",
+    accent: "border-brand hover:bg-seaglass/25",
   },
   {
     role: "drop",
@@ -28,7 +28,7 @@ const ROLES = [
     description:
       "Ask what you have always wondered, and learn from the people who lived it.",
     icon: "💧",
-    accent: "border-sky-300 hover:bg-sky-50",
+    accent: "border-seaglass hover:bg-seaglass/25",
   },
 ] as const;
 
@@ -39,7 +39,7 @@ export default async function LoginPage() {
   return (
     <div className="mx-auto w-full max-w-4xl space-y-10 px-6 py-14">
       <div className="space-y-3 text-center">
-        <p className="text-sm font-semibold uppercase tracking-wide text-brand">HistorAI</p>
+        <p className="text-sm font-semibold uppercase tracking-wide text-brand">HistorAI · When I was your age</p>
         <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
           How do you want to continue?
         </h1>
@@ -54,9 +54,9 @@ export default async function LoginPage() {
           <Link
             key={option.role}
             href={`/onboarding?role=${option.role}`}
-            className={`flex flex-col gap-4 rounded-3xl border-2 bg-surface p-7 shadow-sm transition ${option.accent}`}
+            className={`ripple flex flex-col gap-4 rounded-3xl border-2 bg-white/60 p-7 shadow-water backdrop-blur transition ${option.accent}`}
           >
-            <span className="grid h-16 w-16 place-items-center rounded-2xl bg-orange-50 text-4xl" aria-hidden="true">
+            <span className="grid h-16 w-16 place-items-center rounded-2xl bg-seaglass/25 text-4xl" aria-hidden="true">
               {option.icon}
             </span>
             <span className="space-y-1">
@@ -71,8 +71,8 @@ export default async function LoginPage() {
         ))}
       </div>
 
-      <div className="space-y-4 border-t border-orange-100 pt-8 text-center">
-        <p className="text-base text-gray-500">
+      <div className="space-y-4 border-t border-seaglass/40 pt-8 text-center">
+        <p className="text-base text-ink/70">
           No password needed for this demo. Visitors can read every story and question,
           but cannot ask or answer.
         </p>
