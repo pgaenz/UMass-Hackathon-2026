@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import Image from "next/image";
 
 import { UpvoteButton } from "@/components/upvote-button";
 import type { Question, Topic } from "@/lib/types";
@@ -279,9 +280,9 @@ function relativeTime(iso: string): string {
 
 function Hero() {
   return (
-    <section className="overflow-hidden rounded-3xl bg-orange-100 p-6 sm:p-8">
-      <div className="grid items-center gap-6 sm:grid-cols-2">
-        <div className="space-y-4">
+    <section className="overflow-hidden rounded-3xl bg-orange-100">
+      <div className="grid items-stretch gap-6 sm:grid-cols-2">
+        <div className="space-y-4 p-6 sm:p-8">
           <span className="inline-flex rounded-full bg-surface/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-brand">
             HistorAI
           </span>
@@ -306,45 +307,45 @@ function Hero() {
             </Link>
           </div>
         </div>
-        <div className="h-48 sm:h-56">
-          <HeroIllustration />
+        <div className="relative min-h-56 sm:min-h-0">
+          <Image src="/hero.png" alt="Hero" fill sizes="(max-width: 640px) 100vw, 50vw" className="object-cover" />
         </div>
       </div>
     </section>
   );
 }
 
-function HeroIllustration() {
-  return (
-    <svg viewBox="0 0 320 200" className="h-full w-full" aria-hidden="true">
-      <path
-        d="M40 140c-20-40 0-100 60-110 40-7 60 10 90 6 40-6 90 30 84 82-6 55-70 76-130 72C90 187 60 180 40 140Z"
-        fill="#FED7AA"
-        opacity="0.7"
-      />
+// function HeroIllustration() {
+//   return (
+//     <svg viewBox="0 0 320 200" className="h-full w-full" aria-hidden="true">
+//       <path
+//         d="M40 140c-20-40 0-100 60-110 40-7 60 10 90 6 40-6 90 30 84 82-6 55-70 76-130 72C90 187 60 180 40 140Z"
+//         fill="#FED7AA"
+//         opacity="0.7"
+//       />
 
-      {/* Older person */}
-      <circle cx="112" cy="78" r="24" fill="#FFFFFF" stroke="#C2410C" strokeWidth="3" />
-      <path d="M88 72c2-18 46-18 48 0" fill="#E5E7EB" stroke="#C2410C" strokeWidth="3" />
-      <circle cx="104" cy="80" r="2.5" fill="#C2410C" />
-      <circle cx="120" cy="80" r="2.5" fill="#C2410C" />
-      <path d="M104 90q8 6 16 0" fill="none" stroke="#C2410C" strokeWidth="2.5" strokeLinecap="round" />
-      <rect x="84" y="104" width="56" height="66" rx="24" fill="#F97316" />
+//       {/* Older person */}
+//       <circle cx="112" cy="78" r="24" fill="#FFFFFF" stroke="#C2410C" strokeWidth="3" />
+//       <path d="M88 72c2-18 46-18 48 0" fill="#E5E7EB" stroke="#C2410C" strokeWidth="3" />
+//       <circle cx="104" cy="80" r="2.5" fill="#C2410C" />
+//       <circle cx="120" cy="80" r="2.5" fill="#C2410C" />
+//       <path d="M104 90q8 6 16 0" fill="none" stroke="#C2410C" strokeWidth="2.5" strokeLinecap="round" />
+//       <rect x="84" y="104" width="56" height="66" rx="24" fill="#F97316" />
 
-      {/* Younger person */}
-      <circle cx="214" cy="86" r="22" fill="#FFFFFF" stroke="#B45309" strokeWidth="3" />
-      <path d="M194 80c4-16 36-16 40 0" fill="#7C2D12" stroke="#B45309" strokeWidth="3" />
-      <circle cx="207" cy="88" r="2.5" fill="#B45309" />
-      <circle cx="221" cy="88" r="2.5" fill="#B45309" />
-      <path d="M207 98q7 5 14 0" fill="none" stroke="#B45309" strokeWidth="2.5" strokeLinecap="round" />
-      <rect x="190" y="110" width="48" height="60" rx="22" fill="#F59E08" />
+//       {/* Younger person */}
+//       <circle cx="214" cy="86" r="22" fill="#FFFFFF" stroke="#B45309" strokeWidth="3" />
+//       <path d="M194 80c4-16 36-16 40 0" fill="#7C2D12" stroke="#B45309" strokeWidth="3" />
+//       <circle cx="207" cy="88" r="2.5" fill="#B45309" />
+//       <circle cx="221" cy="88" r="2.5" fill="#B45309" />
+//       <path d="M207 98q7 5 14 0" fill="none" stroke="#B45309" strokeWidth="2.5" strokeLinecap="round" />
+//       <rect x="190" y="110" width="48" height="60" rx="22" fill="#F59E08" />
 
-      {/* Question bubble */}
-      <rect x="150" y="28" width="70" height="38" rx="14" fill="#FFFFFF" stroke="#F97316" strokeWidth="3" />
-      <path d="M168 66l-6 12 16-12" fill="#FFFFFF" stroke="#F97316" strokeWidth="3" strokeLinejoin="round" />
-      <circle cx="172" cy="47" r="3" fill="#F97316" />
-      <circle cx="185" cy="47" r="3" fill="#F97316" />
-      <circle cx="198" cy="47" r="3" fill="#F97316" />
-    </svg>
-  );
-}
+//       {/* Question bubble */}
+//       <rect x="150" y="28" width="70" height="38" rx="14" fill="#FFFFFF" stroke="#F97316" strokeWidth="3" />
+//       <path d="M168 66l-6 12 16-12" fill="#FFFFFF" stroke="#F97316" strokeWidth="3" strokeLinejoin="round" />
+//       <circle cx="172" cy="47" r="3" fill="#F97316" />
+//       <circle cx="185" cy="47" r="3" fill="#F97316" />
+//       <circle cx="198" cy="47" r="3" fill="#F97316" />
+//     </svg>
+//   );
+// }

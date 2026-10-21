@@ -97,7 +97,9 @@
       ],
       "askedBy": null,
       "upvotes": 29,
-      "storyIds": [],
+      "storyIds": [
+        "c8e8ec96-2aa3-4e04-bc40-6e744054edbb"
+      ],
       "createdAt": "2026-01-10T09:20:00.000Z"
     },
     {
@@ -119,7 +121,9 @@
       ],
       "askedBy": null,
       "upvotes": 24,
-      "storyIds": [],
+      "storyIds": [
+        "494c10c5-5eb0-499d-a554-a2866abe17f0"
+      ],
       "createdAt": "2026-01-10T09:30:00.000Z"
     },
     {
@@ -165,7 +169,11 @@
       ],
       "askedBy": null,
       "upvotes": 17,
-      "storyIds": [],
+      "storyIds": [
+        "b535c2ff-0d49-4ed5-a37c-c7469bdd6d0f",
+        "24aa29f4-67b3-46ba-a2c1-b23e11b47754",
+        "cd3029b1-0042-47b5-98c1-13cdeb165eb9"
+      ],
       "createdAt": "2026-01-10T09:50:00.000Z"
     },
     {

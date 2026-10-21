@@ -8,15 +8,18 @@ export interface ChatMessage {
 export const DEFAULT_TEMPERATURE = 0.4;
 const REQUEST_TIMEOUT_MS = 30_000;
 
+interface ChatOptions {
+  model?: string;
+  temperature?: number;
+  timeoutMs?: number;
+}
+
 interface ChatCompletionResponse {
   choices?: Array<{ message?: { content?: string } }>;
   error?: { message?: string };
 }
 
-export async function chat(
-  messages: ChatMessage[],
-  opts: { model?: string; temperature?: number } = {},
-): Promise<string> {
+export async function chat(messages: ChatMessage[], opts: ChatOptions = {}): Promise<string> {
   const res = await fetch(`${config.baseUrl}/chat/completions`, {
     method: "POST",
     headers: {
@@ -28,7 +31,7 @@ export async function chat(
       messages,
       temperature: opts.temperature ?? DEFAULT_TEMPERATURE,
     }),
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    signal: AbortSignal.timeout(opts.timeoutMs ?? REQUEST_TIMEOUT_MS),
   });
 
   const body = (await res.json().catch(() => null)) as ChatCompletionResponse | null;
