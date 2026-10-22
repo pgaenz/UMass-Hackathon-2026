@@ -6,6 +6,8 @@ export async function getPublishedStories(): Promise<Story[]> {
   const stories = await getAllStories();
   return stories
     .filter((story) => story.status === "published")
+    // Defense in depth: a hard safety block can never reach the feed.
+    .filter((story) => story.safety?.verdict !== "block")
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 

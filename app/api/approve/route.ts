@@ -36,6 +36,17 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ error: "There is no article to publish yet" }, { status: 409 });
   }
 
+  // A hard safety violation can never be published, even with an explicit override.
+  if (story.safety?.verdict === "block") {
+    return Response.json(
+      {
+        error:
+          "This story contains something that cannot be published. Re-create it without the flagged part, or change your answer.",
+      },
+      { status: 409 },
+    );
+  }
+
   const reviewPassed = story.review?.verdict === "pass";
   if (!reviewPassed && body?.override !== true) {
     return Response.json(

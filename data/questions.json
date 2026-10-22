@@ -87,7 +87,8 @@
       "askedBy": "u-seed-diego",
       "upvotes": 31,
       "storyIds": [
-        "296bb2ff-e540-4d0a-9ce1-74aad4b91720"
+        "296bb2ff-e540-4d0a-9ce1-74aad4b91720",
+        "64113e58-9b81-4998-980f-5f18729572b2"
       ],
       "createdAt": "2026-01-10T09:15:00.000Z"
     },
@@ -201,7 +202,9 @@
       ],
       "askedBy": null,
       "upvotes": 13,
-      "storyIds": [],
+      "storyIds": [
+        "de5be242-4e2a-4a70-9cdd-2eefcc14812f"
+      ],
       "createdAt": "2026-01-10T10:00:00.000Z"
     },
     {

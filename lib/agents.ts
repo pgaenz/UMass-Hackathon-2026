@@ -1,10 +1,21 @@
 import { chat } from "./openai";
 import { loadPrompt } from "./prompts";
-import type { ReviewIssue, ReviewIssueType, ReviewResult, StoryMetadata } from "./types";
+import type {
+  ReviewIssue,
+  ReviewIssueType,
+  ReviewResult,
+  SafetyCategory,
+  SafetyIssue,
+  SafetyResult,
+  SafetySeverity,
+  SafetyVerdict,
+  StoryMetadata,
+} from "./types";
 
 const MAX_TRANSCRIPT_CHARS = 6_000;
 const WRITE_TIMEOUT_MS = 60_000;
 const REVIEW_TIMEOUT_MS = 45_000;
+const SAFETY_TIMEOUT_MS = 30_000;
 
 export interface ArticleDraft {
   article: string;
@@ -89,6 +100,7 @@ export async function reviseArticle(input: {
   conversationContext?: string | null;
   article: string;
   review: ReviewResult | null;
+  safety?: SafetyResult | null;
   feedback: string[];
 }): Promise<ArticleDraft> {
   const system = await loadPrompt("revision_agent");
@@ -102,6 +114,15 @@ export async function reviseArticle(input: {
       })
     : "(none)";
 
+  const safetyText =
+    input.safety && input.safety.issues.length > 0
+      ? JSON.stringify({
+          verdict: input.safety.verdict,
+          summary: input.safety.summary,
+          issues: input.safety.issues,
+        })
+      : "(none)";
+
   const seniorFeedback = input.feedback
     .map((entry) => `- ${entry}`)
     .join("\n")
@@ -112,6 +133,7 @@ export async function reviseArticle(input: {
     contextBlock(input.conversationContext),
     `CURRENT ARTICLE:\n${input.article}`,
     `REVIEW AGENT FEEDBACK:\n${reviewText}`,
+    `SAFETY AGENT FEEDBACK:\n${safetyText}`,
     `SENIOR FEEDBACK:\n${seniorFeedback}`,
   ]
     .filter(Boolean)
@@ -187,4 +209,137 @@ export async function reviewArticle(input: {
       : "Some parts need another look.");
 
   return { score, verdict, summary, issues, createdAt: new Date().toISOString() };
+}
+
+// ---------------------------------------------------------------------------
+// Safety agent (family-friendly / non-graphic / non-instructional gate)
+// ---------------------------------------------------------------------------
+
+const SAFETY_CATEGORIES: SafetyCategory[] = [
+  "profanity",
+  "sexual",
+  "violence",
+  "hate",
+  "harassment",
+  "self_harm",
+  "illegal_instructions",
+  "graphic",
+  "pii",
+  "other",
+];
+
+const SAFETY_SEVERITIES: SafetySeverity[] = ["soft", "hard"];
+
+function toSafetyIssues(value: unknown): SafetyIssue[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  const issues: SafetyIssue[] = [];
+  for (const entry of value) {
+    if (typeof entry !== "object" || entry === null) {
+      continue;
+    }
+    const record = entry as Record<string, unknown>;
+    const category = asString(record.category) as SafetyCategory;
+    const severity = asString(record.severity) as SafetySeverity;
+    const detail = asString(record.detail);
+    if (
+      !SAFETY_CATEGORIES.includes(category) ||
+      !SAFETY_SEVERITIES.includes(severity) ||
+      !detail
+    ) {
+      continue;
+    }
+    const excerpt = asString(record.excerpt);
+    issues.push(excerpt ? { category, severity, detail, excerpt } : { category, severity, detail });
+  }
+  return issues;
+}
+
+/**
+ * Independent safety review. Runs BEFORE the grounding review: if the content is
+ * not safe, there is no point checking whether it is faithful. The verdict is
+ * derived server-side (not trusted from the model) so a hard issue always blocks.
+ */
+export async function checkSafety(input: {
+  content: string;
+  kind: "article" | "question" | "bio";
+  context?: string | null;
+}): Promise<SafetyResult> {
+  const system = await loadPrompt("safety_agent");
+
+  const parts = [
+    `CONTENT KIND: ${input.kind}`,
+    `CONTENT TO JUDGE:\n${input.content}`,
+  ];
+  const context = input.context?.trim();
+  if (context) {
+    parts.push(
+      `CONTEXT (original transcript; do NOT judge this, use it only to tell a faithful retelling from an instruction):\n${context.slice(0, MAX_TRANSCRIPT_CHARS)}`,
+    );
+  }
+
+  const raw = await chat(
+    [
+      { role: "system", content: system },
+      { role: "user", content: parts.join("\n\n") },
+    ],
+    { temperature: 0, timeoutMs: SAFETY_TIMEOUT_MS },
+  );
+
+  const parsed = parseJsonObject(raw);
+  const issues = toSafetyIssues(parsed.issues);
+
+  const verdict: SafetyVerdict = issues.some((issue) => issue.severity === "hard")
+    ? "block"
+    : issues.some((issue) => issue.severity === "soft")
+      ? "revise"
+      : "allow";
+
+  const summary =
+    asString(parsed.summary) ||
+    (verdict === "allow"
+      ? "This looks safe to publish."
+      : "Some parts are not ready to publish yet.");
+
+  return { verdict, issues, summary, createdAt: new Date().toISOString() };
+}
+
+/**
+ * Cleans up a short piece of user text (a question or a bio) using the safety
+ * agent's feedback. Used for soft issues so the author's text can still be
+ * published. Returns an empty string when nothing safe remains.
+ */
+export async function rewriteForSafety(input: {
+  content: string;
+  kind: "question" | "bio";
+  safety: SafetyResult;
+}): Promise<string> {
+  const system = await loadPrompt("safety_rewrite_agent");
+
+  const issues = input.safety.issues
+    .map(
+      (issue) =>
+        `- [${issue.category}/${issue.severity}] ${issue.detail}${
+          issue.excerpt ? ` (excerpt: "${issue.excerpt}")` : ""
+        }`,
+    )
+    .join("\n");
+
+  const raw = await chat(
+    [
+      { role: "system", content: system },
+      {
+        role: "user",
+        content: `KIND: ${input.kind}\n\nTEXT TO CLEAN:\n${input.content}\n\nSAFETY ISSUES TO FIX:\n${issues || "- (none)"}`,
+      },
+    ],
+    { temperature: 0, timeoutMs: SAFETY_TIMEOUT_MS },
+  );
+
+  return raw
+    .trim()
+    .replace(/^```(?:[a-z]+)?/i, "")
+    .replace(/```$/, "")
+    .trim();
 }

@@ -61,6 +61,45 @@ export default async function ReviewStoryPage({ params }: { params: Promise<{ id
         </section>
       </div>
 
+      {story.safety ? (
+        <section className="space-y-4 rounded-2xl glass shadow-water p-6 shadow-sm">
+          <div className="flex flex-wrap items-center gap-3">
+            <h2 className="text-2xl font-semibold text-ink">Safety check</h2>
+            <Badge
+              className={
+                story.safety.verdict === "allow"
+                  ? "bg-brand/15 text-brand"
+                  : "bg-brand/20 text-ocean"
+              }
+            >
+              {story.safety.verdict === "allow"
+                ? "Safe to publish"
+                : story.safety.verdict === "block"
+                  ? "Cannot publish"
+                  : "Needs a small change"}
+            </Badge>
+          </div>
+          <p className="text-lg text-ink">{story.safety.summary}</p>
+          {story.safety.issues.length > 0 ? (
+            <ul className="space-y-3">
+              {story.safety.issues.map((issue, index) => (
+                <li key={index} className="rounded-xl border border-seaglass/40 bg-seaglass/25 p-4">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-brand">
+                    {issue.category.replace("_", " ")} · {issue.severity}
+                  </p>
+                  <p className="mt-1 text-lg text-ink">{issue.detail}</p>
+                  {issue.excerpt ? (
+                    <blockquote className="mt-2 border-l-4 border-seaglass pl-3 text-base italic text-ink/70">
+                      “{issue.excerpt}”
+                    </blockquote>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </section>
+      ) : null}
+
       {review ? (
         <section className="space-y-4 rounded-2xl glass shadow-water p-6 shadow-sm">
           <div className="flex flex-wrap items-center gap-3">
@@ -106,7 +145,11 @@ export default async function ReviewStoryPage({ params }: { params: Promise<{ id
       ) : null}
 
       {story.status !== "published" ? (
-        <ReviewActions storyId={story.id} passed={Boolean(passed)} />
+        <ReviewActions
+          storyId={story.id}
+          passed={Boolean(passed)}
+          safetyBlocked={story.safety?.verdict === "block"}
+        />
       ) : null}
     </div>
   );

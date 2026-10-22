@@ -16,7 +16,15 @@ function formatSeconds(total: number): string {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
-export function ReviewActions({ storyId, passed }: { storyId: string; passed: boolean }) {
+export function ReviewActions({
+  storyId,
+  passed,
+  safetyBlocked,
+}: {
+  storyId: string;
+  passed: boolean;
+  safetyBlocked: boolean;
+}) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("text");
   const [feedback, setFeedback] = useState("");
@@ -236,7 +244,12 @@ export function ReviewActions({ storyId, passed }: { storyId: string; passed: bo
         <h2 id="publish-heading" className="text-2xl font-semibold text-ink">
           Happy with it?
         </h2>
-        {passed ? (
+        {safetyBlocked ? (
+          <p className="rounded-xl bg-brand/15 px-4 py-3 text-lg text-ocean">
+            This story contains something that cannot be published. Re-create it without the
+            flagged part, or change your answer. It cannot be published as it is.
+          </p>
+        ) : passed ? (
           <p className="rounded-xl bg-seaglass/40 px-4 py-3 text-lg text-ocean">
             The editor review passed. Publish it whenever you are ready.
           </p>
@@ -246,14 +259,16 @@ export function ReviewActions({ storyId, passed }: { storyId: string; passed: bo
             anyway — it is your story.
           </p>
         )}
-        <Button
-          size="lg"
-          variant={passed ? "primary" : "secondary"}
-          onClick={publish}
-          disabled={working}
-        >
-          {busy === "publishing" ? "Publishing…" : passed ? "Publish story" : "Publish anyway"}
-        </Button>
+        {safetyBlocked ? null : (
+          <Button
+            size="lg"
+            variant={passed ? "primary" : "secondary"}
+            onClick={publish}
+            disabled={working}
+          >
+            {busy === "publishing" ? "Publishing…" : passed ? "Publish story" : "Publish anyway"}
+          </Button>
+        )}
       </section>
 
       {notice ? (
