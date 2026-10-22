@@ -80,6 +80,31 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
         </nav>
 
         <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/help"
+            aria-current={pathname === "/help" ? "page" : undefined}
+            title="Help and frequently asked questions"
+            className={
+              pathname === "/help"
+                ? "ripple flex min-h-10 items-center gap-2 rounded-xl bg-white px-3 text-sm font-bold text-ocean"
+                : "ripple flex min-h-10 items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-3 text-sm font-semibold text-white transition hover:bg-white/20"
+            }
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="M9.6 9.2a2.5 2.5 0 1 1 3.7 2.3c-.8.4-1.3 1-1.3 1.9" strokeLinecap="round" />
+              <path d="M12 17h.01" strokeLinecap="round" />
+            </svg>
+            <span>Help</span>
+          </Link>
+
           <TextSizeToggle />
 
           <button

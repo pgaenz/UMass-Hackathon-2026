@@ -154,6 +154,7 @@ Article appears in the youth feed
 | `/youth/[id]` | Read a published story |
 | `/profile` | Edit your own profile |
 | `/profile/[id]` | Public profile |
+| `/help` | Help and frequently asked questions |
 
 ### API routes
 

@@ -214,7 +214,7 @@ Run `checkSafety({ content: text, kind: "question" })` **before** `createQuestio
 
 No review agent is called for questions.
 
-### 5.4 Profile bios — `app/api/auth/profile/route.ts`
+### 5.4 Profile fields — `app/api/auth/profile/route.ts`
 
 When `body.bio` is present, run `checkSafety({ content: bio, kind: "bio" })`:
 
@@ -223,7 +223,15 @@ When `body.bio` is present, run `checkSafety({ content: bio, kind: "bio" })`:
 - `block` → `422`, do not update, return the safety `summary` so
   `components/profile-form.tsx` shows the reason.
 
-(`name` is out of scope for this iteration; note it as a follow-up.)
+When `body.name` is present, run `checkSafety({ content: name, kind: "name" })`:
+
+- `allow` → save.
+- Anything else (`revise` or `block`) → `422`, do not update, return the safety
+  `summary`. A name is not auto-revised: a display name is public and shortening or
+  cleaning it would silently change the person's identity.
+
+The same name gate runs in `app/api/auth/login/route.ts` before `createUser`, so a
+display name cannot be created with harmful content in the first place.
 
 ### 5.5 Feed defense-in-depth (optional)
 
@@ -257,7 +265,7 @@ match, but it is cheap insurance.
 | S3 | Safety-first story pipeline + persist + approve gate | `app/api/generate/route.ts`, `app/api/approve/route.ts`, `lib/store.ts` |
 | S4 | Review UI: safety panel, block/revise states, re-create action | `app/senior/review/[id]/page.tsx`, `components/review-actions.tsx` |
 | S5 | Questions gate | `app/api/questions/route.ts`, `components/ask-question-form.tsx` |
-| S6 | Profile bio gate | `app/api/auth/profile/route.ts`, `components/profile-form.tsx` |
+| S6 | Profile bio + display-name gate | `app/api/auth/profile/route.ts`, `app/api/auth/login/route.ts`, `components/profile-form.tsx` |
 | S7 | Legacy defaults (+ optional backfill script) | `lib/store.ts`, `scripts/` |
 | S8 | Manual test cases + demo rehearsal | tests / docs |
 
@@ -277,6 +285,9 @@ match, but it is cheap insurance.
   preserved).
 - **AC-S6** — A safety-agent timeout/failure fails closed: nothing publishable is created.
 - **AC-S7** — English-only detection is documented in the prompt and this plan.
+- **AC-S8** — A display name containing a slur, sexual content, threat, or other harmful
+  content is rejected (`422`) at signup and on profile edit; ordinary names, including
+  real names that match crude words, are accepted.
 
 ---
 
@@ -285,6 +296,7 @@ match, but it is cheap insurance.
 | Risk | Mitigation |
 |------|------------|
 | False positives on oral-history content | Prompt distinguishes depiction from instruction; soft tier; user can rephrase or re-create |
+| False positives on a real name | Prompt allows ordinary given names/surnames that match crude words; a rejected user is asked to choose another name |
 | Auto-revision loop / latency | Cap at one pass; safety runs before review so failures skip the review call |
 | Silently rewriting a Drop's question or a bio | Soft sanitize returns the new text; hard always rejects |
 | Legacy rows fail open | Accepted for the demo; optional backfill script |
@@ -299,7 +311,7 @@ match, but it is cheap insurance.
 - Dedicated moderation model or provider endpoint.
 - Admin/moderator review queue and override tooling.
 - Backfill of historical articles (optional script only).
-- Checking `name`, interests, and other profile fields.
+- Checking `interests` and other profile fields.
 - Re-running safety on already-published legacy stories.
 
 ---
