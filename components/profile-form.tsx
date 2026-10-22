@@ -48,9 +48,14 @@ export function ProfileForm({ user, topics }: { user: User; topics: Topic[] }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, age: ageNumber, bio, interests }),
       });
-      const data = (await res.json().catch(() => null)) as { error?: string } | null;
+      const data = (await res.json().catch(() => null)) as {
+        error?: string;
+        notice?: string;
+        user?: { bio?: string };
+      } | null;
       if (!res.ok) throw new Error(data?.error ?? "We could not save your profile.");
-      setNotice({ kind: "success", message: "Your profile is saved." });
+      if (typeof data?.user?.bio === "string") setBio(data.user.bio);
+      setNotice({ kind: "success", message: data?.notice ?? "Your profile is saved." });
       router.refresh();
     } catch (err) {
       setNotice({

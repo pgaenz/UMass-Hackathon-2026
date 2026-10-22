@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
-import { reviewArticle, reviseArticle, writeArticle } from "@/lib/agents";
+import { checkSafety, reviewArticle, reviseArticle, writeArticle } from "@/lib/agents";
 import { authorize } from "@/lib/session";
 import { appendFeedback, getStory, updateStory } from "@/lib/store";
 import { transcribe } from "@/lib/transcribe";
@@ -59,20 +59,52 @@ async function runPipeline(
 
   const hasArticle = Boolean(story.article.trim());
 
+  const allFeedback = [
+    ...story.feedback.map((entry) => entry.text),
+    ...(feedbackEntry ? [feedbackEntry.text] : []),
+  ].filter(Boolean);
+
   // First submission → write. Otherwise → revise using every round of feedback.
-  const draft = hasArticle
+  let draft = hasArticle
     ? await reviseArticle({
         transcript: story.transcript,
         conversationContext: story.conversationContext,
         article: story.article,
         review: story.review,
-        feedback: [...story.feedback.map((entry) => entry.text), ...(feedbackEntry ? [feedbackEntry.text] : [])].filter(
-          Boolean,
-        ),
+        safety: story.safety,
+        feedback: allFeedback,
       })
     : await writeArticle(story.transcript, story.conversationContext);
 
-  const review = await reviewArticle({ transcript: story.transcript, article: draft.article });
+  // Safety runs FIRST: an unsafe article never reaches the grounding review.
+  let safety = await checkSafety({
+    content: draft.article,
+    kind: "article",
+    context: story.transcript,
+  });
+
+  // Soft safety issues (e.g. mild profanity) get one automatic cleanup pass.
+  if (safety.verdict === "revise") {
+    const cleaned = await reviseArticle({
+      transcript: story.transcript,
+      conversationContext: story.conversationContext,
+      article: draft.article,
+      review: story.review,
+      safety,
+      feedback: allFeedback,
+    });
+    draft = cleaned;
+    safety = await checkSafety({
+      content: cleaned.article,
+      kind: "article",
+      context: story.transcript,
+    });
+  }
+
+  const review =
+    safety.verdict === "allow"
+      ? await reviewArticle({ transcript: story.transcript, article: draft.article })
+      : null;
 
   if (feedbackEntry) {
     await appendFeedback(id, feedbackEntry);
@@ -82,12 +114,13 @@ async function runPipeline(
     article: draft.article,
     metadata: draft.metadata,
     review,
-    groundingScore: review.score,
-    status: review.verdict === "pass" ? "reviewed" : "draft",
+    safety,
+    groundingScore: review?.score ?? 0,
+    status: review?.verdict === "pass" ? "reviewed" : "draft",
   });
 
   return Response.json(
-    { story: updated ?? ({ ...story, ...draft, review } satisfies Story) },
+    { story: updated ?? ({ ...story, ...draft, review, safety } satisfies Story) },
     { status: 200 },
   );
 }

@@ -48,11 +48,14 @@ export function AskQuestionForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text, topicIds: selectedTopics }),
       });
-      const data = (await res.json().catch(() => null)) as { error?: string } | null;
+      const data = (await res.json().catch(() => null)) as {
+        error?: string;
+        notice?: string;
+      } | null;
       if (!res.ok) throw new Error(data?.error ?? "We could not post your question.");
       setText("");
       setSelectedTopics([]);
-      setSuccess("Your question was posted. Thank you!");
+      setSuccess(data?.notice ?? "Your question was posted. Thank you!");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");

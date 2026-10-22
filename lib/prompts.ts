@@ -10,6 +10,8 @@ export type PromptName =
   | "writing_agent"
   | "review_agent"
   | "revision_agent"
+  | "safety_agent"
+  | "safety_rewrite_agent"
   | "conversation_agent";
 
 const PROMPTS_DIR = path.join(process.cwd(), "prompts");

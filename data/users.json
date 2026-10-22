@@ -78,6 +78,27 @@
         "travel"
       ],
       "createdAt": "2026-10-21T23:12:59.619Z"
+    },
+    {
+      "id": "u-3da1bddc-3258-4549-a730-ab9cdb8e6bd8",
+      "role": "river",
+      "name": "MM",
+      "age": 65,
+      "bio": "",
+      "interests": [
+        "childhood",
+        "advice"
+      ],
+      "createdAt": "2026-10-21T23:42:46.949Z"
+    },
+    {
+      "id": "u-8d39b7fc-2fdb-44f2-bdf7-b0b49665803b",
+      "role": "river",
+      "name": "Louis",
+      "age": 67,
+      "bio": "",
+      "interests": [],
+      "createdAt": "2026-10-22T18:25:04.622Z"
     }
   ]
 }

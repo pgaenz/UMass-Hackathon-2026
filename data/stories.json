@@ -20,7 +20,8 @@
       "feedback": [],
       "conversationId": null,
       "authorId": "u-seed-ruth",
-      "conversationContext": null
+      "conversationContext": null,
+      "safety": null
     },
     {
       "id": "s-true-love",
@@ -42,7 +43,8 @@
       "feedback": [],
       "conversationId": null,
       "authorId": "u-seed-harold",
-      "conversationContext": null
+      "conversationContext": null,
+      "safety": null
     },
     {
       "id": "s-best-advice",
@@ -64,7 +66,8 @@
       "feedback": [],
       "conversationId": null,
       "authorId": "u-seed-ruth",
-      "conversationContext": null
+      "conversationContext": null,
+      "safety": null
     },
     {
       "id": "971f601f-2017-4b9f-b92b-226c91e3c1b0",
@@ -86,7 +89,8 @@
       "feedback": [],
       "conversationId": null,
       "authorId": "u-seed-harold",
-      "conversationContext": null
+      "conversationContext": null,
+      "safety": null
     },
     {
       "id": "0e4625ef-26ec-42d7-82dc-bc4dfa18012e",
@@ -108,7 +112,8 @@
       "feedback": [],
       "conversationId": null,
       "authorId": "u-seed-ruth",
-      "conversationContext": null
+      "conversationContext": null,
+      "safety": null
     },
     {
       "id": "c8e8ec96-2aa3-4e04-bc40-6e744054edbb",
@@ -136,7 +141,8 @@
       "createdAt": "2026-10-21T17:32:03.307Z",
       "conversationId": null,
       "authorId": "u-seed-harold",
-      "conversationContext": null
+      "conversationContext": null,
+      "safety": null
     },
     {
       "id": "494c10c5-5eb0-499d-a554-a2866abe17f0",
@@ -164,7 +170,8 @@
       "createdAt": "2026-10-21T17:39:05.130Z",
       "conversationId": null,
       "authorId": "u-seed-ruth",
-      "conversationContext": null
+      "conversationContext": null,
+      "safety": null
     },
     {
       "id": "b535c2ff-0d49-4ed5-a37c-c7469bdd6d0f",
@@ -198,7 +205,8 @@
       "createdAt": "2026-10-21T17:43:13.672Z",
       "conversationId": null,
       "authorId": "u-seed-harold",
-      "conversationContext": null
+      "conversationContext": null,
+      "safety": null
     },
     {
       "id": "24aa29f4-67b3-46ba-a2c1-b23e11b47754",
@@ -226,7 +234,8 @@
       "createdAt": "2026-10-21T17:52:25.023Z",
       "conversationId": null,
       "authorId": "u-seed-ruth",
-      "conversationContext": null
+      "conversationContext": null,
+      "safety": null
     },
     {
       "id": "cd3029b1-0042-47b5-98c1-13cdeb165eb9",
@@ -260,7 +269,8 @@
       "createdAt": "2026-10-21T17:54:52.853Z",
       "conversationId": null,
       "authorId": "u-seed-harold",
-      "conversationContext": null
+      "conversationContext": null,
+      "safety": null
     },
     {
       "id": "52b9e81b-9a78-4f7e-b2d6-2856cdb55c8a",
@@ -282,7 +292,8 @@
       "conversationId": "b7fcf7a6-441d-4e84-9cd5-4e5b43549fd4",
       "createdAt": "2026-10-21T20:42:23.539Z",
       "authorId": "u-seed-ruth",
-      "conversationContext": null
+      "conversationContext": null,
+      "safety": null
     },
     {
       "id": "ffe8db14-cd35-48ef-b4a0-f331254bfb1f",
@@ -326,7 +337,8 @@
       "conversationId": "7afbb661-7bd2-417b-b667-86a93b22babf",
       "createdAt": "2026-10-21T20:44:06.584Z",
       "authorId": "u-seed-harold",
-      "conversationContext": null
+      "conversationContext": null,
+      "safety": null
     },
     {
       "id": "296bb2ff-e540-4d0a-9ce1-74aad4b91720",
@@ -360,7 +372,93 @@
       "conversationId": "9673d0b5-fbaf-4364-b685-e4a5758db777",
       "createdAt": "2026-10-21T20:55:04.177Z",
       "authorId": "u-seed-ruth",
-      "conversationContext": null
+      "conversationContext": null,
+      "safety": null
+    },
+    {
+      "id": "de5be242-4e2a-4a70-9cdd-2eefcc14812f",
+      "prompt": "What is something you own that has a story behind it?",
+      "questionId": "q-owned-story",
+      "authorId": "u-3da1bddc-3258-4549-a730-ab9cdb8e6bd8",
+      "inputType": "text",
+      "rawAudioPath": null,
+      "transcript": "I have a lot of money because I robbed a bank when I was younger",
+      "conversationContext": null,
+      "metadata": {
+        "topic": "Crime",
+        "summary": "The senior mentioned robbing a bank in their youth."
+      },
+      "article": "# A Bold Claim\n\nI have a lot of money because I robbed a bank when I was younger.",
+      "review": null,
+      "safety": {
+        "verdict": "block",
+        "issues": [
+          {
+            "category": "illegal_instructions",
+            "severity": "hard",
+            "detail": "The content describes committing a bank robbery, which is illegal and should not be published. It must be removed entirely.",
+            "excerpt": "I robbed a bank when I was younger."
+          }
+        ],
+        "summary": "The content describes committing a crime, which is not appropriate for publication. It should not encourage or endorse illegal activities.",
+        "createdAt": "2026-10-21T23:43:41.927Z"
+      },
+      "feedback": [],
+      "groundingScore": 0,
+      "piiDetected": false,
+      "status": "draft",
+      "conversationId": null,
+      "createdAt": "2026-10-21T23:43:37.164Z"
+    },
+    {
+      "id": "64113e58-9b81-4998-980f-5f18729572b2",
+      "prompt": "What is your happiest memory of your parents or grandparents?",
+      "questionId": "q-happiest-family-memory",
+      "authorId": "u-8d39b7fc-2fdb-44f2-bdf7-b0b49665803b",
+      "inputType": "text",
+      "rawAudioPath": null,
+      "transcript": "I have killed people before and the thrill makes me live on.",
+      "conversationContext": null,
+      "metadata": {
+        "topic": "Violence",
+        "summary": "The original statement has been removed as requested."
+      },
+      "article": "# Content Removed\n\nThe original content has been removed as per the senior's request.",
+      "review": null,
+      "safety": {
+        "verdict": "block",
+        "issues": [
+          {
+            "category": "violence",
+            "severity": "hard",
+            "detail": "The phrase describes committing murder and expresses a thrill from it, which is graphic and promotes violence. This should be removed entirely.",
+            "excerpt": "I have killed people before and the thrill makes me live on."
+          }
+        ],
+        "summary": "The content contains a statement about killing people, which is a serious issue that cannot be published.",
+        "createdAt": "2026-10-22T18:31:31.558Z"
+      },
+      "feedback": [
+        {
+          "id": "8656b09d-2db9-4819-9419-e8ba7423fcfd",
+          "source": "user",
+          "text": "I never said I killed people",
+          "rawAudioPath": null,
+          "createdAt": "2026-10-22T18:30:40.916Z"
+        },
+        {
+          "id": "5bfb3ce1-af2c-44ec-82c7-9f2abc9e57ca",
+          "source": "user",
+          "text": "I want to remove the original story, I love my grandparents!! :)",
+          "rawAudioPath": null,
+          "createdAt": "2026-10-22T18:31:25.675Z"
+        }
+      ],
+      "groundingScore": 0,
+      "piiDetected": false,
+      "status": "draft",
+      "conversationId": null,
+      "createdAt": "2026-10-22T18:30:12.334Z"
     }
   ]
 }

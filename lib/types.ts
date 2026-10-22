@@ -29,6 +29,42 @@ export interface ReviewResult {
   createdAt: string;
 }
 
+// ---------------------------------------------------------------------------
+// Safety agent output (family-friendly / non-graphic / non-instructional gate)
+// ---------------------------------------------------------------------------
+
+// "soft" issues are polish (e.g. mild profanity) and can be auto-revised.
+// "hard" issues must never be published, even by the senior.
+export type SafetySeverity = "soft" | "hard";
+
+export type SafetyCategory =
+  | "profanity"
+  | "sexual"
+  | "violence"
+  | "hate"
+  | "harassment"
+  | "self_harm"
+  | "illegal_instructions"
+  | "graphic"
+  | "pii"
+  | "other";
+
+export interface SafetyIssue {
+  category: SafetyCategory;
+  severity: SafetySeverity;
+  detail: string;
+  excerpt?: string;
+}
+
+export type SafetyVerdict = "allow" | "revise" | "block";
+
+export interface SafetyResult {
+  verdict: SafetyVerdict; // derived server-side, never trusted from the model
+  issues: SafetyIssue[];
+  summary: string; // written to the user, plain language
+  createdAt: string;
+}
+
 // A senior's feedback on a generated article, used to drive a re-creation.
 // Text and/or audio (the audio is transcribed and stored where possible).
 export interface FeedbackEntry {
@@ -54,6 +90,8 @@ export interface Story {
   metadata: StoryMetadata;
   article: string;
   review: ReviewResult | null;
+  // null = not checked (legacy/demo content) and is treated as allowed.
+  safety: SafetyResult | null;
   feedback: FeedbackEntry[];
   groundingScore: number;
   piiDetected: boolean;

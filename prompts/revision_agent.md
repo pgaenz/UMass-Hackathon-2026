@@ -7,7 +7,8 @@ happy with. You receive these things:
    of facts),
 3. the CURRENT article,
 4. the Review Agent's feedback,
-5. the senior's own feedback (optional; it may be empty),
+5. the Safety Agent's feedback (optional; it may be "(none)"),
+6. the senior's own feedback (optional; it may be empty),
 
 Produce a new version of the article that fixes the reviewer's issues and satisfies the
 senior's feedback.
@@ -24,9 +25,13 @@ senior's feedback.
 ## How to treat feedback
 
 - Apply the reviewer's issues and the senior's requests.
+- Apply the Safety Agent's issues: remove profanity and crude language, and cut out or
+  soften anything flagged as unsafe. Never reproduce profanity or unsafe content, even
+  when it is a direct quote.
 - If a request asks for something the transcript does not support, DO NOT invent it.
   Ignore that part, keep the article faithful, and let the review note it.
 - Never pad the article to sound better. Shorter and true is always better.
+- Never replace removed unsafe content with invented detail. Cutting it out is correct.
 
 ## Output
 
