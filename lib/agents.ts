@@ -1,3 +1,4 @@
+import { config } from "./config";
 import { chat } from "./openai";
 import { loadPrompt } from "./prompts";
 import type {
@@ -8,9 +9,9 @@ import type {
   SafetyIssue,
   SafetyResult,
   SafetySeverity,
-  SafetyVerdict,
   StoryMetadata,
 } from "./types";
+import { deriveReviewVerdict, deriveSafetyVerdict } from "./verdicts";
 
 const MAX_TRANSCRIPT_CHARS = 6_000;
 const WRITE_TIMEOUT_MS = 60_000;
@@ -86,7 +87,7 @@ export async function writeArticle(
       { role: "system", content: system },
       { role: "user", content: user },
     ],
-    { temperature: 0, timeoutMs: WRITE_TIMEOUT_MS },
+    { model: config.writingModel, temperature: 0, timeoutMs: WRITE_TIMEOUT_MS },
   );
   return toDraft(parseJsonObject(raw));
 }
@@ -144,7 +145,7 @@ export async function reviseArticle(input: {
       { role: "system", content: system },
       { role: "user", content: user },
     ],
-    { temperature: 0, timeoutMs: WRITE_TIMEOUT_MS },
+    { model: config.writingModel, temperature: 0, timeoutMs: WRITE_TIMEOUT_MS },
   );
   return toDraft(parseJsonObject(raw));
 }
@@ -189,7 +190,7 @@ export async function reviewArticle(input: {
         content: `${transcriptBlock(input.transcript)}\n\nGENERATED ARTICLE:\n${input.article}`,
       },
     ],
-    { temperature: 0, timeoutMs: REVIEW_TIMEOUT_MS },
+    { model: config.reviewModel, temperature: 0, timeoutMs: REVIEW_TIMEOUT_MS },
   );
 
   const parsed = parseJsonObject(raw);
@@ -197,10 +198,7 @@ export async function reviewArticle(input: {
   const score = Number.isFinite(numeric) ? Math.min(5, Math.max(1, Math.round(numeric))) : 1;
 
   const issues = toIssues(parsed.issues);
-  const hasHardIssue = issues.some(
-    (issue) => issue.type === "invented_fact" || issue.type === "distortion",
-  );
-  const verdict: ReviewResult["verdict"] = score >= 4 && !hasHardIssue ? "pass" : "revise";
+  const verdict = deriveReviewVerdict(score, issues);
 
   const summary =
     asString(parsed.summary) ||
@@ -289,12 +287,7 @@ export async function checkSafety(input: {
 
   const parsed = parseJsonObject(raw);
   const issues = toSafetyIssues(parsed.issues);
-
-  const verdict: SafetyVerdict = issues.some((issue) => issue.severity === "hard")
-    ? "block"
-    : issues.some((issue) => issue.severity === "soft")
-      ? "revise"
-      : "allow";
+  const verdict = deriveSafetyVerdict(issues);
 
   const summary =
     asString(parsed.summary) ||

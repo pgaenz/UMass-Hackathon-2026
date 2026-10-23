@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "ES2022",
+    "incremental": false,
+    "declaration": false,
+    "sourceMap": false,
+    "outDir": ".build",
+    "rootDir": "..",
+    "types": ["node"]
+  },
+  "include": ["./main.ts"]
+}

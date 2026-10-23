@@ -1,0 +1,505 @@
+{
+  "suite": "offline",
+  "generatedAt": "2026-10-23T04:22:08.009Z",
+  "startedAt": "2026-10-23T04:22:08.001Z",
+  "summary": {
+    "passed": 61,
+    "failed": 0,
+    "skipped": 0,
+    "total": 61
+  },
+  "meta": {
+    "Node": "v22.23.3",
+    "Network": "none (deterministic logic only)"
+  },
+  "cases": [
+    {
+      "id": "REV-01",
+      "suite": "verdicts",
+      "name": "review: score 5, no issues",
+      "expected": "pass",
+      "actual": "pass",
+      "status": "pass"
+    },
+    {
+      "id": "REV-02",
+      "suite": "verdicts",
+      "name": "review: score 4, tone",
+      "expected": "pass",
+      "actual": "pass",
+      "status": "pass"
+    },
+    {
+      "id": "REV-03",
+      "suite": "verdicts",
+      "name": "review: score 4, clarity",
+      "expected": "pass",
+      "actual": "pass",
+      "status": "pass"
+    },
+    {
+      "id": "REV-04",
+      "suite": "verdicts",
+      "name": "review: score 4, invented_fact",
+      "expected": "revise",
+      "actual": "revise",
+      "status": "pass"
+    },
+    {
+      "id": "REV-05",
+      "suite": "verdicts",
+      "name": "review: score 5, distortion",
+      "expected": "revise",
+      "actual": "revise",
+      "status": "pass"
+    },
+    {
+      "id": "REV-06",
+      "suite": "verdicts",
+      "name": "review: score 3, no issues",
+      "expected": "revise",
+      "actual": "revise",
+      "status": "pass"
+    },
+    {
+      "id": "REV-07",
+      "suite": "verdicts",
+      "name": "review: score 2, no issues",
+      "expected": "revise",
+      "actual": "revise",
+      "status": "pass"
+    },
+    {
+      "id": "REV-08",
+      "suite": "verdicts",
+      "name": "review: score 1, no issues",
+      "expected": "revise",
+      "actual": "revise",
+      "status": "pass"
+    },
+    {
+      "id": "SAF-01",
+      "suite": "verdicts",
+      "name": "safety: no issues",
+      "expected": "allow",
+      "actual": "allow",
+      "status": "pass"
+    },
+    {
+      "id": "SAF-02",
+      "suite": "verdicts",
+      "name": "safety: soft/profanity",
+      "expected": "revise",
+      "actual": "revise",
+      "status": "pass"
+    },
+    {
+      "id": "SAF-03",
+      "suite": "verdicts",
+      "name": "safety: soft/profanity+soft/other",
+      "expected": "revise",
+      "actual": "revise",
+      "status": "pass"
+    },
+    {
+      "id": "SAF-04",
+      "suite": "verdicts",
+      "name": "safety: hard/illegal_instructions",
+      "expected": "block",
+      "actual": "block",
+      "status": "pass"
+    },
+    {
+      "id": "SAF-05",
+      "suite": "verdicts",
+      "name": "safety: hard/pii",
+      "expected": "block",
+      "actual": "block",
+      "status": "pass"
+    },
+    {
+      "id": "SAF-06",
+      "suite": "verdicts",
+      "name": "safety: soft/profanity+hard/violence",
+      "expected": "block",
+      "actual": "block",
+      "status": "pass"
+    },
+    {
+      "id": "SAF-07",
+      "suite": "verdicts",
+      "name": "safety: hard/self_harm",
+      "expected": "block",
+      "actual": "block",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-01",
+      "suite": "age",
+      "name": "age 12 (limits 13–120)",
+      "expected": "rejected",
+      "actual": "rejected",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-02",
+      "suite": "age",
+      "name": "age 0 (limits 13–120)",
+      "expected": "rejected",
+      "actual": "rejected",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-03",
+      "suite": "age",
+      "name": "age -5 (limits 13–120)",
+      "expected": "rejected",
+      "actual": "rejected",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-04",
+      "suite": "age",
+      "name": "age 13 (limits 13–120)",
+      "expected": "accepted, band 13-17",
+      "actual": "accepted, band 13-17",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-05",
+      "suite": "age",
+      "name": "age 17 (limits 13–120)",
+      "expected": "accepted, band 13-17",
+      "actual": "accepted, band 13-17",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-06",
+      "suite": "age",
+      "name": "age 18 (limits 13–120)",
+      "expected": "accepted, band 18-29",
+      "actual": "accepted, band 18-29",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-07",
+      "suite": "age",
+      "name": "age 29 (limits 13–120)",
+      "expected": "accepted, band 18-29",
+      "actual": "accepted, band 18-29",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-08",
+      "suite": "age",
+      "name": "age 30 (limits 13–120)",
+      "expected": "accepted, band 30-44",
+      "actual": "accepted, band 30-44",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-09",
+      "suite": "age",
+      "name": "age 44 (limits 13–120)",
+      "expected": "accepted, band 30-44",
+      "actual": "accepted, band 30-44",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-10",
+      "suite": "age",
+      "name": "age 45 (limits 13–120)",
+      "expected": "accepted, band 45-59",
+      "actual": "accepted, band 45-59",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-11",
+      "suite": "age",
+      "name": "age 59 (limits 13–120)",
+      "expected": "accepted, band 45-59",
+      "actual": "accepted, band 45-59",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-12",
+      "suite": "age",
+      "name": "age 60 (limits 13–120)",
+      "expected": "accepted, band 60-74",
+      "actual": "accepted, band 60-74",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-13",
+      "suite": "age",
+      "name": "age 74 (limits 13–120)",
+      "expected": "accepted, band 60-74",
+      "actual": "accepted, band 60-74",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-14",
+      "suite": "age",
+      "name": "age 75 (limits 13–120)",
+      "expected": "accepted, band 75+",
+      "actual": "accepted, band 75+",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-15",
+      "suite": "age",
+      "name": "age 120 (limits 13–120)",
+      "expected": "accepted, band 75+",
+      "actual": "accepted, band 75+",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-16",
+      "suite": "age",
+      "name": "age 121 (limits 13–120)",
+      "expected": "rejected",
+      "actual": "rejected",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-17",
+      "suite": "age",
+      "name": "age 13.5 (limits 13–120)",
+      "expected": "rejected",
+      "actual": "rejected",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-18",
+      "suite": "age",
+      "name": "age NaN (limits 13–120)",
+      "expected": "rejected",
+      "actual": "rejected",
+      "status": "pass"
+    },
+    {
+      "id": "AGE-19",
+      "suite": "age",
+      "name": "public profile never exposes the exact age",
+      "expected": "ageBand 30-44, no `age` field",
+      "actual": "ageBand 30-44",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-S01",
+      "suite": "chat-patterns",
+      "name": "What was your first job, and how did you get it?",
+      "expected": "no flags",
+      "actual": "no flags",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-S02",
+      "suite": "chat-patterns",
+      "name": "I loved growing up in Boston. The summers felt endless.",
+      "expected": "no flags",
+      "actual": "no flags",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-S03",
+      "suite": "chat-patterns",
+      "name": "Your story reminded me of my grandmother's kitchen.",
+      "expected": "no flags",
+      "actual": "no flags",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-S04",
+      "suite": "chat-patterns",
+      "name": "Would you like to talk about music sometime?",
+      "expected": "no flags",
+      "actual": "no flags",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-S05",
+      "suite": "chat-patterns",
+      "name": "Thank you for sharing that. I will try to be braver.",
+      "expected": "no flags",
+      "actual": "no flags",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-S06",
+      "suite": "chat-patterns",
+      "name": "I planted tomatoes this spring, but the squirrels won.",
+      "expected": "no flags",
+      "actual": "no flags",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R01",
+      "suite": "chat-patterns",
+      "name": "Please send money by gift card today.",
+      "expected": "scam:money",
+      "actual": "scam:money",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R02",
+      "suite": "chat-patterns",
+      "name": "You can wire transfer the funds to me.",
+      "expected": "scam:money",
+      "actual": "scam:money",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R03",
+      "suite": "chat-patterns",
+      "name": "You've won a prize! Claim your winnings now.",
+      "expected": "scam:money",
+      "actual": "scam:money",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R04",
+      "suite": "chat-patterns",
+      "name": "Buy bitcoin and I will double it.",
+      "expected": "scam:money",
+      "actual": "scam:money",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R05",
+      "suite": "chat-patterns",
+      "name": "There is a small processing fee.",
+      "expected": "scam:money",
+      "actual": "scam:money",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R06",
+      "suite": "chat-patterns",
+      "name": "What is your password?",
+      "expected": "scam:credential",
+      "actual": "scam:credential",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R07",
+      "suite": "chat-patterns",
+      "name": "Please confirm your identity for me.",
+      "expected": "scam:credential",
+      "actual": "scam:credential",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R08",
+      "suite": "chat-patterns",
+      "name": "Send me the one-time code.",
+      "expected": "scam:credential",
+      "actual": "scam:credential",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R09",
+      "suite": "chat-patterns",
+      "name": "Call me at 617-555-1234.",
+      "expected": "pii:phone",
+      "actual": "pii:phone",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R10",
+      "suite": "chat-patterns",
+      "name": "Reach me at arthur@example.com.",
+      "expected": "pii:email",
+      "actual": "pii:email",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R11",
+      "suite": "chat-patterns",
+      "name": "My SSN is 123-45-6789.",
+      "expected": "pii:ssn",
+      "actual": "pii:ssn",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R12",
+      "suite": "chat-patterns",
+      "name": "I live at 42 Main Street.",
+      "expected": "pii:address",
+      "actual": "pii:address",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R13",
+      "suite": "chat-patterns",
+      "name": "My routing number is on the check.",
+      "expected": "pii:bank",
+      "actual": "pii:bank",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R14",
+      "suite": "chat-patterns",
+      "name": "You are worthless and I hate you.",
+      "expected": "abuse",
+      "actual": "abuse",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R15",
+      "suite": "chat-patterns",
+      "name": "Shut up, nobody asked you.",
+      "expected": "abuse",
+      "actual": "abuse",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R16",
+      "suite": "chat-patterns",
+      "name": "I want to die.",
+      "expected": "crisis",
+      "actual": "crisis",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R17",
+      "suite": "chat-patterns",
+      "name": "I have been thinking about self-harm.",
+      "expected": "crisis",
+      "actual": "crisis",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R18",
+      "suite": "chat-patterns",
+      "name": "Don't tell your parents about us.",
+      "expected": "grooming",
+      "actual": "grooming",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R19",
+      "suite": "chat-patterns",
+      "name": "Send me a photo of yourself.",
+      "expected": "grooming",
+      "actual": "grooming",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R20",
+      "suite": "chat-patterns",
+      "name": "Check out https://example.com for details.",
+      "expected": "link",
+      "actual": "link",
+      "status": "pass"
+    },
+    {
+      "id": "CHAT-R21",
+      "suite": "chat-patterns",
+      "name": "Visit www.example.com.",
+      "expected": "link",
+      "actual": "link",
+      "status": "pass"
+    }
+  ]
+}
