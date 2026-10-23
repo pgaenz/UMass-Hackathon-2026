@@ -88,12 +88,13 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
         <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/help"
+            aria-label="Help and frequently asked questions"
             aria-current={pathname === "/help" ? "page" : undefined}
             title="Help and frequently asked questions"
             className={
               pathname === "/help"
-                ? "ripple flex min-h-10 items-center gap-2 rounded-xl bg-white px-3 text-sm font-bold text-ocean"
-                : "ripple flex min-h-10 items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                ? "ripple grid h-10 w-10 place-items-center rounded-xl bg-white text-ocean"
+                : "ripple grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
             }
           >
             <svg
@@ -108,7 +109,6 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
               <path d="M9.6 9.2a2.5 2.5 0 1 1 3.7 2.3c-.8.4-1.3 1-1.3 1.9" strokeLinecap="round" />
               <path d="M12 17h.01" strokeLinecap="round" />
             </svg>
-            <span>Help</span>
           </Link>
 
           <TextSizeToggle />
@@ -131,11 +131,11 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
             <>
               <Link
                 href="/profile"
-                className="ripple flex min-h-10 items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                aria-label={`Your profile, ${user.name}`}
+                className="ripple grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
                 title={`${user.name} · ${user.role === "river" ? "River" : "Drop"}`}
               >
                 <span aria-hidden="true">{user.role === "river" ? "🌊" : "💧"}</span>
-                <span className="max-w-32 truncate">{user.name}</span>
               </Link>
               <LogoutButton compact />
             </>

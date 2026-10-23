@@ -61,10 +61,11 @@ export function QuickLinks({ signedIn }: { signedIn: boolean }) {
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="ripple inline-flex min-h-10 items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-3 text-sm font-medium text-white transition hover:bg-white/20"
+        aria-label="Quick links"
+        title="Quick links"
+        className="ripple grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-base text-white transition hover:bg-white/20"
       >
         <span aria-hidden="true">🧭</span>
-        <span className="hidden sm:inline">Quick links</span>
       </button>
       {open ? (
         <ul
