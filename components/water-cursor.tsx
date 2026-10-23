@@ -33,6 +33,52 @@ export function WaterCursor() {
 
     document.documentElement.classList.add("water-cursor-active");
 
+    // Native <dialog> opened with showModal() lives in the browser top layer,
+    // which paints above every z-index. Join that layer with the Popover API so
+    // the cursor (and its droplets) stay visible over pop-ups.
+    const supportsPopover = typeof cursor.showPopover === "function";
+    if (supportsPopover) {
+      cursor.setAttribute("popover", "manual");
+      layer.setAttribute("popover", "manual");
+    }
+
+    const raiseTopLayer = () => {
+      // Drop then cursor so the cursor ends up above the droplet layer.
+      for (const element of [layer, cursor]) {
+        try {
+          element.hidePopover();
+        } catch {
+          // Not currently open — fine.
+        }
+        try {
+          element.showPopover();
+        } catch {
+          // Ignore; the fallback below covers unsupported cases.
+        }
+      }
+    };
+
+    const updateNativeFallback = () => {
+      const anyOpen = document.querySelector("dialog[open]") !== null;
+      document.documentElement.classList.toggle("water-cursor-native", anyOpen);
+    };
+
+    // `toggle` does not bubble for <dialog>, so listen in the capture phase.
+    const onToggle = (event: Event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLDialogElement)) return;
+      if (!supportsPopover) {
+        updateNativeFallback();
+        return;
+      }
+      // A dialog just entered the top layer; re-promote the cursor so it lands
+      // on top of it. Closing dialogs need no action.
+      if (target.open) raiseTopLayer();
+    };
+
+    if (supportsPopover) raiseTopLayer();
+    document.addEventListener("toggle", onToggle, true);
+
     const target = { x: window.innerWidth / 2, y: window.innerHeight / 3 };
     const current = { x: target.x, y: target.y };
     let visible = false;
@@ -131,6 +177,15 @@ export function WaterCursor() {
       window.removeEventListener("pointerdown", onDown);
       document.removeEventListener("mouseleave", onLeave);
       window.removeEventListener("blur", onLeave);
+      document.removeEventListener("toggle", onToggle, true);
+      document.documentElement.classList.remove("water-cursor-native");
+      for (const element of [layer, cursor]) {
+        try {
+          element.hidePopover();
+        } catch {
+          // Ignore.
+        }
+      }
       document.documentElement.classList.remove("water-cursor-active");
       layer.replaceChildren();
     };

@@ -1,63 +1,64 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useState } from "react";
+import { useId, useState } from "react";
 
 import { cn } from "@/lib/cn";
+import type { VoteQuestionResponse } from "@/lib/types";
 
 /**
  * Large, keyboard-friendly upvote control with an optimistic count.
- * A browser remembers its own vote so a question is not double-counted in the UI.
+ * The vote is tied to the signed-in user (see plan/UX-FIXES-2.md §6); the
+ * server owns the truth and this component only mirrors it.
  */
 export function UpvoteButton({
   questionId,
   initialCount,
+  initialVoted = false,
+  signedIn = false,
 }: {
   questionId: string;
   initialCount: number;
+  initialVoted?: boolean;
+  signedIn?: boolean;
 }) {
   const router = useRouter();
   const [count, setCount] = useState(initialCount);
-  const [voted, setVoted] = useState(false);
+  const [voted, setVoted] = useState(initialVoted);
   const [pending, setPending] = useState(false);
-  const storageKey = `historai:upvoted:${questionId}`;
   const clipId = `drop-${useId().replace(/:/g, "")}`;
 
-  useEffect(() => {
-    try {
-      setVoted(window.localStorage.getItem(storageKey) === "1");
-    } catch {
-      // Storage can be unavailable; voting simply stays available.
-    }
-  }, [storageKey]);
-
   async function handleClick() {
-    if (voted || pending) return;
+    if (pending) return;
+    if (!signedIn) {
+      router.push("/login");
+      return;
+    }
+
+    const next = !voted;
     setPending(true);
-    setCount((current) => current + 1);
+    setVoted(next);
+    setCount((current) => Math.max(0, current + (next ? 1 : -1)));
+
     try {
       const res = await fetch("/api/questions/upvote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: questionId }),
+        body: JSON.stringify({ id: questionId, vote: next }),
       });
-      if (!res.ok) {
-        if (res.status === 401) {
-          router.push("/login");
-          return;
-        }
-        throw new Error("Upvote failed");
+      if (res.status === 401) {
+        router.push("/login");
+        return;
       }
-      const data = (await res.json()) as { question?: { upvotes?: number } };
-      setCount(data.question?.upvotes ?? count + 1);
-      setVoted(true);
-      try {
-        window.localStorage.setItem(storageKey, "1");
-      } catch {
-        // Ignore storage failures.
-      }
+      if (!res.ok) throw new Error("Upvote failed");
+
+      const data = (await res.json()) as VoteQuestionResponse;
+      setVoted(data.voted);
+      setCount(data.count);
     } catch {
-      setCount((current) => Math.max(0, current - 1));
+      // Revert the optimistic update.
+      setVoted(!next);
+      setCount((current) => Math.max(0, current + (next ? -1 : 1)));
     } finally {
       setPending(false);
     }
@@ -69,7 +70,7 @@ export function UpvoteButton({
     <button
       type="button"
       onClick={handleClick}
-      disabled={voted || pending}
+      disabled={pending}
       aria-pressed={voted}
       aria-label={voted ? `Upvoted. ${count} votes` : `Upvote this question. ${count} votes`}
       title={voted ? "Upvoted" : "Upvote"}

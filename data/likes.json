@@ -1,0 +1,64 @@
+{
+  "likes": [
+    {
+      "storyId": "s-first-job",
+      "userId": "u-seed-harold",
+      "createdAt": "2026-02-01T10:00:00.000Z"
+    },
+    {
+      "storyId": "s-first-job",
+      "userId": "u-seed-maya",
+      "createdAt": "2026-02-02T10:00:00.000Z"
+    },
+    {
+      "storyId": "s-first-job",
+      "userId": "u-seed-diego",
+      "createdAt": "2026-02-03T10:00:00.000Z"
+    },
+    {
+      "storyId": "s-true-love",
+      "userId": "u-seed-maya",
+      "createdAt": "2026-02-04T10:00:00.000Z"
+    },
+    {
+      "storyId": "s-true-love",
+      "userId": "u-seed-diego",
+      "createdAt": "2026-02-05T10:00:00.000Z"
+    },
+    {
+      "storyId": "s-best-advice",
+      "userId": "u-seed-ruth",
+      "createdAt": "2026-02-06T10:00:00.000Z"
+    },
+    {
+      "storyId": "s-best-advice",
+      "userId": "u-seed-maya",
+      "createdAt": "2026-02-07T10:00:00.000Z"
+    },
+    {
+      "storyId": "s-best-advice",
+      "userId": "u-seed-harold",
+      "createdAt": "2026-02-08T10:00:00.000Z"
+    },
+    {
+      "storyId": "ffe8db14-cd35-48ef-b4a0-f331254bfb1f",
+      "userId": "u-b02f6e35-b291-48e3-8a13-f67db6c455dc",
+      "createdAt": "2026-10-22T22:22:11.724Z"
+    },
+    {
+      "storyId": "s-best-advice",
+      "userId": "u-b02f6e35-b291-48e3-8a13-f67db6c455dc",
+      "createdAt": "2026-10-22T22:23:00.112Z"
+    },
+    {
+      "storyId": "s-true-love",
+      "userId": "u-b02f6e35-b291-48e3-8a13-f67db6c455dc",
+      "createdAt": "2026-10-22T22:23:01.886Z"
+    },
+    {
+      "storyId": "s-first-job",
+      "userId": "u-b02f6e35-b291-48e3-8a13-f67db6c455dc",
+      "createdAt": "2026-10-22T22:38:22.935Z"
+    }
+  ]
+}

@@ -21,13 +21,17 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   const isHome = pathname === "/";
   const isRiverOnly = pathname === "/senior" || pathname.startsWith("/senior/");
   const isProfileSelf = pathname === "/profile";
+  const isSignedInOnly =
+    pathname === "/messages" ||
+    pathname.startsWith("/messages/") ||
+    pathname === "/connect";
 
   // First arrival: choose a role or continue as a read-only visitor.
   if (!session && !isVisitor && isHome) {
     return redirectTo(request, "/login");
   }
 
-  if (!session && (isRiverOnly || isProfileSelf)) {
+  if (!session && (isRiverOnly || isProfileSelf || isSignedInOnly)) {
     return redirectTo(request, "/login");
   }
 
@@ -35,14 +39,25 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     return redirectTo(request, "/");
   }
 
-  // Already signed in: no need to see the auth entry screens.
-  if (session && (pathname === "/login" || pathname === "/onboarding")) {
-    return redirectTo(request, "/");
-  }
+  // Auth entry screens (/login, /onboarding) are intentionally NOT redirected
+  // here. This guard only sees the signed token, but a token can outlive its
+  // user (e.g. data reset), which would otherwise trap the browser: the header
+  // shows "Sign in" while /login bounces home forever. The pages themselves
+  // check the real user record and redirect signed-in users away.
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/login", "/onboarding", "/profile", "/senior", "/senior/:path*"],
+  matcher: [
+    "/",
+    "/login",
+    "/onboarding",
+    "/profile",
+    "/senior",
+    "/senior/:path*",
+    "/messages",
+    "/messages/:path*",
+    "/connect",
+  ],
 };

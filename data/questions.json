@@ -50,7 +50,7 @@
         "advice"
       ],
       "askedBy": null,
-      "upvotes": 42,
+      "upvotes": 43,
       "storyIds": [],
       "createdAt": "2026-01-10T09:00:00.000Z"
     },
@@ -73,7 +73,7 @@
         "advice"
       ],
       "askedBy": "u-seed-maya",
-      "upvotes": 35,
+      "upvotes": 36,
       "storyIds": [],
       "createdAt": "2026-01-10T09:10:00.000Z"
     },
@@ -88,7 +88,8 @@
       "upvotes": 31,
       "storyIds": [
         "296bb2ff-e540-4d0a-9ce1-74aad4b91720",
-        "64113e58-9b81-4998-980f-5f18729572b2"
+        "64113e58-9b81-4998-980f-5f18729572b2",
+        "d6c08edc-0f4f-4a5b-8257-b15866208582"
       ],
       "createdAt": "2026-01-10T09:15:00.000Z"
     },
@@ -162,7 +163,7 @@
         "family"
       ],
       "askedBy": null,
-      "upvotes": 18,
+      "upvotes": 19,
       "storyIds": [],
       "createdAt": "2026-01-10T09:45:00.000Z"
     },
@@ -230,6 +231,15 @@
       "upvotes": 9,
       "storyIds": [],
       "createdAt": "2026-01-10T10:10:00.000Z"
+    },
+    {
+      "id": "q-b2bfbb01-7309-4de6-a2fc-d5457a0f8e42",
+      "text": "What was the most exciting thing you did as a kid?",
+      "topicIds": [],
+      "askedBy": "u-0655e4b3-6b16-4bbb-8829-1faf7262917f",
+      "upvotes": 0,
+      "storyIds": [],
+      "createdAt": "2026-10-23T00:54:49.585Z"
     }
   ]
 }

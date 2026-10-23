@@ -7,6 +7,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { countAnswersByQuestion, getPublishedStories } from "@/lib/answers";
+import { getVoteStates } from "@/lib/question-votes";
 import { getQuestions, getTopics } from "@/lib/questions";
 import { getCurrentUser } from "@/lib/session";
 import { getPublicUserMap } from "@/lib/users";
@@ -30,7 +31,13 @@ export default async function QuestionsPage({
     getCurrentUser(),
   ]);
   const counts = countAnswersByQuestion(stories);
-  const authors = await getPublicUserMap(questions.map((question) => question.askedBy));
+  const [authors, voteStates] = await Promise.all([
+    getPublicUserMap(questions.map((question) => question.askedBy)),
+    getVoteStates(
+      questions.map((question) => question.id),
+      user?.id ?? null,
+    ),
+  ]);
 
   let list = topic ? questions.filter((question) => question.topicIds.includes(topic)) : [...questions];
   switch (sort) {
@@ -68,6 +75,8 @@ export default async function QuestionsPage({
                   topics={topics}
                   answerCount={counts[question.id] ?? 0}
                   author={question.askedBy ? authors[question.askedBy] ?? null : null}
+                  voteState={voteStates[question.id]}
+                  signedIn={Boolean(user)}
                 />
               </li>
             ))}

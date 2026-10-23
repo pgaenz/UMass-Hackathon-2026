@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 import { OnboardingForm } from "@/components/onboarding-form";
 import { getTopics } from "@/lib/questions";
+import { getCurrentUser } from "@/lib/session";
 import type { Role } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +24,10 @@ export default async function OnboardingPage({
 }) {
   const { role } = await searchParams;
   if (!isRole(role)) redirect("/login");
+
+  // Only bounce users that actually exist; a stale token must not block signup.
+  const user = await getCurrentUser();
+  if (user) redirect("/");
 
   const topics = await getTopics();
   const isRiver = role === "river";

@@ -157,6 +157,38 @@ export interface EndConversationResponse {
 }
 
 // ---------------------------------------------------------------------------
+// Story likes & interest-based match pop-up (see plan/LIKES.md)
+// ---------------------------------------------------------------------------
+
+// One user's like on one published story. Unique on (storyId, userId).
+export interface StoryLike {
+  storyId: string;
+  userId: string;
+  createdAt: string;
+}
+
+// Server-rendered state for the like control.
+export interface StoryLikeState {
+  liked: boolean;
+  count: number;
+}
+
+// The other liker surfaced after a like. `sharedInterests` is empty when the
+// fallback applies (neither profile lists any overlapping interest).
+export interface LikeMatch {
+  user: PublicUser;
+  sharedInterests: Topic[];
+}
+
+// POST /api/stories/[id]/like
+// `match` is computed in the same round trip so the pop-up can render instantly.
+export interface LikeStoryResponse {
+  liked: boolean;
+  count: number;
+  match: LikeMatch | null;
+}
+
+// ---------------------------------------------------------------------------
 // Users, roles & profiles (see plan/PROFILES.md)
 // ---------------------------------------------------------------------------
 
@@ -236,6 +268,110 @@ export interface Question {
   upvotes: number;
   storyIds: string[];
   createdAt: string;
+}
+
+// ---------------------------------------------------------------------------
+// Question upvotes (per-user; see plan/UX-FIXES-2.md §6)
+// ---------------------------------------------------------------------------
+
+// One user's upvote on one question. Unique on (questionId, userId).
+// `question.upvotes` remains the denormalized display/sort count.
+export interface QuestionVote {
+  questionId: string;
+  userId: string;
+  createdAt: string;
+}
+
+// Server-rendered state for the upvote control. The displayed count is the
+// denormalized `question.upvotes`, so only the viewer's own vote is needed here.
+export interface QuestionVoteState {
+  voted: boolean;
+}
+
+// POST /api/questions/upvote
+export interface VoteQuestionResponse {
+  voted: boolean;
+  count: number;
+}
+
+// ---------------------------------------------------------------------------
+// 1:1 private messaging (see plan/CHAT.md)
+// "ChatThread"/"ChatMessage" deliberately avoid the existing AI "Conversation".
+// ---------------------------------------------------------------------------
+
+export type ChatThreadStatus = "active" | "archived";
+export type ChatSafetyVerdict = "allow" | "block";
+
+export interface ChatSafety {
+  verdict: ChatSafetyVerdict;
+  flags: string[]; // e.g. ["scam:money", "pii:phone", "link"]
+}
+
+export interface ChatMessage {
+  id: string;
+  senderId: string;
+  kind: "text"; // reserved: "voice" for a later release
+  body: string;
+  safety: ChatSafety;
+  readBy: string[];
+  createdAt: string;
+  deletedAt: string | null;
+}
+
+export interface ChatThread {
+  id: string;
+  participantIds: [string, string];
+  pairKey: string; // "u-a|u-b" (sorted) — prevents duplicate threads
+  status: ChatThreadStatus;
+  messages: ChatMessage[];
+  createdAt: string;
+  updatedAt: string;
+  lastMessageAt: string; // denormalized for inbox sorting
+}
+
+export interface ChatBlock {
+  blockerId: string;
+  blockedId: string;
+  createdAt: string;
+}
+
+// ---- wire shapes ----
+
+export interface OtherParticipant {
+  id: string;
+  name: string;
+  role: Role;
+  ageBand: AgeBand;
+}
+
+export interface ThreadSummary {
+  threadId: string;
+  other: OtherParticipant;
+  lastMessage: { body: string; senderId: string; createdAt: string } | null;
+  unreadCount: number;
+  blocked: boolean;
+  updatedAt: string;
+}
+
+export interface ChatMessageView {
+  id: string;
+  senderId: string;
+  body: string;
+  createdAt: string;
+  mine: boolean;
+  seen: boolean;
+}
+
+export interface SendMessageRequest {
+  body: string;
+}
+
+export interface ChatMessagesResponse {
+  threadId: string;
+  other: OtherParticipant;
+  messages: ChatMessageView[];
+  blocked: boolean;
+  canSend: boolean;
 }
 
 // ---------------------------------------------------------------------------

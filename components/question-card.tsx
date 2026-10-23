@@ -4,7 +4,7 @@ import { ReportButton } from "@/components/report-button";
 import { UpvoteButton } from "@/components/upvote-button";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/format";
-import type { AuthorRef, Question, Topic } from "@/lib/types";
+import type { AuthorRef, Question, QuestionVoteState, Topic } from "@/lib/types";
 
 export function QuestionCard({
   question,
@@ -12,12 +12,16 @@ export function QuestionCard({
   answerCount,
   href,
   author,
+  voteState,
+  signedIn = false,
 }: {
   question: Question;
   topics: Topic[];
   answerCount: number;
   href?: string;
   author?: AuthorRef | null;
+  voteState?: QuestionVoteState;
+  signedIn?: boolean;
 }) {
   const labels = question.topicIds
     .map((id) => topics.find((topic) => topic.id === id)?.label)
@@ -26,7 +30,12 @@ export function QuestionCard({
 
   return (
     <article className="lift flex gap-4 rounded-2xl glass shadow-water p-5 sm:gap-6 sm:p-6">
-      <UpvoteButton questionId={question.id} initialCount={question.upvotes} />
+      <UpvoteButton
+        questionId={question.id}
+        initialCount={question.upvotes}
+        initialVoted={voteState?.voted ?? false}
+        signedIn={signedIn}
+      />
       <div className="min-w-0 flex-1 space-y-3">
         <h2 className="text-xl font-semibold leading-snug text-ink sm:text-2xl">
           <Link href={linkHref} className="underline-offset-4 hover:underline">

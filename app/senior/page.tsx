@@ -7,7 +7,9 @@ import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { countAnswersByQuestion, getPublishedStories } from "@/lib/answers";
+import { getVoteStates } from "@/lib/question-votes";
 import { getQuestions, getTopics } from "@/lib/questions";
+import { getCurrentUser } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
@@ -58,6 +60,11 @@ export default async function SeniorPage({
 
   const unanswered = questions.filter((question) => (counts[question.id] ?? 0) === 0);
   const suggestions = (unanswered.length > 0 ? unanswered : questions).slice(0, 6);
+  const user = await getCurrentUser();
+  const voteStates = await getVoteStates(
+    suggestions.map((question) => question.id),
+    user?.id ?? null,
+  );
 
   return (
     <div className="mx-auto w-full max-w-5xl space-y-8 px-6 py-10">
@@ -75,6 +82,8 @@ export default async function SeniorPage({
                 topics={topics}
                 answerCount={counts[question.id] ?? 0}
                 href={`/senior?question=${question.id}`}
+                voteState={voteStates[question.id]}
+                signedIn={Boolean(user)}
               />
             </li>
           ))}

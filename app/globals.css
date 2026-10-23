@@ -228,6 +228,45 @@
   pointer-events: none;
 }
 
+/* When promoted to the browser top layer (Popover API) the UA popover box
+   would otherwise reset position/margin/border/background. Restore ours so the
+   cursor paints above modal <dialog> pop-ups. */
+.water-cursor[popover] {
+  inset: auto;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 36px;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+.water-drop-layer[popover] {
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  overflow: hidden;
+}
+
+/* Fallback when the Popover API is unavailable: native cursor wins over any
+   open dialog (the top layer can't be joined), and the custom one steps aside. */
+.water-cursor-native,
+.water-cursor-native * {
+  cursor: auto !important;
+}
+
+.water-cursor-native .water-cursor,
+.water-cursor-native .water-drop-layer {
+  display: none !important;
+}
+
 .water-drop {
   position: absolute;
   display: block;
