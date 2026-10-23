@@ -126,6 +126,15 @@
       "bio": "",
       "interests": [],
       "createdAt": "2026-10-22T20:47:07.271Z"
+    },
+    {
+      "id": "u-dea15bcb-8bfb-4d73-9ad7-a6fb05aa15bc",
+      "role": "river",
+      "name": "Louis",
+      "age": 13,
+      "bio": "",
+      "interests": [],
+      "createdAt": "2026-10-23T16:09:57.589Z"
     }
   ]
 }

@@ -3,10 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ArticleRenderer } from "@/components/article-renderer";
+import { CopyButton } from "@/components/copy-button";
 import { ReportButton } from "@/components/report-button";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
-import { formatDate, getArticleTitle } from "@/lib/format";
+import { formatDate, getArticleTitle, toPlainText } from "@/lib/format";
 import { getQuestion } from "@/lib/questions";
 import { getStory } from "@/lib/store";
 import { getUser, toPublicUser } from "@/lib/users";
@@ -55,9 +56,16 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
           ) : (
             <span>HistorAI community</span>
           )}
+          <CopyButton text={title} context={title} />
           <ReportButton targetType="story" targetId={story.id} />
         </div>
       </header>
+
+      {story.article.trim() ? (
+        <div className="flex flex-wrap items-center justify-end">
+          <CopyButton text={toPlainText(story.article)} />
+        </div>
+      ) : null}
 
       <ArticleRenderer markdown={story.article} />
 

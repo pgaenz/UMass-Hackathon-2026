@@ -214,6 +214,15 @@ export default function HelpPage() {
             on it. You can also upvote questions you want to see answered.
           </p>
         </FaqItem>
+
+        <FaqItem id="copy" question="Can I copy a title or a story?">
+          <p>
+            Yes. Use the <strong>Copy</strong> button next to a question or story title to copy
+            it. On a question page, each answer has a copy button, and on a story page the{" "}
+            <strong>Copy story</strong> button copies the full text. You can then paste it into
+            a message, email, or document.
+          </p>
+        </FaqItem>
       </section>
 
       <section aria-labelledby="safety-heading" className="space-y-4">

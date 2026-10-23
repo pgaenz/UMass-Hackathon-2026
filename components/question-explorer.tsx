@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+import { CopyButton } from "@/components/copy-button";
 import { UpvoteButton } from "@/components/upvote-button";
 import { WaterLines } from "@/components/water-lines";
 import { cn } from "@/lib/cn";
@@ -353,6 +354,7 @@ function QuestionRow({
         <span suppressHydrationWarning className="text-xs text-ink/75">
           {relativeTime(question.createdAt)}
         </span>
+        <CopyButton text={question.text} context={question.text} compact />
       </div>
     </li>
   );

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CopyButton } from "@/components/copy-button";
 import { Badge } from "@/components/ui/badge";
 import { formatDate, getArticleTitle } from "@/lib/format";
 import type { AuthorRef, Story } from "@/lib/types";
@@ -28,6 +29,7 @@ export function StoryCard({ story, author }: { story: Story; author?: AuthorRef 
           ) : (
             <span>HistorAI community</span>
           )}
+          <CopyButton text={title} context={title} />
         </div>
       </div>
     </article>

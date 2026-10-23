@@ -3,13 +3,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ArticleRenderer } from "@/components/article-renderer";
+import { CopyButton } from "@/components/copy-button";
 import { ReportButton } from "@/components/report-button";
+import { ShareButton } from "@/components/share-button";
 import { UpvoteButton } from "@/components/upvote-button";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getPublishedStories } from "@/lib/answers";
-import { formatDate, truncate } from "@/lib/format";
+import { formatDate, toPlainText, truncate } from "@/lib/format";
 import { getQuestion, getTopics } from "@/lib/questions";
 import { getCurrentUser } from "@/lib/session";
 import { getUser, toPublicUser } from "@/lib/users";
@@ -84,7 +86,15 @@ export default async function QuestionDetailPage({
               ) : (
                 <span>Asked by the community</span>
               )}
-              <ReportButton targetType="question" targetId={question.id} />
+              <div className="flex items-center">
+                <CopyButton text={question.text} context={question.text} />
+                <ShareButton
+                  path={`/questions/${question.id}`}
+                  title={question.text}
+                  context={question.text}
+                />
+                <ReportButton targetType="question" targetId={question.id} />
+              </div>
             </div>
           </div>
         </div>
@@ -109,6 +119,9 @@ export default async function QuestionDetailPage({
                   <ArticleRenderer markdown={answer.article} />
                   <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-seaglass/40 pt-4 text-base text-ink/70">
                     <time dateTime={answer.createdAt}>{formatDate(answer.createdAt)}</time>
+                    {answer.article.trim() ? (
+                      <CopyButton text={toPlainText(answer.article)} />
+                    ) : null}
                     <ReportButton targetType="answer" targetId={answer.id} />
                   </div>
                 </article>
