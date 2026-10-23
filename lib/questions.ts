@@ -41,6 +41,20 @@ export async function getQuestion(id: string): Promise<Question | null> {
   return questions.find((question) => question.id === id) ?? null;
 }
 
+/** Batch lookup for cards/lists — one read, no N+1. Missing ids are omitted. */
+export async function getQuestionMap(
+  ids: Array<string | null | undefined>,
+): Promise<Record<string, Question>> {
+  const wanted = new Set(ids.filter((id): id is string => Boolean(id)));
+  if (wanted.size === 0) return {};
+  const { questions } = await readStore();
+  const map: Record<string, Question> = {};
+  for (const question of questions) {
+    if (wanted.has(question.id)) map[question.id] = question;
+  }
+  return map;
+}
+
 export async function getQuestionsByUser(userId: string): Promise<Question[]> {
   const { questions } = await readStore();
   return questions
@@ -71,18 +85,25 @@ export async function createQuestion(input: {
   return created;
 }
 
-export async function upvoteQuestion(id: string): Promise<Question | null> {
-  let updated: Question | null = null;
+/**
+ * Applies a vote delta to a question's denormalized `upvotes` count and returns
+ * the new count (or null for an unknown question). The per-user truth lives in
+ * `data/question-votes.json`; this keeps sorting and the existing UI on the
+ * stored number (plan/UX-FIXES-2.md §6, D8).
+ */
+export async function adjustUpvotes(id: string, delta: number): Promise<number | null> {
+  let count: number | null = null;
   await mutateJson<QuestionsData>(QUESTIONS_PATH, EMPTY, (current) => {
     const data = normalize(current);
     const index = data.questions.findIndex((question) => question.id === id);
     if (index !== -1) {
-      updated = { ...data.questions[index], upvotes: data.questions[index].upvotes + 1 };
-      data.questions[index] = updated;
+      const next = Math.max(0, data.questions[index].upvotes + delta);
+      data.questions[index] = { ...data.questions[index], upvotes: next };
+      count = next;
     }
     return data;
   });
-  return updated;
+  return count;
 }
 
 export async function linkStoryToQuestion(

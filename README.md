@@ -124,7 +124,12 @@ Article appears in the youth feed
 
 - **Passwordless roles & profiles** — River/Drop login, onboarding, editable profiles, public
   profile pages, and a read-only visitor mode.
-- **Questions** — ask, browse, filter by topic, sort, and upvote questions.
+- **Questions** — ask, browse, filter by topic, sort, and upvote questions. Upvotes are
+  tied to the signed-in user (one per account, toggleable), not the browser.
+- **Search** — a header search opens `/search`, matching questions, published stories, and
+  public profiles.
+- **Global quick links** — a header menu (hidden on `/login` and `/onboarding`) reaches
+  popular/unanswered questions, recent answers, and your profile from every screen.
 - **Voice and typed answers** — browser `MediaRecorder` capture plus a text fallback.
 - **AI interviewer** — optional real-time speech-to-speech conversation to draw out a story.
 - **Transcription & metadata** — speech-to-text plus topic/summary extraction.
@@ -135,7 +140,14 @@ Article appears in the youth feed
 - **Approval gate** — only a River can publish, and only from the reviewed state.
 - **Youth feed & article view** — published stories only, with large-type and accessibility
   controls.
-- **Reporting** — readers can report a published story.
+- **Private 1:1 messaging** — any signed-in user can message any other user.
+  Every outbound message is screened server-side (scams, PII, links, abuse, crisis) before
+  it is stored, with block/report and per-user rate limits. Client polling every ~4 s.
+- **Story likes & connection pop-up** — any signed-in user can like a published story.
+  When someone else who liked the same story shares your interests, a one-tap pop-up
+  offers to say hello through private messaging (`plan/LIKES.md`).
+- **Reporting** — readers can report a published story, and chat participants can report or
+  block each other.
 - **File-based storage** — JSON files in `data/`, no database.
 
 ### Pages
@@ -143,8 +155,9 @@ Article appears in the youth feed
 | Route | Description |
 |-------|-------------|
 | `/` | Question explorer (landing page) |
-| `/login` | Role choice or visitor mode |
+| `/login` | Role choice, returning-profile picker, or visitor mode |
 | `/onboarding` | Create a profile |
+| `/search` | Search questions, stories, and people |
 | `/questions` | Browse and ask questions |
 | `/questions/[id]` | Question detail |
 | `/senior` | River dashboard: choose a question to answer |
@@ -152,6 +165,9 @@ Article appears in the youth feed
 | `/senior/review/[id]` | Review, revise, approve, and publish an article |
 | `/youth` | Published story feed |
 | `/youth/[id]` | Read a published story |
+| `/messages` | Private message inbox (signed-in users) |
+| `/messages/[threadId]` | A 1:1 conversation with its composer |
+| `/connect` | Directory of Rivers to connect with (signed-in users) |
 | `/profile` | Edit your own profile |
 | `/profile/[id]` | Public profile |
 
@@ -164,9 +180,18 @@ Article appears in the youth feed
 | `POST /api/approve` | Publish a reviewed story |
 | `GET /api/questions` | List questions (with filtering/sorting) |
 | `POST /api/questions` | Ask a question |
-| `POST /api/questions/upvote` | Upvote a question |
-| `POST /api/reports` | Report a story |
+| `POST /api/questions/upvote` | Upvote/un-vote a question (per signed-in user) |
+| `POST /api/reports` | Report a story, question, answer, message, or user |
+| `POST /api/stories/[id]/like` | Like/unlike a published story; returns an interest-based match |
+| `GET /api/chat/threads` | List the signed-in user's conversations |
+| `POST /api/chat/threads` | Get or create a 1:1 conversation |
+| `GET /api/chat/threads/[id]/messages` | Fetch thread history (with `?after=` polling) |
+| `POST /api/chat/threads/[id]/messages` | Screen and send a message |
+| `POST /api/chat/threads/[id]/read` | Mark a thread read |
+| `POST /api/chat/threads/[id]/block` | Block the other participant |
+| `GET /api/chat/unread` | Unread count for the header badge |
 | `POST /api/auth/login` | Create a passwordless profile + session |
+| `POST /api/auth/session` | Demo sign-in to an existing profile (no password) |
 | `POST /api/auth/logout` | Clear the session |
 | `PATCH /api/auth/profile` | Update the signed-in profile |
 | `POST /api/auth/visitor` | Enter read-only visitor mode |
@@ -215,7 +240,7 @@ MVP.md                    # the single build plan
 ### Notes on storage
 
 - The "database" is a set of JSON files in `data/`: `users.json`, `questions.json`,
-  `stories.json`, and `conversations.json`.
+  `stories.json`, `conversations.json`, and `chat.json` (private messages).
 - Uploaded audio is written to `data/uploads/` and is git-ignored.
 - Seed users, questions, and stories are committed so the demo works without prior data.
 - Swapping in a real database later means reimplementing `lib/store.ts` and related helpers.
@@ -239,10 +264,13 @@ MVP.md                    # the single build plan
 
 ✅ **MVP implemented and runnable.** The core loop, roles/profiles, questions, voice + text
 input, AI interview, safety gate, grounding review, approval, and youth feed are in place.
+Private 1:1 messaging (`/messages`, `/connect`) is implemented per [`plan/CHAT.md`](./plan/CHAT.md).
 
 - [`MVP.md`](./MVP.md) — the original 30-hour, 2-person build plan and acceptance criteria.
 - [`plan/README.md`](./plan/README.md) — milestone tracking.
 - [`plan/PROFILES.md`](./plan/PROFILES.md) — login, roles, profiles, and ownership.
 - [`plan/SAFETY.md`](./plan/SAFETY.md) — content safety gate.
+- [`plan/CHAT.md`](./plan/CHAT.md) — private 1:1 messaging, discovery, and pre-send screening.
+- [`plan/LIKES.md`](./plan/LIKES.md) — story likes and the interest-based match pop-up.
 - [`docs/future/`](./docs/future/) — archived full-product vision (podcast/video, matching,
   database, CI/CD, and more).

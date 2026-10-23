@@ -4,10 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+import { QUICK_LINKS } from "@/components/quick-links";
 import { UpvoteButton } from "@/components/upvote-button";
 import { WaterLines } from "@/components/water-lines";
 import { cn } from "@/lib/cn";
-import type { AuthorRef, Question, Topic } from "@/lib/types";
+import type { AuthorRef, Question, QuestionVoteState, Topic } from "@/lib/types";
 
 const TOPIC_ICONS: Record<string, string> = {
   job: "💼",
@@ -44,19 +45,14 @@ const QUICK_FILTERS: Array<{ id: Sort; icon: string; label: string }> = [
   { id: "unanswered", icon: "❓", label: "Needs an answer" },
 ];
 
-const QUICK_LINKS = [
-  { icon: "🔥", label: "Popular questions", href: "/questions?sort=popular" },
-  { icon: "❓", label: "Unanswered", href: "/questions?sort=unanswered" },
-  { icon: "💬", label: "Recent answers", href: "/youth" },
-  { icon: "👤", label: "Your profile", href: "/profile" },
-];
-
 interface QuestionExplorerProps {
   topics: Topic[];
   questions: Question[];
   answerCounts: Record<string, number>;
   authors: Record<string, AuthorRef>;
   canAnswer: boolean;
+  voteStates: Record<string, QuestionVoteState>;
+  signedIn: boolean;
 }
 
 export function QuestionExplorer({
@@ -65,6 +61,8 @@ export function QuestionExplorer({
   answerCounts,
   authors,
   canAnswer,
+  voteStates,
+  signedIn,
 }: QuestionExplorerProps) {
   const [activeTopic, setActiveTopic] = useState<string | null>(null);
   const [sort, setSort] = useState<Sort>("top");
@@ -217,6 +215,8 @@ export function QuestionExplorer({
                 answerCount={answerCounts[question.id] ?? 0}
                 author={question.askedBy ? authors[question.askedBy] ?? null : null}
                 highlight={sort === "top" && topUpvotes > 0 && question.upvotes === topUpvotes}
+                voteState={voteStates[question.id]}
+                signedIn={signedIn}
               />
             ))}
             {visible.length === 0 && (
@@ -258,7 +258,7 @@ export function QuestionExplorer({
             Quick links
           </h2>
           <ul className="mt-2 space-y-0.5">
-            {QUICK_LINKS.map((link) => (
+            {QUICK_LINKS.filter((link) => signedIn || !link.signedInOnly).map((link) => (
               <li key={link.label}>
                 <Link
                   href={link.href}
@@ -291,12 +291,16 @@ function QuestionRow({
   answerCount,
   author,
   highlight,
+  voteState,
+  signedIn,
 }: {
   question: Question;
   topics: Topic[];
   answerCount: number;
   author: AuthorRef | null;
   highlight: boolean;
+  voteState?: QuestionVoteState;
+  signedIn: boolean;
 }) {
   return (
     <li
@@ -305,7 +309,12 @@ function QuestionRow({
         highlight && "ring-2 ring-sunset/60",
       )}
     >
-      <UpvoteButton questionId={question.id} initialCount={question.upvotes} />
+      <UpvoteButton
+        questionId={question.id}
+        initialCount={question.upvotes}
+        initialVoted={voteState?.voted ?? false}
+        signedIn={signedIn}
+      />
 
       <div className="min-w-0 flex-1">
         <Link

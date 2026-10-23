@@ -1,0 +1,212 @@
+{
+  "threads": [
+    {
+      "id": "t-seed-ruth-harold",
+      "participantIds": [
+        "u-seed-harold",
+        "u-seed-ruth"
+      ],
+      "pairKey": "u-seed-harold|u-seed-ruth",
+      "status": "active",
+      "messages": [
+        {
+          "id": "m-seed-rh-1",
+          "senderId": "u-seed-ruth",
+          "kind": "text",
+          "body": "Harold, I finally got the tomatoes to behave this year. How is your workshop coming along?",
+          "safety": {
+            "verdict": "allow",
+            "flags": []
+          },
+          "readBy": [
+            "u-seed-ruth",
+            "u-seed-harold"
+          ],
+          "createdAt": "2026-10-20T14:05:00.000Z",
+          "deletedAt": null
+        },
+        {
+          "id": "m-seed-rh-2",
+          "senderId": "u-seed-harold",
+          "kind": "text",
+          "body": "Slowly! I fixed the neighbor's gate, so the workshop waited. The tomatoes are the real accomplishment.",
+          "safety": {
+            "verdict": "allow",
+            "flags": []
+          },
+          "readBy": [
+            "u-seed-harold",
+            "u-seed-ruth"
+          ],
+          "createdAt": "2026-10-20T15:12:00.000Z",
+          "deletedAt": null
+        },
+        {
+          "id": "m-seed-rh-3",
+          "senderId": "u-seed-ruth",
+          "kind": "text",
+          "body": "Ha. I'll trade you a basket for a hinge that doesn't squeak.",
+          "safety": {
+            "verdict": "allow",
+            "flags": []
+          },
+          "readBy": [
+            "u-seed-ruth",
+            "u-seed-harold"
+          ],
+          "createdAt": "2026-10-20T15:20:00.000Z",
+          "deletedAt": null
+        },
+        {
+          "id": "m-seed-rh-4",
+          "senderId": "u-seed-harold",
+          "kind": "text",
+          "body": "Deal. I'll bring the tools Saturday morning.",
+          "safety": {
+            "verdict": "allow",
+            "flags": []
+          },
+          "readBy": [
+            "u-seed-harold",
+            "u-seed-ruth"
+          ],
+          "createdAt": "2026-10-20T15:24:00.000Z",
+          "deletedAt": null
+        }
+      ],
+      "createdAt": "2026-10-20T14:00:00.000Z",
+      "updatedAt": "2026-10-20T15:24:00.000Z",
+      "lastMessageAt": "2026-10-20T15:24:00.000Z"
+    },
+    {
+      "id": "t-seed-maya-ruth",
+      "participantIds": [
+        "u-seed-maya",
+        "u-seed-ruth"
+      ],
+      "pairKey": "u-seed-maya|u-seed-ruth",
+      "status": "active",
+      "messages": [
+        {
+          "id": "m-seed-mr-1",
+          "senderId": "u-seed-maya",
+          "kind": "text",
+          "body": "Hi Ms. Alvarez — I read your story about your first classroom. I start my teaching practicum next month.",
+          "safety": {
+            "verdict": "allow",
+            "flags": []
+          },
+          "readBy": [
+            "u-seed-maya",
+            "u-seed-ruth"
+          ],
+          "createdAt": "2026-10-21T18:40:00.000Z",
+          "deletedAt": null
+        },
+        {
+          "id": "m-seed-mr-2",
+          "senderId": "u-seed-ruth",
+          "kind": "text",
+          "body": "That makes me so happy, Maya. The first year is hard, but the children will teach you as much as you teach them.",
+          "safety": {
+            "verdict": "allow",
+            "flags": []
+          },
+          "readBy": [
+            "u-seed-ruth",
+            "u-seed-maya"
+          ],
+          "createdAt": "2026-10-21T19:02:00.000Z",
+          "deletedAt": null
+        },
+        {
+          "id": "m-seed-mr-3",
+          "senderId": "u-seed-maya",
+          "kind": "text",
+          "body": "Thank you. What did you do on the days you felt like you were not reaching anyone?",
+          "safety": {
+            "verdict": "allow",
+            "flags": []
+          },
+          "readBy": [
+            "u-seed-maya"
+          ],
+          "createdAt": "2026-10-21T19:15:00.000Z",
+          "deletedAt": null
+        }
+      ],
+      "createdAt": "2026-10-21T18:40:00.000Z",
+      "updatedAt": "2026-10-21T19:15:00.000Z",
+      "lastMessageAt": "2026-10-21T19:15:00.000Z"
+    },
+    {
+      "id": "t-7fd267b4-4e5f-4458-9f79-0d32db44af65",
+      "participantIds": [
+        "u-b02f6e35-b291-48e3-8a13-f67db6c455dc",
+        "u-seed-ruth"
+      ],
+      "pairKey": "u-b02f6e35-b291-48e3-8a13-f67db6c455dc|u-seed-ruth",
+      "status": "active",
+      "messages": [],
+      "createdAt": "2026-10-22T21:01:24.202Z",
+      "updatedAt": "2026-10-22T21:01:24.202Z",
+      "lastMessageAt": "2026-10-22T21:01:24.202Z"
+    },
+    {
+      "id": "t-ca67bed7-c506-464f-bf35-1fab48924e43",
+      "participantIds": [
+        "u-b02f6e35-b291-48e3-8a13-f67db6c455dc",
+        "u-seed-harold"
+      ],
+      "pairKey": "u-b02f6e35-b291-48e3-8a13-f67db6c455dc|u-seed-harold",
+      "status": "active",
+      "messages": [],
+      "createdAt": "2026-10-22T21:30:48.508Z",
+      "updatedAt": "2026-10-22T21:30:48.508Z",
+      "lastMessageAt": "2026-10-22T21:30:48.508Z"
+    },
+    {
+      "id": "t-fbdae321-0cec-4525-b7c1-030f56f1917f",
+      "participantIds": [
+        "u-b02f6e35-b291-48e3-8a13-f67db6c455dc",
+        "u-seed-maya"
+      ],
+      "pairKey": "u-b02f6e35-b291-48e3-8a13-f67db6c455dc|u-seed-maya",
+      "status": "active",
+      "messages": [
+        {
+          "id": "m-382f0fe2-8b1d-4a99-a2c7-fb7b214de5e1",
+          "senderId": "u-b02f6e35-b291-48e3-8a13-f67db6c455dc",
+          "kind": "text",
+          "body": "Hello how are you doing?",
+          "safety": {
+            "verdict": "allow",
+            "flags": []
+          },
+          "readBy": [
+            "u-b02f6e35-b291-48e3-8a13-f67db6c455dc"
+          ],
+          "createdAt": "2026-10-22T22:23:15.795Z",
+          "deletedAt": null
+        }
+      ],
+      "createdAt": "2026-10-22T22:22:24.936Z",
+      "updatedAt": "2026-10-22T22:23:15.795Z",
+      "lastMessageAt": "2026-10-22T22:23:15.795Z"
+    },
+    {
+      "id": "t-8657e630-b400-443f-a12d-52249bb06a51",
+      "participantIds": [
+        "u-0655e4b3-6b16-4bbb-8829-1faf7262917f",
+        "u-seed-harold"
+      ],
+      "pairKey": "u-0655e4b3-6b16-4bbb-8829-1faf7262917f|u-seed-harold",
+      "status": "active",
+      "messages": [],
+      "createdAt": "2026-10-23T00:51:54.245Z",
+      "updatedAt": "2026-10-23T00:51:54.245Z",
+      "lastMessageAt": "2026-10-23T00:51:54.245Z"
+    }
+  ],
+  "blocks": []
+}

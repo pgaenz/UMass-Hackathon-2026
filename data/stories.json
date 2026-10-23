@@ -459,6 +459,40 @@
       "status": "draft",
       "conversationId": null,
       "createdAt": "2026-10-22T18:30:12.334Z"
+    },
+    {
+      "id": "d6c08edc-0f4f-4a5b-8257-b15866208582",
+      "prompt": "What is your happiest memory of your parents or grandparents?",
+      "questionId": "q-happiest-family-memory",
+      "authorId": "u-b02f6e35-b291-48e3-8a13-f67db6c455dc",
+      "inputType": "text",
+      "rawAudioPath": null,
+      "transcript": "I like grandparents",
+      "conversationContext": null,
+      "metadata": {
+        "topic": "Family",
+        "summary": "The senior expresses a fondness for grandparents."
+      },
+      "article": "# A Love for Grandparents\n\nI like grandparents.",
+      "review": {
+        "score": 5,
+        "verdict": "pass",
+        "summary": "The article accurately reflects your feelings about grandparents. There are no issues to address.",
+        "issues": [],
+        "createdAt": "2026-10-22T21:33:17.668Z"
+      },
+      "safety": {
+        "verdict": "allow",
+        "issues": [],
+        "summary": "The content is simple and expresses a positive sentiment about grandparents, making it suitable for publication.",
+        "createdAt": "2026-10-22T21:33:16.654Z"
+      },
+      "feedback": [],
+      "groundingScore": 5,
+      "piiDetected": false,
+      "status": "reviewed",
+      "conversationId": null,
+      "createdAt": "2026-10-22T21:33:12.208Z"
     }
   ]
 }

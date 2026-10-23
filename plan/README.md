@@ -29,6 +29,10 @@ Owners: **A** = AI/backend routes, **B** = UI. 2 people × 15 h = 30 h.
 
 - [`PROFILES.md`](./PROFILES.md) — login, roles, profiles, ownership.
 - [`SAFETY.md`](./SAFETY.md) — content safety gate for articles, questions, and bios.
+- [`CHAT.md`](./CHAT.md) — 1:1 messaging (Rivers ↔ anyone, Drops ↔ Rivers), discovery, unread state, and pre-send safety screening.
+- [`LIKES.md`](./LIKES.md) — per-user story likes and the interest-based "someone else liked this" match pop-up.
+- [`UX-FIXES.md`](./UX-FIXES.md) — cursor above modal dialogs, answer sorting/filtering, answer likes on the question thread, and question linkage.
+- [`UX-FIXES-2.md`](./UX-FIXES-2.md) — search, global quick links, per-user question votes, and returning-user sign-in.
 
 ## Definition of Done (MVP)
 

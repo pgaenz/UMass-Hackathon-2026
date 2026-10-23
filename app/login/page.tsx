@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { ExistingAccountPicker } from "@/components/existing-account-picker";
 import { VisitorButton } from "@/components/visitor-button";
-import { getSession } from "@/lib/session";
+import { getCurrentUser } from "@/lib/session";
+import { listUsers, toPublicUser } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
 
@@ -33,8 +35,17 @@ const ROLES = [
 ] as const;
 
 export default async function LoginPage() {
-  const session = await getSession();
-  if (session) redirect("/");
+  // Check the actual user record, not just the token: a valid cookie can
+  // reference a user that no longer exists after a data reset.
+  const user = await getCurrentUser();
+  if (user) redirect("/");
+
+  const users = (await listUsers())
+    .map(toPublicUser)
+    .sort((a, b) => {
+      if (a.role !== b.role) return a.role === "river" ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-10 px-6 py-14">
@@ -70,6 +81,18 @@ export default async function LoginPage() {
           </Link>
         ))}
       </div>
+
+      {users.length > 0 ? (
+        <section className="space-y-4 rounded-3xl border-2 border-seaglass/60 bg-white/60 p-6 text-left shadow-water backdrop-blur">
+          <div className="space-y-1">
+            <h2 className="text-2xl font-bold text-ink">Already have a profile?</h2>
+            <p className="text-lg text-ink/70">
+              Demo sign-in — pick a profile to continue. No password needed.
+            </p>
+          </div>
+          <ExistingAccountPicker users={users} />
+        </section>
+      ) : null}
 
       <div className="space-y-4 border-t border-seaglass/40 pt-8 text-center">
         <p className="text-base text-ink/70">

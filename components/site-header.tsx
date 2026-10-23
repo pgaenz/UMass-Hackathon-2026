@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { UnreadBadge } from "@/components/chat/unread-badge";
 import { LogoutButton } from "@/components/logout-button";
+import { QuickLinks } from "@/components/quick-links";
 import { TextSizeToggle } from "@/components/text-size-toggle";
 import type { Role } from "@/lib/types";
 
@@ -18,6 +20,7 @@ function navItemsFor(user: HeaderUser | null) {
     { href: "/", label: "Home" },
     { href: "/questions", label: "Questions" },
     { href: "/youth", label: "Read" },
+    ...(user ? [{ href: "/messages", label: "Messages" }] : []),
     ...(user?.role === "river" ? [{ href: "/senior", label: "Answer" }] : []),
   ];
 }
@@ -37,6 +40,8 @@ function isActive(pathname: string, href: string): boolean {
 export function SiteHeader({ user }: { user: HeaderUser | null }) {
   const pathname = usePathname();
   const navItems = navItemsFor(user);
+  // Auth entry screens keep their focus: no quick links there.
+  const hideQuickLinks = pathname === "/login" || pathname === "/onboarding";
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-ocean/95 text-white shadow-water backdrop-blur">
@@ -72,6 +77,7 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
                     }
                   >
                     {item.label}
+                    {item.href === "/messages" ? <UnreadBadge /> : null}
                   </Link>
                 </li>
               );
@@ -82,16 +88,19 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
         <div className="flex flex-wrap items-center gap-2">
           <TextSizeToggle />
 
-          <button
-            type="button"
+          <Link
+            href="/search"
             aria-label="Search"
+            title="Search"
             className="ripple grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="7" />
               <path d="m20 20-3.5-3.5" strokeLinecap="round" />
             </svg>
-          </button>
+          </Link>
+
+          {hideQuickLinks ? null : <QuickLinks signedIn={Boolean(user)} />}
 
           {user ? (
             <>
