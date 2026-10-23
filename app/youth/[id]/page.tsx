@@ -3,12 +3,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ArticleRenderer } from "@/components/article-renderer";
+import { MessageButton } from "@/components/chat/message-button";
 import { CopyButton } from "@/components/copy-button";
+import { LikeButton } from "@/components/like-button";
 import { ReportButton } from "@/components/report-button";
 import { Badge } from "@/components/ui/badge";
-import { ButtonLink } from "@/components/ui/button";
-import { formatDate, getArticleTitle, toPlainText } from "@/lib/format";
+import { canSendTo } from "@/lib/chat";
+import { firstName, formatDate, getArticleTitle, toPlainText } from "@/lib/format";
+import { getLikeStates } from "@/lib/likes";
 import { getQuestion } from "@/lib/questions";
+import { getCurrentUser } from "@/lib/session";
 import { getStory } from "@/lib/store";
 import { getUser, toPublicUser } from "@/lib/users";
 
@@ -29,11 +33,15 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
   const story = await getStory(id);
   if (!story || story.status !== "published") notFound();
 
-  const [question, author] = await Promise.all([
+  const [question, author, viewer] = await Promise.all([
     story.questionId ? getQuestion(story.questionId) : Promise.resolve(null),
     story.authorId ? getUser(story.authorId) : Promise.resolve(null),
+    getCurrentUser(),
   ]);
   const authorRef = author ? toPublicUser(author) : null;
+  const canAskAuthor = canSendTo(viewer, author);
+  const likeStates = await getLikeStates([story.id], viewer?.id ?? null);
+  const likeState = likeStates[story.id] ?? { liked: false, count: 0 };
   const title = getArticleTitle(story.article) || "A story from a River";
 
   return (
@@ -56,10 +64,28 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
           ) : (
             <span>HistorAI community</span>
           )}
+          <LikeButton
+            storyId={story.id}
+            initialLiked={likeState.liked}
+            initialCount={likeState.count}
+            signedIn={Boolean(viewer)}
+          />
           <CopyButton text={title} context={title} />
           <ReportButton targetType="story" targetId={story.id} />
         </div>
       </header>
+
+      {question ? (
+        <p className="rounded-2xl glass shadow-water p-4 text-lg text-ink">
+          <span className="font-semibold text-ink/60">Answering: </span>
+          <Link
+            href={`/questions/${question.id}`}
+            className="font-medium text-brand underline-offset-4 hover:underline"
+          >
+            {question.text}
+          </Link>
+        </p>
+      ) : null}
 
       {story.article.trim() ? (
         <div className="flex flex-wrap items-center justify-end">
@@ -69,14 +95,17 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
 
       <ArticleRenderer markdown={story.article} />
 
-      {question ? (
-        <aside className="rounded-2xl glass shadow-water p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-ink">The question behind this story</h2>
-          <p className="mt-2 text-lg text-ink">{question.text}</p>
-          <ButtonLink href={`/questions/${question.id}`} variant="secondary" className="mt-4">
-            See the question
-          </ButtonLink>
-        </aside>
+      {author && canAskAuthor ? (
+        <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl glass shadow-water p-6">
+          <h2 className="text-xl font-bold tracking-tight text-ink">
+            Want to know more about {author.name}?
+          </h2>
+          <MessageButton
+            participantId={author.id}
+            label={`Ask ${firstName(author.name)} a Question?`}
+            variant="secondary"
+          />
+        </section>
       ) : null}
     </article>
   );

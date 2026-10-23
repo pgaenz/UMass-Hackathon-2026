@@ -75,7 +75,8 @@
       "age": 22,
       "bio": "",
       "interests": [
-        "travel"
+        "travel",
+        "friendship"
       ],
       "createdAt": "2026-10-21T23:12:59.619Z"
     },
@@ -99,6 +100,18 @@
       "bio": "",
       "interests": [],
       "createdAt": "2026-10-22T18:25:04.622Z"
+    },
+    {
+      "id": "u-b02f6e35-b291-48e3-8a13-f67db6c455dc",
+      "role": "river",
+      "name": "lknl",
+      "age": 66,
+      "bio": "",
+      "interests": [
+        "love-life",
+        "advice"
+      ],
+      "createdAt": "2026-10-22T21:01:14.109Z"
     },
     {
       "id": "u-421cf62b-ecb4-4ca4-8d51-347f40a86b16",

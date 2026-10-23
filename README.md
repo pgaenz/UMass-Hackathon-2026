@@ -83,7 +83,9 @@ required; everything else has a default.
 | `OPENROUTER_API_KEY` | **Yes** | — | Authenticates all AI requests (chat, speech-to-text, audio conversation). |
 | `SESSION_SECRET` | Production | dev fallback | Signs the passwordless session cookie. Set a long random string in production. |
 | `BASE_URL` | No | `https://openrouter.ai/api/v1` | OpenRouter API base URL. |
-| `LLM_MODEL` | No | `openai/gpt-4o-mini` | Model used for article generation, grounding review, and safety checks. |
+| `LLM_MODEL` | No | `openai/gpt-4o-mini` | Fallback model for every agent. |
+| `WRITING_MODEL` | No | `LLM_MODEL` | Model used for article generation and revision. |
+| `REVIEW_MODEL` | No | `LLM_MODEL` | Model used for the independent grounding review. |
 | `STT_MODEL` | No | `openai/whisper-large-v3-turbo` | Speech-to-text model. |
 | `TTS_MODEL` | No | `google/gemini-3.8-flash-lite-tts` | Reserved text-to-speech model setting. |
 | `AUDIO_MODEL` | No | `openai/gpt-audio-mini` | Native speech-to-speech conversation model. |
@@ -124,7 +126,12 @@ Article appears in the youth feed
 
 - **Passwordless roles & profiles** — River/Drop login, onboarding, editable profiles, public
   profile pages, and a read-only visitor mode.
-- **Questions** — ask, browse, filter by topic, sort, and upvote questions.
+- **Questions** — ask, browse, filter by topic, sort, and upvote questions. Upvotes are
+  tied to the signed-in user (one per account, toggleable), not the browser.
+- **Search** — a header search opens `/search`, matching questions, published stories, and
+  public profiles.
+- **Global quick links** — a header menu (hidden on `/login` and `/onboarding`) reaches
+  popular/unanswered questions, recent answers, and your profile from every screen.
 - **Voice and typed answers** — browser `MediaRecorder` capture plus a text fallback.
 - **AI interviewer** — optional real-time speech-to-speech conversation to draw out a story.
 - **Transcription & metadata** — speech-to-text plus topic/summary extraction.
@@ -135,7 +142,14 @@ Article appears in the youth feed
 - **Approval gate** — only a River can publish, and only from the reviewed state.
 - **Youth feed & article view** — published stories only, with large-type and accessibility
   controls.
-- **Reporting** — readers can report a published story.
+- **Private 1:1 messaging** — any signed-in user can message any other user.
+  Every outbound message is screened server-side (scams, PII, links, abuse, crisis) before
+  it is stored, with block/report and per-user rate limits. Client polling every ~4 s.
+- **Story likes & connection pop-up** — any signed-in user can like a published story.
+  When someone else who liked the same story shares your interests, a one-tap pop-up
+  offers to say hello through private messaging (`plan/LIKES.md`).
+- **Reporting** — readers can report a published story, and chat participants can report or
+  block each other.
 - **File-based storage** — JSON files in `data/`, no database.
 
 ### Pages
@@ -143,8 +157,9 @@ Article appears in the youth feed
 | Route | Description |
 |-------|-------------|
 | `/` | Question explorer (landing page) |
-| `/login` | Role choice or visitor mode |
+| `/login` | Role choice, returning-profile picker, or visitor mode |
 | `/onboarding` | Create a profile |
+| `/search` | Search questions, stories, and people |
 | `/questions` | Browse and ask questions |
 | `/questions/[id]` | Question detail |
 | `/senior` | River dashboard: choose a question to answer |
@@ -152,6 +167,9 @@ Article appears in the youth feed
 | `/senior/review/[id]` | Review, revise, approve, and publish an article |
 | `/youth` | Published story feed |
 | `/youth/[id]` | Read a published story |
+| `/messages` | Private message inbox (signed-in users) |
+| `/messages/[threadId]` | A 1:1 conversation with its composer |
+| `/connect` | Directory of Rivers to connect with (signed-in users) |
 | `/profile` | Edit your own profile |
 | `/profile/[id]` | Public profile |
 | `/help` | Help and frequently asked questions |
@@ -165,9 +183,18 @@ Article appears in the youth feed
 | `POST /api/approve` | Publish a reviewed story |
 | `GET /api/questions` | List questions (with filtering/sorting) |
 | `POST /api/questions` | Ask a question |
-| `POST /api/questions/upvote` | Upvote a question |
-| `POST /api/reports` | Report a story |
+| `POST /api/questions/upvote` | Upvote/un-vote a question (per signed-in user) |
+| `POST /api/reports` | Report a story, question, answer, message, or user |
+| `POST /api/stories/[id]/like` | Like/unlike a published story; returns an interest-based match |
+| `GET /api/chat/threads` | List the signed-in user's conversations |
+| `POST /api/chat/threads` | Get or create a 1:1 conversation |
+| `GET /api/chat/threads/[id]/messages` | Fetch thread history (with `?after=` polling) |
+| `POST /api/chat/threads/[id]/messages` | Screen and send a message |
+| `POST /api/chat/threads/[id]/read` | Mark a thread read |
+| `POST /api/chat/threads/[id]/block` | Block the other participant |
+| `GET /api/chat/unread` | Unread count for the header badge |
 | `POST /api/auth/login` | Create a passwordless profile + session |
+| `POST /api/auth/session` | Demo sign-in to an existing profile (no password) |
 | `POST /api/auth/logout` | Clear the session |
 | `PATCH /api/auth/profile` | Update the signed-in profile |
 | `POST /api/auth/visitor` | Enter read-only visitor mode |
@@ -210,16 +237,35 @@ data/                     # JSON "database" (users, questions, stories, conversa
   uploads/                # raw audio (git-ignored)
 docs/                     # API contract and archived full-product vision
 plan/                     # profiles, safety, and roadmap plans
+eval/                     # evaluation harness + committed results (see below)
 MVP.md                    # the single build plan
 ```
 
 ### Notes on storage
 
 - The "database" is a set of JSON files in `data/`: `users.json`, `questions.json`,
-  `stories.json`, and `conversations.json`.
+  `stories.json`, `conversations.json`, and `chat.json` (private messages).
 - Uploaded audio is written to `data/uploads/` and is git-ignored.
 - Seed users, questions, and stories are committed so the demo works without prior data.
 - Swapping in a real database later means reimplementing `lib/store.ts` and related helpers.
+
+---
+
+## Evaluation
+
+The evaluation harness lives in [`eval/`](./eval/README.md) and has three layers so logic,
+agent quality, and the integrated product can be checked separately:
+
+| Layer | Command | Latest result |
+|-------|---------|---------------|
+| Offline (no network) | `npm run eval` | **61/61** — server-derived verdicts, age validation, chat regex patterns |
+| Live agents | `npm run eval:live` | **8/8** — writing, independent grounding review, safety, semantic chat screen |
+| End-to-end HTTP | `npm run dev` + `npm run eval:e2e` | **23/23** + 1 tracked known issue — publish gates, feed isolation, likes/match, chat screening |
+
+Every run writes `eval/results/{offline,live,e2e}.{json,md}` with the expected and actual
+outcome, status, and latency per case. The known issue is a reproduced limitation, not an
+undiagnosed failure: the display-name safety gate rejects any name containing the product
+term "Drop" (see [`eval/README.md`](./eval/README.md)).
 
 ---
 
@@ -236,14 +282,28 @@ MVP.md                    # the single build plan
 
 ---
 
+## Deliverables
+
+- [`deliverables/HistorAI_Deliverable.docx`](./deliverables/HistorAI_Deliverable.docx) — the
+  PEAAII 2026 project document (Deliverables 1 & 2) with the project overview, agentic AI
+  design, working prototype, demo script, evaluation, and documentation. Rebuild it with
+  [`deliverables/build-docx.mjs`](./deliverables/build-docx.mjs); see
+  [`deliverables/README.md`](./deliverables/README.md).
+- The demo video will be stored in the same `deliverables/` folder.
+
+---
+
 ## Status & plans
 
 ✅ **MVP implemented and runnable.** The core loop, roles/profiles, questions, voice + text
 input, AI interview, safety gate, grounding review, approval, and youth feed are in place.
+Private 1:1 messaging (`/messages`, `/connect`) is implemented per [`plan/CHAT.md`](./plan/CHAT.md).
 
 - [`MVP.md`](./MVP.md) — the original 30-hour, 2-person build plan and acceptance criteria.
 - [`plan/README.md`](./plan/README.md) — milestone tracking.
 - [`plan/PROFILES.md`](./plan/PROFILES.md) — login, roles, profiles, and ownership.
 - [`plan/SAFETY.md`](./plan/SAFETY.md) — content safety gate.
+- [`plan/CHAT.md`](./plan/CHAT.md) — private 1:1 messaging, discovery, and pre-send screening.
+- [`plan/LIKES.md`](./plan/LIKES.md) — story likes and the interest-based match pop-up.
 - [`docs/future/`](./docs/future/) — archived full-product vision (podcast/video, matching,
   database, CI/CD, and more).

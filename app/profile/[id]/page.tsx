@@ -2,11 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { MessageButton } from "@/components/chat/message-button";
 import { QuestionCard } from "@/components/question-card";
 import { StoryCard } from "@/components/story-card";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { countAnswersByQuestion, getPublishedStories } from "@/lib/answers";
+import { canMessage } from "@/lib/chat";
+import { getLikeStates } from "@/lib/likes";
+import { getVoteStates } from "@/lib/question-votes";
 import { getQuestionsByUser, getTopics } from "@/lib/questions";
 import { getSession } from "@/lib/session";
 import { getStoriesByAuthor } from "@/lib/store";
@@ -47,6 +51,16 @@ export default async function PublicProfilePage({
     ? (await getStoriesByAuthor(user.id)).filter((story) => story.status === "published")
     : [];
   const counts = countAnswersByQuestion(published);
+  const [likeStates, voteStates] = await Promise.all([
+    getLikeStates(
+      stories.map((story) => story.id),
+      session?.userId ?? null,
+    ),
+    getVoteStates(
+      questions.map((question) => question.id),
+      session?.userId ?? null,
+    ),
+  ]);
   const author = { id: user.id, name: user.name };
 
   return (
@@ -81,6 +95,10 @@ export default async function PublicProfilePage({
             Edit your profile
           </ButtonLink>
         ) : null}
+
+        {!isSelf && session && canMessage(session.role, user.role) ? (
+          <MessageButton participantId={user.id} />
+        ) : null}
       </header>
 
       <section aria-labelledby="profile-content-heading" className="space-y-5">
@@ -93,7 +111,12 @@ export default async function PublicProfilePage({
             <ul className="space-y-5">
               {stories.map((story) => (
                 <li key={story.id}>
-                  <StoryCard story={story} author={author} />
+                  <StoryCard
+                    story={story}
+                    author={author}
+                    likeState={likeStates[story.id] ?? { liked: false, count: 0 }}
+                    signedIn={Boolean(session)}
+                  />
                 </li>
               ))}
             </ul>
@@ -109,6 +132,8 @@ export default async function PublicProfilePage({
                   topics={topics}
                   answerCount={counts[question.id] ?? 0}
                   author={author}
+                  voteState={voteStates[question.id]}
+                  signedIn={Boolean(session)}
                 />
               </li>
             ))}

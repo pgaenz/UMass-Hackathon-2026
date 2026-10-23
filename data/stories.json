@@ -78,19 +78,36 @@
       "transcript": " Well, that is a good question.  Hmm.  I think the proudest moment of my life was probably when my daughter graduated from university.  Although, you know,  I nearly didn't go.  We didn't have much money back then and I was always worrying about how we'd pay for everything.  My husband Frank worked at the factory and I worked at a little bakery for a while.  Oh, the smell of fresh bread in the morning.  Anyway, when Susan told us she wanted to go to university, I thought:  Goodness me, how are we going to afford that?  We had two children.  builds to pay and the roof was leaking at the time.  I remember putting a bucket in the hallway whenever it rained.  Frank was always tripping over the thing.  But Susan was determined she wanted to become a teacher even when she was little.  She used to line up her dolls and pretend to teach them. We took out alone and she worked part-time while studying.  There were some difficult leaders, I can tell you.  But she never gave up.  And then on graduation day, there she was standing in that black gown.  When they called her name, I just...  started crying.  Frank handed me his old handkerchief because he knew I'd get emotional.  typical of him.  Always prepared.  I think...  What made me so proud was just that she earned a degree.  It was knowing how hard she'd worked and that we'd somehow managed to give her that opportunity, despite having not much ourselves.  Frank passed away 12 years ago and I wish I could see what Susan has it  I wish that he could see what Susan has achieved since then.  It beats so proud.  You know, when you are young, you worry so much about money and whether you are successful enough.  But looking back, I don't remember the things I couldn't afford.  I remember that day, sitting next to Frank, watching our daughter walk across that stage.  Yeah.  I suppose that's what I'm proudest of, knowing that together we'd help someone we loved get somewhere they wanted to go.",
       "metadata": {
         "topic": "Family",
-        "summary": "The proudest moment of my life was probably when my daughter graduated from university."
+        "summary": "The proudest moment of my life was when my daughter graduated from university."
       },
-      "article": "",
-      "groundingScore": 0,
+      "article": "# A Proud Moment\n\nThe proudest moment of my life was probably when my daughter graduated from university. I nearly didn't go. We didn't have much money back then, and I was always worrying about how we'd pay for everything. My husband Frank worked at the factory, and I worked at a little bakery for a while. Oh, the smell of fresh bread in the morning.\n\nWhen Susan told us she wanted to go to university, I thought: Goodness me, how are we going to afford that? We had two children, bills to pay, and the roof was leaking at the time. I remember putting a bucket in the hallway whenever it rained. Frank was always tripping over the thing. But Susan was determined to become a teacher, even when she was little. She used to line up her dolls and pretend to teach them.\n\nWe took out a loan, and she worked part-time while studying. There were some difficult leaders, I can tell you, but she never gave up. On graduation day, there she was in that black gown. When they called her name, I just started crying. Frank handed me his old handkerchief because he knew I'd get emotional. Typical of him—always prepared.\n\nWhat made me so proud was that she earned a degree. It was knowing how hard she'd worked and that we'd somehow managed to give her that opportunity, despite having not much ourselves. Frank passed away 12 years ago, and I wish he could see what Susan has achieved since then. Looking back, I don't remember the things I couldn't afford. I remember that day, sitting next to Frank, watching our daughter walk across that stage. I suppose that's what I'm proudest of—knowing that together we'd help someone we loved get somewhere they wanted to go.",
+      "groundingScore": 4,
       "piiDetected": false,
-      "status": "draft",
+      "status": "reviewed",
       "createdAt": "2026-10-20T16:06:32.979Z",
-      "review": null,
+      "review": {
+        "score": 4,
+        "verdict": "pass",
+        "summary": "The article captures your proudest moment well, but it could be clearer in a few places. Overall, it's a good representation of your story.",
+        "issues": [
+          {
+            "type": "clarity",
+            "detail": "The phrase 'there were some difficult leaders' is unclear and likely a typo for 'there were some difficult times.' It should be corrected for better understanding.",
+            "excerpt": "there were some difficult leaders, I can tell you."
+          }
+        ],
+        "createdAt": "2026-10-23T01:39:27.299Z"
+      },
       "feedback": [],
       "conversationId": null,
       "authorId": "u-seed-harold",
       "conversationContext": null,
-      "safety": null
+      "safety": {
+        "verdict": "allow",
+        "issues": [],
+        "summary": "This article shares a heartfelt story about a proud moment in the author's life and is suitable for publication.",
+        "createdAt": "2026-10-23T01:39:25.013Z"
+      }
     },
     {
       "id": "0e4625ef-26ec-42d7-82dc-bc4dfa18012e",
@@ -181,24 +198,37 @@
       "rawAudioPath": null,
       "transcript": "Oh, this is a difficult question, because when I was young I really not know what I want to do with my life. Everybody was asking me, what you want to become, what is your plan, and I was thinking, how should I know this? I was only seventeen years old!\n\nMy father, he wanted that I become a mechanic, because he was working with cars and he say it is a good and safe work. But I was not so interested in cars, I like more to talk with people and doing things outside. In school I was also not the best student, especially mathematics, oh my goodness, this was a disaster. My teacher always say I need to be more serious with my future.\n\nAfter school I take a job in a small shop, just because I need money and I don't have a better idea. At the beginning I think I will do this only for some months, but then I meet many people and I start to enjoy the work. One older man who was coming every week, he told me once, you are good with people, you should do something with this. And somehow I remember this words for many years.\n\nSo I was working in shops for a long time, and later I become a manager. It was not a big dream I had since childhood, you know. It was more like one thing come after another and suddenly I was there.\n\nI think young people today worry too much about choosing the perfect thing. Maybe you don't need to know everything when you are young. Just try something, make some mistakes, and see where life is taking you. Sometimes the wrong road bring you to a good place, you know what I mean?",
       "metadata": {
-        "topic": "Career",
-        "summary": "The speaker reflects on their uncertain career path in youth and the importance of exploring options."
+        "topic": "Career Choices",
+        "summary": "The article discusses the challenges of choosing a career and the importance of exploration."
       },
-      "article": "# Finding Your Path\n\nChoosing a career can be tough, especially when you're young. \n\n- \"Oh, this is a difficult question, because when I was young I really not know what I want to do with my life.\"\n- At seventeen, the pressure to have a plan felt overwhelming. \n- The speaker's father wanted them to become a mechanic, but they preferred talking to people and being outdoors. \n- School wasn't easy, especially math, which the speaker described as a disaster. \n- After school, they took a job in a small shop just to earn some money. \n- Initially, they thought it would be a short-term gig, but they began to enjoy it after meeting many people. \n- An older man once told them, \"you are good with people, you should do something with this,\" and those words stuck with them. \n- Over time, they worked their way up to a manager position, not through a grand plan, but by taking things one step at a time. \n\nThe speaker believes that young people today worry too much about making the perfect choice. They advise: \"Just try something, make some mistakes, and see where life is taking you. Sometimes the wrong road bring you to a good place, you know what I mean?\"",
+      "article": "# Finding Your Path\n\nChoosing a career can be tough, especially when you're young. Oh, this is a difficult question, because when I was young I really not know what I want to do with my life. I felt pressure to have a plan, which was overwhelming. My father wanted that I become a mechanic, but I preferred talking to people and being outdoors. School wasn't easy, especially mathematics, which I described as a disaster.\n\nAfter school, I took a job in a small shop just to earn some money. Initially, I thought it would be a short-term gig, but I began to enjoy it after meeting many people. An older man once told me, \"you are good with people, you should do something with this,\" and those words stuck with me. Over time, I worked my way up to a manager position, not through a grand plan, but by taking things one step at a time.\n\nI think young people today worry too much about choosing the perfect thing. Maybe you don't need to know everything when you are young. Just try something, make some mistakes, and see where life is taking you. Sometimes the wrong road brings you to a good place, you know what I mean?",
       "review": {
         "score": 4,
         "verdict": "pass",
-        "summary": "The article accurately reflects your thoughts on choosing a career and the importance of exploring options. It could be improved by clarifying some phrases.",
+        "summary": "The article captures your thoughts well, but it could be clearer in some areas. It’s important to ensure your voice is fully represented, especially regarding your feelings about school and your father's expectations.",
         "issues": [
           {
             "type": "clarity",
-            "detail": "The phrase 'the pressure to have a plan felt overwhelming' could be clearer. It might be better to say 'I felt pressure to have a plan, which was overwhelming.'",
-            "excerpt": "the pressure to have a plan felt overwhelming"
+            "detail": "The phrase 'I felt pressure to have a plan, which was overwhelming' adds a subjective interpretation that wasn't explicitly stated in your words. It would be better to stick to your original expression of confusion about future plans.",
+            "excerpt": "I felt pressure to have a plan, which was overwhelming."
+          },
+          {
+            "type": "clarity",
+            "detail": "The phrase 'not through a grand plan' could be clearer. It might be better to say 'It was not a big dream I had since childhood' to reflect your original sentiment more accurately.",
+            "excerpt": "not through a grand plan"
           }
         ],
-        "createdAt": "2026-10-21T17:43:21.095Z"
+        "createdAt": "2026-10-23T01:40:40.654Z"
       },
-      "feedback": [],
+      "feedback": [
+        {
+          "id": "fc6f6945-b69a-4217-8b52-2dca1e9cf8be",
+          "source": "user",
+          "text": "There should be no bullet points",
+          "rawAudioPath": null,
+          "createdAt": "2026-10-23T01:40:34.031Z"
+        }
+      ],
       "groundingScore": 4,
       "piiDetected": false,
       "status": "reviewed",
@@ -206,7 +236,12 @@
       "conversationId": null,
       "authorId": "u-seed-harold",
       "conversationContext": null,
-      "safety": null
+      "safety": {
+        "verdict": "allow",
+        "issues": [],
+        "summary": "This article offers valuable insights about career choices and personal growth without any inappropriate content. It is safe to publish as is.",
+        "createdAt": "2026-10-23T01:40:38.464Z"
+      }
     },
     {
       "id": "24aa29f4-67b3-46ba-a2c1-b23e11b47754",
@@ -459,6 +494,40 @@
       "status": "draft",
       "conversationId": null,
       "createdAt": "2026-10-22T18:30:12.334Z"
+    },
+    {
+      "id": "d6c08edc-0f4f-4a5b-8257-b15866208582",
+      "prompt": "What is your happiest memory of your parents or grandparents?",
+      "questionId": "q-happiest-family-memory",
+      "authorId": "u-b02f6e35-b291-48e3-8a13-f67db6c455dc",
+      "inputType": "text",
+      "rawAudioPath": null,
+      "transcript": "I like grandparents",
+      "conversationContext": null,
+      "metadata": {
+        "topic": "Family",
+        "summary": "The senior expresses a fondness for grandparents."
+      },
+      "article": "# A Love for Grandparents\n\nI like grandparents.",
+      "review": {
+        "score": 5,
+        "verdict": "pass",
+        "summary": "The article accurately reflects your feelings about grandparents. There are no issues to address.",
+        "issues": [],
+        "createdAt": "2026-10-22T21:33:17.668Z"
+      },
+      "safety": {
+        "verdict": "allow",
+        "issues": [],
+        "summary": "The content is simple and expresses a positive sentiment about grandparents, making it suitable for publication.",
+        "createdAt": "2026-10-22T21:33:16.654Z"
+      },
+      "feedback": [],
+      "groundingScore": 5,
+      "piiDetected": false,
+      "status": "reviewed",
+      "conversationId": null,
+      "createdAt": "2026-10-22T21:33:12.208Z"
     }
   ]
 }

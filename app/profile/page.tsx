@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { countAnswersByQuestion, getPublishedStories } from "@/lib/answers";
 import { getArticleTitle } from "@/lib/format";
+import { getVoteStates } from "@/lib/question-votes";
 import { getQuestionsByUser, getTopics } from "@/lib/questions";
 import { getCurrentUser } from "@/lib/session";
 import { getStoriesByAuthor } from "@/lib/store";
@@ -34,6 +35,10 @@ export default async function ProfilePage() {
     getPublishedStories(),
   ]);
   const counts = countAnswersByQuestion(published);
+  const voteStates = await getVoteStates(
+    questions.map((question) => question.id),
+    user.id,
+  );
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-10 px-6 py-10">
@@ -90,6 +95,8 @@ export default async function ProfilePage() {
                   topics={topics}
                   answerCount={counts[question.id] ?? 0}
                   author={author}
+                  voteState={voteStates[question.id]}
+                  signedIn
                 />
               </li>
             ))}

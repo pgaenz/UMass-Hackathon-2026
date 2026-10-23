@@ -2,7 +2,7 @@ import { createReport, type ReportTargetType } from "@/lib/reports";
 
 export const runtime = "nodejs";
 
-const TARGET_TYPES: ReportTargetType[] = ["question", "story", "answer"];
+const TARGET_TYPES: ReportTargetType[] = ["question", "story", "answer", "message", "user"];
 
 // POST /api/reports  { targetType, targetId, reason, details? }
 export async function POST(request: Request): Promise<Response> {

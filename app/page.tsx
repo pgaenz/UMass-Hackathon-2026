@@ -1,5 +1,6 @@
 import { QuestionExplorer } from "@/components/question-explorer";
 import { countAnswersByQuestion, getPublishedStories } from "@/lib/answers";
+import { getVoteStates } from "@/lib/question-votes";
 import { getQuestions, getTopics } from "@/lib/questions";
 import { getCurrentUser } from "@/lib/session";
 import { getPublicUserMap } from "@/lib/users";
@@ -14,7 +15,13 @@ export default async function HomePage() {
     getCurrentUser(),
   ]);
   const answerCounts = countAnswersByQuestion(stories);
-  const authors = await getPublicUserMap(questions.map((question) => question.askedBy));
+  const [authors, voteStates] = await Promise.all([
+    getPublicUserMap(questions.map((question) => question.askedBy)),
+    getVoteStates(
+      questions.map((question) => question.id),
+      user?.id ?? null,
+    ),
+  ]);
 
   return (
     <QuestionExplorer
@@ -23,6 +30,8 @@ export default async function HomePage() {
       answerCounts={answerCounts}
       authors={authors}
       canAnswer={user?.role === "river"}
+      voteStates={voteStates}
+      signedIn={Boolean(user)}
     />
   );
 }

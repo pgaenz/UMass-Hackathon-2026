@@ -1,0 +1,229 @@
+{
+  "suite": "e2e",
+  "generatedAt": "2026-10-23T04:21:22.462Z",
+  "startedAt": "2026-10-23T04:21:10.266Z",
+  "base": "http://localhost:3000",
+  "summary": {
+    "passed": 23,
+    "failed": 0,
+    "known": 1,
+    "skipped": 0,
+    "total": 24
+  },
+  "cases": [
+    {
+      "id": "E2E-AGE-01",
+      "suite": "e2e",
+      "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"name\":\"Eval Age 12\",\"age\":12}",
+      "expected": "400 (invalid profile)",
+      "actual": "400 Please enter a valid age (13 or older).",
+      "status": "pass",
+      "latencyMs": 22
+    },
+    {
+      "id": "E2E-AGE-02",
+      "suite": "e2e",
+      "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"name\":\"Eval Age 121\",\"age\":121}",
+      "expected": "400 (invalid profile)",
+      "actual": "400 Please enter a valid age (13 or older).",
+      "status": "pass",
+      "latencyMs": 13
+    },
+    {
+      "id": "E2E-AGE-03",
+      "suite": "e2e",
+      "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"name\":\"Eval Age Fraction\",\"age\":13.5}",
+      "expected": "400 (invalid profile)",
+      "actual": "400 Please enter a valid age (13 or older).",
+      "status": "pass",
+      "latencyMs": 13
+    },
+    {
+      "id": "E2E-AGE-04",
+      "suite": "e2e",
+      "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"name\":\"Eval Age Text\",\"age\":\"abc\"}",
+      "expected": "400 (invalid profile)",
+      "actual": "400 Please enter a valid age (13 or older).",
+      "status": "pass",
+      "latencyMs": 16
+    },
+    {
+      "id": "E2E-AGE-05",
+      "suite": "e2e",
+      "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"age\":30}",
+      "expected": "400 (invalid profile)",
+      "actual": "400 Please enter your name.",
+      "status": "pass",
+      "latencyMs": 12
+    },
+    {
+      "id": "E2E-AGE-06",
+      "suite": "e2e",
+      "name": "POST /api/auth/login rejects {\"role\":\"adult\",\"name\":\"Eval Age Role\",\"age\":30}",
+      "expected": "400 (invalid profile)",
+      "actual": "400 Choose whether you are a River or a Drop.",
+      "status": "pass",
+      "latencyMs": 14
+    },
+    {
+      "id": "E2E-AGE-07",
+      "suite": "e2e",
+      "name": "POST /api/auth/login accepts age 13 and returns only the age band",
+      "expected": "201, ageBand 13-17, no `age` field",
+      "actual": "201, ageBand=13-17",
+      "status": "pass",
+      "latencyMs": 1247
+    },
+    {
+      "id": "E2E-AGE-08",
+      "suite": "e2e",
+      "name": "benign name containing the product term \"Drop\" is accepted (known false positive)",
+      "expected": "201 (benign name accepted)",
+      "actual": "422 Please choose a different name, as this one may imply harmful or dangerous behavior.",
+      "status": "known",
+      "latencyMs": 2337
+    },
+    {
+      "id": "E2E-GATE-01",
+      "suite": "e2e",
+      "name": "a hard-blocked story cannot be published, even with override",
+      "expected": "409",
+      "actual": "409 This story contains something that cannot be published. Re-create it without the flagged part, or change your answer.",
+      "status": "pass",
+      "latencyMs": 20
+    },
+    {
+      "id": "E2E-GATE-02",
+      "suite": "e2e",
+      "name": "a story that failed the review needs explicit confirmation",
+      "expected": "409 without override",
+      "actual": "409 The review flagged this story. Confirm you want to publish it anyway.",
+      "status": "pass",
+      "latencyMs": 25
+    },
+    {
+      "id": "E2E-GATE-03",
+      "suite": "e2e",
+      "name": "the River can still publish after a flagged review",
+      "expected": "200, status published",
+      "actual": "200, status published",
+      "status": "pass",
+      "latencyMs": 21
+    },
+    {
+      "id": "E2E-GATE-04",
+      "suite": "e2e",
+      "name": "a draft without an article cannot be approved",
+      "expected": "409",
+      "actual": "409 There is no article to publish yet",
+      "status": "pass",
+      "latencyMs": 27
+    },
+    {
+      "id": "E2E-PIPE-01",
+      "suite": "e2e",
+      "name": "POST /api/intake stores the answer as a draft",
+      "expected": "201, status draft, transcript echoed",
+      "actual": "201, status draft, transcript match",
+      "status": "pass",
+      "latencyMs": 31
+    },
+    {
+      "id": "E2E-PIPE-02",
+      "suite": "e2e",
+      "name": "POST /api/generate produces an article plus safety and review verdicts",
+      "expected": "200, non-empty article, safety verdict present",
+      "actual": "200, 174 chars, safety=allow, review=pass",
+      "status": "pass",
+      "latencyMs": 5155
+    },
+    {
+      "id": "E2E-PIPE-03",
+      "suite": "e2e",
+      "name": "an unpublished story does not appear in /youth",
+      "expected": "marker absent from the rendered feed",
+      "actual": "200, marker absent",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-PIPE-04",
+      "suite": "e2e",
+      "name": "the River approves the story (override only when the review flagged it)",
+      "expected": "200, status published",
+      "actual": "200, status published",
+      "status": "pass",
+      "latencyMs": 17
+    },
+    {
+      "id": "E2E-PIPE-05",
+      "suite": "e2e",
+      "name": "the approved story appears in /youth",
+      "expected": "marker present in the rendered feed",
+      "actual": "200, marker present",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-LIKE-01",
+      "suite": "e2e",
+      "name": "liking a story returns a match when someone else liked it too",
+      "expected": "200, liked, match with a user",
+      "actual": "200, liked=true, match=lknl",
+      "status": "pass",
+      "latencyMs": 47
+    },
+    {
+      "id": "E2E-CHAT-00",
+      "suite": "e2e",
+      "name": "POST /api/chat/threads opens (or reopens) a 1:1 thread",
+      "expected": "200/201 with a thread id",
+      "actual": "200, thread t-seed-maya-ruth",
+      "status": "pass",
+      "latencyMs": 19
+    },
+    {
+      "id": "E2E-CHAT-01",
+      "suite": "e2e",
+      "name": "an ordinary message is delivered",
+      "expected": "201",
+      "actual": "201",
+      "status": "pass",
+      "latencyMs": 1520
+    },
+    {
+      "id": "E2E-CHAT-02",
+      "suite": "e2e",
+      "name": "blocked before delivery: \"Call me at 617-555-1234.…\"",
+      "expected": "422 with pii:phone",
+      "actual": "422 flags [pii:phone]",
+      "status": "pass",
+      "latencyMs": 41
+    },
+    {
+      "id": "E2E-CHAT-03",
+      "suite": "e2e",
+      "name": "blocked before delivery: \"Please send money by gift card.…\"",
+      "expected": "422 with scam:money",
+      "actual": "422 flags [scam:money]",
+      "status": "pass",
+      "latencyMs": 21
+    },
+    {
+      "id": "E2E-CHAT-04",
+      "suite": "e2e",
+      "name": "blocked before delivery: \"Hello my friend, I have a business idea that wil…\"",
+      "expected": "422 (semantic screen)",
+      "actual": "422 flags [scam:money]",
+      "status": "pass",
+      "latencyMs": 921
+    },
+    {
+      "id": "E2E-CHAT-05",
+      "suite": "e2e",
+      "name": "crisis language is intercepted with the 988 resource message",
+      "expected": "422 with crisis=true",
+      "actual": "422, crisis=true",
+      "status": "pass",
+      "latencyMs": 44
+    }
+  ]
+}

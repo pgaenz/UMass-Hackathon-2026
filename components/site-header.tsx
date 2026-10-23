@@ -1,9 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { UnreadBadge } from "@/components/chat/unread-badge";
 import { LogoutButton } from "@/components/logout-button";
+import { QuickLinks } from "@/components/quick-links";
 import { TextSizeToggle } from "@/components/text-size-toggle";
 import type { Role } from "@/lib/types";
 
@@ -18,6 +21,7 @@ function navItemsFor(user: HeaderUser | null) {
     { href: "/", label: "Home" },
     { href: "/questions", label: "Questions" },
     { href: "/youth", label: "Read" },
+    ...(user ? [{ href: "/messages", label: "Messages" }] : []),
     ...(user?.role === "river" ? [{ href: "/senior", label: "Answer" }] : []),
   ];
 }
@@ -37,6 +41,8 @@ function isActive(pathname: string, href: string): boolean {
 export function SiteHeader({ user }: { user: HeaderUser | null }) {
   const pathname = usePathname();
   const navItems = navItemsFor(user);
+  // Auth entry screens keep their focus: no quick links there.
+  const hideQuickLinks = pathname === "/login" || pathname === "/onboarding";
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-ocean/95 text-white shadow-water backdrop-blur">
@@ -45,9 +51,14 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
           href="/"
           className="ripple flex items-center gap-2 rounded-xl text-xl font-bold tracking-tight text-white"
         >
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-sunset text-base font-bold text-ocean">
-            H
-          </span>
+          <Image
+            src="/logo-mark.png"
+            alt=""
+            width={512}
+            height={512}
+            priority
+            className="h-10 w-10 shrink-0 rounded-xl object-cover"
+          />
           <span className="flex flex-col leading-tight">
             <span>HistorAI</span>
             <span className="text-[0.65rem] font-medium uppercase tracking-wide text-seaglass">
@@ -72,6 +83,7 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
                     }
                   >
                     {item.label}
+                    {item.href === "/messages" ? <UnreadBadge /> : null}
                   </Link>
                 </li>
               );
@@ -82,12 +94,13 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
         <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/help"
+            aria-label="Help and frequently asked questions"
             aria-current={pathname === "/help" ? "page" : undefined}
             title="Help and frequently asked questions"
             className={
               pathname === "/help"
-                ? "ripple flex min-h-10 items-center gap-2 rounded-xl bg-white px-3 text-sm font-bold text-ocean"
-                : "ripple flex min-h-10 items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                ? "ripple grid h-10 w-10 place-items-center rounded-xl bg-white text-ocean"
+                : "ripple grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
             }
           >
             <svg
@@ -102,31 +115,33 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
               <path d="M9.6 9.2a2.5 2.5 0 1 1 3.7 2.3c-.8.4-1.3 1-1.3 1.9" strokeLinecap="round" />
               <path d="M12 17h.01" strokeLinecap="round" />
             </svg>
-            <span>Help</span>
           </Link>
 
           <TextSizeToggle />
 
-          <button
-            type="button"
+          <Link
+            href="/search"
             aria-label="Search"
+            title="Search"
             className="ripple grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="7" />
               <path d="m20 20-3.5-3.5" strokeLinecap="round" />
             </svg>
-          </button>
+          </Link>
+
+          {hideQuickLinks ? null : <QuickLinks signedIn={Boolean(user)} />}
 
           {user ? (
             <>
               <Link
                 href="/profile"
-                className="ripple flex min-h-10 items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                aria-label={`Your profile, ${user.name}`}
+                className="ripple grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
                 title={`${user.name} · ${user.role === "river" ? "River" : "Drop"}`}
               >
                 <span aria-hidden="true">{user.role === "river" ? "🌊" : "💧"}</span>
-                <span className="max-w-32 truncate">{user.name}</span>
               </Link>
               <LogoutButton compact />
             </>

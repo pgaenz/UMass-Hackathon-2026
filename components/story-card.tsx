@@ -1,11 +1,24 @@
 import Link from "next/link";
 
 import { CopyButton } from "@/components/copy-button";
+import { LikeButton } from "@/components/like-button";
 import { Badge } from "@/components/ui/badge";
-import { formatDate, getArticleTitle } from "@/lib/format";
-import type { AuthorRef, Story } from "@/lib/types";
+import { formatDate, getArticleTitle, truncate } from "@/lib/format";
+import type { AuthorRef, Story, StoryLikeState } from "@/lib/types";
 
-export function StoryCard({ story, author }: { story: Story; author?: AuthorRef | null }) {
+export function StoryCard({
+  story,
+  author,
+  likeState,
+  signedIn,
+  question,
+}: {
+  story: Story;
+  author?: AuthorRef | null;
+  likeState: StoryLikeState;
+  signedIn: boolean;
+  question?: { id: string; text: string } | null;
+}) {
   const title = getArticleTitle(story.article) || story.metadata.topic || "A story from a River";
 
   return (
@@ -19,6 +32,17 @@ export function StoryCard({ story, author }: { story: Story; author?: AuthorRef 
         {story.metadata.summary ? (
           <p className="text-lg text-ink/70">{story.metadata.summary}</p>
         ) : null}
+        {question ? (
+          <p className="text-base text-ink/70">
+            <span className="font-medium text-ink/60">From the question: </span>
+            <Link
+              href={`/questions/${question.id}`}
+              className="font-medium text-brand underline-offset-4 hover:underline"
+            >
+              {truncate(question.text)}
+            </Link>
+          </p>
+        ) : null}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-base text-ink/70">
           {story.metadata.topic ? <Badge>{story.metadata.topic}</Badge> : null}
           <time dateTime={story.createdAt}>{formatDate(story.createdAt)}</time>
@@ -29,6 +53,12 @@ export function StoryCard({ story, author }: { story: Story; author?: AuthorRef 
           ) : (
             <span>HistorAI community</span>
           )}
+          <LikeButton
+            storyId={story.id}
+            initialLiked={likeState.liked}
+            initialCount={likeState.count}
+            signedIn={signedIn}
+          />
           <CopyButton text={title} context={title} />
         </div>
       </div>
