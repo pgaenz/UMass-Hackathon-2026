@@ -83,7 +83,9 @@ required; everything else has a default.
 | `OPENROUTER_API_KEY` | **Yes** | — | Authenticates all AI requests (chat, speech-to-text, audio conversation). |
 | `SESSION_SECRET` | Production | dev fallback | Signs the passwordless session cookie. Set a long random string in production. |
 | `BASE_URL` | No | `https://openrouter.ai/api/v1` | OpenRouter API base URL. |
-| `LLM_MODEL` | No | `openai/gpt-4o-mini` | Model used for article generation, grounding review, and safety checks. |
+| `LLM_MODEL` | No | `openai/gpt-4o-mini` | Fallback model for every agent. |
+| `WRITING_MODEL` | No | `LLM_MODEL` | Model used for article generation and revision. |
+| `REVIEW_MODEL` | No | `LLM_MODEL` | Model used for the independent grounding review. |
 | `STT_MODEL` | No | `openai/whisper-large-v3-turbo` | Speech-to-text model. |
 | `TTS_MODEL` | No | `google/gemini-3.8-flash-lite-tts` | Reserved text-to-speech model setting. |
 | `AUDIO_MODEL` | No | `openai/gpt-audio-mini` | Native speech-to-speech conversation model. |
@@ -235,6 +237,7 @@ data/                     # JSON "database" (users, questions, stories, conversa
   uploads/                # raw audio (git-ignored)
 docs/                     # API contract and archived full-product vision
 plan/                     # profiles, safety, and roadmap plans
+eval/                     # evaluation harness + committed results (see below)
 MVP.md                    # the single build plan
 ```
 
@@ -248,6 +251,24 @@ MVP.md                    # the single build plan
 
 ---
 
+## Evaluation
+
+The evaluation harness lives in [`eval/`](./eval/README.md) and has three layers so logic,
+agent quality, and the integrated product can be checked separately:
+
+| Layer | Command | Latest result |
+|-------|---------|---------------|
+| Offline (no network) | `npm run eval` | **61/61** — server-derived verdicts, age validation, chat regex patterns |
+| Live agents | `npm run eval:live` | **8/8** — writing, independent grounding review, safety, semantic chat screen |
+| End-to-end HTTP | `npm run dev` + `npm run eval:e2e` | **23/23** + 1 tracked known issue — publish gates, feed isolation, likes/match, chat screening |
+
+Every run writes `eval/results/{offline,live,e2e}.{json,md}` with the expected and actual
+outcome, status, and latency per case. The known issue is a reproduced limitation, not an
+undiagnosed failure: the display-name safety gate rejects any name containing the product
+term "Drop" (see [`eval/README.md`](./eval/README.md)).
+
+---
+
 ## Troubleshooting
 
 | Symptom | Fix |
@@ -258,6 +279,17 @@ MVP.md                    # the single build plan
 | Audio upload does not work | Allow microphone access in the browser. On some browsers, `localhost` is required for `MediaRecorder`; use `http://localhost:3000`, not a LAN IP. |
 | Changes to `data/*.json` do not appear | The dev watcher intentionally ignores `data/`; refresh the page. |
 | Fresh clone has no data | Seed data is committed. If `data/users.json` or `data/stories.json` is missing, restore it from git. |
+
+---
+
+## Deliverables
+
+- [`deliverables/HistorAI_Deliverable.docx`](./deliverables/HistorAI_Deliverable.docx) — the
+  PEAAII 2026 project document (Deliverables 1 & 2) with the project overview, agentic AI
+  design, working prototype, demo script, evaluation, and documentation. Rebuild it with
+  [`deliverables/build-docx.mjs`](./deliverables/build-docx.mjs); see
+  [`deliverables/README.md`](./deliverables/README.md).
+- The demo video will be stored in the same `deliverables/` folder.
 
 ---
 

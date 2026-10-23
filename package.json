@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "eval": "tsc -p eval/tsconfig.json && node eval/.build/eval/main.js",
+    "eval:live": "tsc -p eval/tsconfig.json && node eval/.build/eval/main.js --live",
+    "eval:e2e": "node eval/e2e.mjs"
   },
   "dependencies": {
     "next": "^15.5.0",

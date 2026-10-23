@@ -20,6 +20,10 @@ export const config = {
   openrouterApiKey: requireEnv("OPENROUTER_API_KEY"),
   baseUrl: process.env.BASE_URL || DEFAULT_BASE_URL,
   llmModel: process.env.LLM_MODEL || DEFAULT_LLM_MODEL,
+  // The writing and review agents can run on different models. Both fall back
+  // to LLM_MODEL so an existing single-model setup keeps working unchanged.
+  writingModel: process.env.WRITING_MODEL || process.env.LLM_MODEL || DEFAULT_LLM_MODEL,
+  reviewModel: process.env.REVIEW_MODEL || process.env.LLM_MODEL || DEFAULT_LLM_MODEL,
   sttModel: process.env.STT_MODEL || DEFAULT_STT_MODEL,
   ttsModel: process.env.TTS_MODEL || DEFAULT_TTS_MODEL,
   audioModel: process.env.AUDIO_MODEL || DEFAULT_AUDIO_MODEL,

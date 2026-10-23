@@ -128,7 +128,7 @@ Hour budget and day-by-day split: [`plan/ROADMAP.md`](./plan/ROADMAP.md).
   below threshold and is **not** auto-approved.
 - **AC-4** — Nothing appears on `/youth` unless its status is `published` via the senior's
   approve action.
-- **AC-5** — With `OPENAI_API_KEY` missing/unreachable, the fallback story still serves the
+- **AC-5** — With `OPENROUTER_API_KEY` missing/unreachable, the fallback story still serves the
   whole loop.
 - **AC-6** — `pnpm install && pnpm dev` runs the app locally with one documented `.env.local`.
 

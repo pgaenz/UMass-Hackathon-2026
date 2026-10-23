@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -50,9 +51,14 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
           href="/"
           className="ripple flex items-center gap-2 rounded-xl text-xl font-bold tracking-tight text-white"
         >
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-sunset text-base font-bold text-ocean">
-            H
-          </span>
+          <Image
+            src="/logo-mark.png"
+            alt=""
+            width={512}
+            height={512}
+            priority
+            className="h-10 w-10 shrink-0 rounded-xl object-cover"
+          />
           <span className="flex flex-col leading-tight">
             <span>HistorAI</span>
             <span className="text-[0.65rem] font-medium uppercase tracking-wide text-seaglass">

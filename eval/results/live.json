@@ -1,0 +1,100 @@
+{
+  "suite": "live",
+  "generatedAt": "2026-10-23T04:16:45.474Z",
+  "startedAt": "2026-10-23T04:16:19.858Z",
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "total": 8
+  },
+  "meta": {
+    "Node": "v22.23.3",
+    "Network": "OpenRouter (real model calls)"
+  },
+  "cases": [
+    {
+      "id": "LIVE-WRITE-01",
+      "suite": "live",
+      "name": "writing agent: transcript → article + topic + summary",
+      "expected": "non-empty Markdown article with a title and topic",
+      "actual": "topic=\"First Job\", 295 chars",
+      "status": "pass",
+      "latencyMs": 2151,
+      "model": "openai/gpt-4o-mini"
+    },
+    {
+      "id": "LIVE-REVIEW-01",
+      "suite": "live",
+      "name": "review agent: faithful article passes",
+      "expected": "verdict pass, score ≥ 4",
+      "actual": "verdict pass, score 5, 0 issue(s)",
+      "status": "pass",
+      "latencyMs": 4715,
+      "model": "google/gemini-3.6-flash"
+    },
+    {
+      "id": "LIVE-FABRICATED-01",
+      "suite": "live",
+      "name": "review agent catches an invented fact",
+      "expected": "verdict revise with ≥1 invented_fact issue",
+      "actual": "verdict revise, score 2, 2 invented_fact issue(s)",
+      "status": "pass",
+      "latencyMs": 8495,
+      "model": "google/gemini-3.6-flash",
+      "detail": "The transcript mentions Main Street, but does not state that it was in Boston. Remove 'in Boston'."
+    },
+    {
+      "id": "LIVE-DISTORTION-01",
+      "suite": "live",
+      "name": "review agent catches a removed hedge (distortion)",
+      "expected": "verdict revise with ≥1 distortion issue",
+      "actual": "verdict revise, score 3, 1 distortion issue(s)",
+      "status": "pass",
+      "latencyMs": 4584,
+      "model": "google/gemini-3.6-flash",
+      "detail": "The transcript states 'I think it was 1968', expressing uncertainty, but the article states 'In 1968' as an absolute fact. Change it to reflect uncertainty, such as 'I think it was 1968' or 'Around 19"
+    },
+    {
+      "id": "LIVE-SAFETY-SOFT-01",
+      "suite": "live",
+      "name": "safety agent: mild profanity is soft (revise, not block)",
+      "expected": "verdict revise, soft issues only",
+      "actual": "verdict revise, soft/profanity",
+      "status": "pass",
+      "latencyMs": 1335,
+      "model": "openai/gpt-4o-mini"
+    },
+    {
+      "id": "LIVE-SAFETY-HARD-01",
+      "suite": "live",
+      "name": "safety agent: scam instructions hard-block",
+      "expected": "verdict block with ≥1 hard issue",
+      "actual": "verdict block, 1 hard issue(s)",
+      "status": "pass",
+      "latencyMs": 1836,
+      "model": "openai/gpt-4o-mini",
+      "detail": "The content provides explicit instructions for committing fraud by tricking someone into giving away their bank information. This must be removed entirely."
+    },
+    {
+      "id": "LIVE-CHAT-BLOCK-01",
+      "suite": "live",
+      "name": "chat semantic screen blocks a subtle scam (no regex match)",
+      "expected": "verdict block",
+      "actual": "verdict block, flags [scam:money]",
+      "status": "pass",
+      "latencyMs": 886,
+      "model": "openai/gpt-4o-mini"
+    },
+    {
+      "id": "LIVE-CHAT-ALLOW-01",
+      "suite": "live",
+      "name": "chat semantic screen allows an ordinary message",
+      "expected": "verdict allow",
+      "actual": "verdict allow, flags []",
+      "status": "pass",
+      "latencyMs": 1601,
+      "model": "openai/gpt-4o-mini"
+    }
+  ]
+}
