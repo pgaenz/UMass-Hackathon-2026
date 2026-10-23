@@ -1,0 +1,23 @@
+# Normalize line endings for everyone on the team.
+# Files are stored in the repo with LF ("eol=lf") so checkouts are identical
+# across Windows/macOS/Linux and don't show up as spurious "local changes".
+* text=auto eol=lf
+
+# Keep binary assets untouched by text normalization.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.mp3 binary
+*.wav binary
+*.m4a binary
+*.mp4 binary
+*.webm binary
