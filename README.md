@@ -170,6 +170,7 @@ Article appears in the youth feed
 | `/connect` | Directory of Rivers to connect with (signed-in users) |
 | `/profile` | Edit your own profile |
 | `/profile/[id]` | Public profile |
+| `/help` | Help and frequently asked questions |
 
 ### API routes
 

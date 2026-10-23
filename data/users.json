@@ -112,6 +112,33 @@
         "advice"
       ],
       "createdAt": "2026-10-22T21:01:14.109Z"
+    },
+    {
+      "id": "u-421cf62b-ecb4-4ca4-8d51-347f40a86b16",
+      "role": "river",
+      "name": "loser",
+      "age": 19,
+      "bio": "",
+      "interests": [],
+      "createdAt": "2026-10-22T19:41:37.528Z"
+    },
+    {
+      "id": "u-aa20ca78-516f-459f-9856-66e30ee0f67f",
+      "role": "river",
+      "name": "Timo Heil",
+      "age": 40,
+      "bio": "",
+      "interests": [],
+      "createdAt": "2026-10-22T19:53:33.773Z"
+    },
+    {
+      "id": "u-845cecdf-1527-4210-9417-d3ee8b2ab548",
+      "role": "river",
+      "name": "yo",
+      "age": 33,
+      "bio": "",
+      "interests": [],
+      "createdAt": "2026-10-22T20:47:07.271Z"
     }
   ]
 }

@@ -263,7 +263,7 @@ function toSafetyIssues(value: unknown): SafetyIssue[] {
  */
 export async function checkSafety(input: {
   content: string;
-  kind: "article" | "question" | "bio";
+  kind: "article" | "question" | "bio" | "name";
   context?: string | null;
 }): Promise<SafetyResult> {
   const system = await loadPrompt("safety_agent");

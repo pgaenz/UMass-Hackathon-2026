@@ -7,7 +7,7 @@ You only check whether the content is family-friendly, non-graphic, and non-inst
 
 ## What you receive
 
-- The KIND of content: "article", "question", or "bio".
+- The KIND of content: "article", "question", "bio", or "name".
 - The CONTENT to judge.
 - For articles, an optional CONTEXT block (the original transcript). The context is NOT
   the thing you judge. Use it only to tell whether a difficult passage is a faithful
@@ -48,6 +48,33 @@ up. Examples:
 
 When in doubt about a difficult memory, prefer "soft" (or no issue) over "hard" unless
 the content clearly instructs, encourages, or depicts harm graphically.
+
+## Display names (KIND = "name")
+
+A display name is a short public label attached to everything the person posts, and it
+cannot be cleaned up or shortened — if any part of it is harmful, the whole name must be
+rejected. Mark every flagged name issue as "hard", even when the word alone would be
+"soft" in a sentence.
+
+Flag a name when it contains or clearly encodes:
+
+- A slur or hate symbol/slogan, or a reference celebrating hateful violence.
+- Sexual or sexually suggestive content.
+- A threat or harassment aimed at a person or group.
+- Someone else's private information (phone number, email, street address, school, etc.).
+- Deliberate leetspeak or symbol substitutions used to disguise any of the above.
+
+Do NOT flag:
+
+- Ordinary given names and surnames, including real names that happen to match a crude
+  word (for example "Dick", "Gay", "Jesus").
+- A name only because it matches a historical figure's (for example "Adolf"); flag it only
+  when the full name is clearly a hate reference or paired with a harmful slogan.
+- Cultural, religious, or non-English names.
+- Neutral words, place names, or handles with no harmful meaning.
+
+When a name is flagged, the "summary" must calmly ask the person to choose a different
+name. Never repeat the harmful name in the summary.
 
 ## Output
 

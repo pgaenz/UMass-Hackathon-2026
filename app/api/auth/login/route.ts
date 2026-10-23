@@ -1,3 +1,4 @@
+import { checkSafety } from "@/lib/agents";
 import { setSession } from "@/lib/session";
 import { createUser, isValidAge, toPublicUser } from "@/lib/users";
 import type { Role } from "@/lib/types";
@@ -48,6 +49,24 @@ export async function POST(request: Request): Promise<Response> {
   const age = typeof body?.age === "number" ? body.age : Number(body?.age);
   if (!isValidAge(age)) {
     return fail(400, "Please enter a valid age (13 or older).");
+  }
+
+  // Safety gate: a display name is public and cannot be auto-cleaned, so any
+  // flagged name is rejected rather than rewritten.
+  try {
+    const safety = await checkSafety({ content: name, kind: "name" });
+    if (safety.verdict !== "allow") {
+      return fail(
+        422,
+        safety.summary || "That name cannot be used. Please choose a different one.",
+      );
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "We could not create your profile.";
+    return fail(
+      err instanceof Error && err.message.startsWith("OpenRouter") ? 502 : 500,
+      message,
+    );
   }
 
   const bio = typeof body?.bio === "string" ? body.bio.trim().slice(0, 300) : "";

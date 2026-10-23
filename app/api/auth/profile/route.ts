@@ -39,6 +39,25 @@ export async function PATCH(request: Request): Promise<Response> {
     const name = typeof body.name === "string" ? body.name.trim() : "";
     if (!name) return fail(400, "Please enter your name.");
     if (name.length > 80) return fail(400, "That name is too long.");
+
+    try {
+      // Safety gate: a display name is public and cannot be auto-cleaned, so any
+      // flagged name is rejected rather than rewritten.
+      const safety = await checkSafety({ content: name, kind: "name" });
+      if (safety.verdict !== "allow") {
+        return fail(
+          422,
+          safety.summary || "That name cannot be saved. Please choose a different one.",
+        );
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "We could not save your profile.";
+      return fail(
+        err instanceof Error && err.message.startsWith("OpenRouter") ? 502 : 500,
+        message,
+      );
+    }
+
     patch.name = name;
   }
 
