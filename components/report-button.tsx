@@ -4,6 +4,7 @@ import type { FormEvent } from "react";
 import { useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { textActionClass } from "@/lib/action-classes";
 import type { ReportTargetType } from "@/lib/reports";
 
 const REASONS = [
@@ -57,7 +58,7 @@ export function ReportButton({
       <button
         type="button"
         onClick={() => dialogRef.current?.showModal()}
-        className="ripple rounded-lg px-2 py-1 text-base font-medium text-ink/70 underline decoration-seaglass underline-offset-4 hover:text-ink hover:decoration-ink"
+        className={textActionClass}
       >
         Report
       </button>

@@ -21,6 +21,7 @@ function navItemsFor(user: HeaderUser | null) {
     { href: "/", label: "Home" },
     { href: "/questions", label: "Questions" },
     { href: "/youth", label: "Read" },
+    { href: "/podcasts", label: "Podcasts" },
     ...(user ? [{ href: "/messages", label: "Messages" }] : []),
     ...(user?.role === "river" ? [{ href: "/senior", label: "Answer" }] : []),
   ];
@@ -67,7 +68,7 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
           </span>
         </Link>
 
-        <nav aria-label="Primary">
+        <nav aria-label="Primary" data-tour="nav">
           <ul className="flex flex-wrap items-center gap-1">
             {navItems.map((item) => {
               const active = isActive(pathname, item.href);
@@ -76,6 +77,13 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
                   <Link
                     href={item.href}
                     aria-current={active ? "page" : undefined}
+                    data-tour={
+                      item.href === "/messages"
+                        ? "messages"
+                        : item.href === "/senior"
+                          ? "nav-answer"
+                          : undefined
+                    }
                     className={
                       active
                         ? "ripple inline-flex min-h-10 items-center rounded-xl bg-brand px-4 text-sm font-semibold text-white"
@@ -94,6 +102,7 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
         <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/help"
+            data-tour="help"
             aria-label="Help and frequently asked questions"
             aria-current={pathname === "/help" ? "page" : undefined}
             title="Help and frequently asked questions"
@@ -121,6 +130,7 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
 
           <Link
             href="/search"
+            data-tour="search"
             aria-label="Search"
             title="Search"
             className="ripple grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
@@ -137,6 +147,7 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
             <>
               <Link
                 href="/profile"
+                data-tour="profile"
                 aria-label={`Your profile, ${user.name}`}
                 className="ripple grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
                 title={`${user.name} · ${user.role === "river" ? "River" : "Drop"}`}
@@ -148,6 +159,7 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
           ) : (
             <Link
               href="/login"
+              data-tour="sign-in"
               className="ripple inline-flex min-h-10 items-center rounded-xl bg-sunset px-4 text-sm font-bold text-ocean shadow-water transition hover:brightness-105"
             >
               Sign in

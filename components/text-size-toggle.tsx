@@ -56,6 +56,7 @@ export function TextSizeToggle() {
     <div
       role="group"
       aria-label="Text size"
+      data-tour="text-size"
       className="flex items-center gap-0.5 rounded-xl border border-white/25 bg-white/10 p-0.5"
     >
       {LEVELS.map((level) => (

@@ -18,12 +18,15 @@ export default async function MessagesPage() {
   const threads = await listThreadsForUser(session.userId);
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-8 px-6 py-10">
+    <div
+      className="mx-auto w-full max-w-4xl space-y-8 px-6 py-10"
+      data-tour="messages-page"
+    >
       <PageHeader
         title="Messages"
         description="Private conversations with anyone in the community."
       >
-        <ButtonLink href="/connect" variant="secondary">
+        <ButtonLink href="/connect" variant="secondary" data-tour="connect-link">
           Find someone to connect with
         </ButtonLink>
       </PageHeader>

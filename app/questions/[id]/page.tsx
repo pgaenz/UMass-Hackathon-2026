@@ -5,15 +5,18 @@ import { notFound } from "next/navigation";
 import { ArticleRenderer } from "@/components/article-renderer";
 import { AnswerSortBar } from "@/components/answer-sort-bar";
 import { MessageButton } from "@/components/chat/message-button";
+import { CopyButton } from "@/components/copy-button";
 import { LikeButton } from "@/components/like-button";
+import { ListenButton } from "@/components/listen-button";
 import { ReportButton } from "@/components/report-button";
+import { ShareButton } from "@/components/share-button";
 import { UpvoteButton } from "@/components/upvote-button";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getPublishedStories } from "@/lib/answers";
 import { canSendTo } from "@/lib/chat";
-import { firstName, formatDate, truncate } from "@/lib/format";
+import { firstName, formatDate, toPlainText, truncate } from "@/lib/format";
 import { getLikeStates } from "@/lib/likes";
 import { getVoteStates } from "@/lib/question-votes";
 import { getQuestion, getTopics } from "@/lib/questions";
@@ -124,7 +127,16 @@ export default async function QuestionDetailPage({
                   variant="secondary"
                 />
               ) : null}
-              <ReportButton targetType="question" targetId={question.id} />
+              <div className="flex items-center">
+                <CopyButton text={question.text} context={question.text} />
+                <ListenButton text={question.text} context={question.text} />
+                <ShareButton
+                  path={`/questions/${question.id}`}
+                  title={question.text}
+                  context={question.text}
+                />
+                <ReportButton targetType="question" targetId={question.id} />
+              </div>
             </div>
           </div>
         </div>
@@ -171,6 +183,15 @@ export default async function QuestionDetailPage({
                         <span>HistorAI community</span>
                       )}
                       <time dateTime={answer.createdAt}>{formatDate(answer.createdAt)}</time>
+                      {answer.article.trim() ? (
+                        <>
+                          <CopyButton text={toPlainText(answer.article)} />
+                          <ListenButton
+                            text={toPlainText(answer.article)}
+                            context="this answer"
+                          />
+                        </>
+                      ) : null}
                       {answerAuthor && canSendTo(user, answerAuthor) ? (
                         <MessageButton
                           participantId={answerAuthor.id}

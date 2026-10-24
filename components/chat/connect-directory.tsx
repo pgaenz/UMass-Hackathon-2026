@@ -46,7 +46,7 @@ export function ConnectDirectory({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-tour="connect-directory">
       <div className="flex flex-wrap items-center gap-3">
         <label htmlFor="connect-interest" className="text-lg font-semibold text-ink">
           Filter by interest

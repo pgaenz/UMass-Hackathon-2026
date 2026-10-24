@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { CopyButton } from "@/components/copy-button";
+import { ListenButton } from "@/components/listen-button";
 import { ReportButton } from "@/components/report-button";
 import { UpvoteButton } from "@/components/upvote-button";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +31,10 @@ export function QuestionCard({
   const linkHref = href ?? `/questions/${question.id}`;
 
   return (
-    <article className="lift flex gap-4 rounded-2xl glass shadow-water p-5 sm:gap-6 sm:p-6">
+    <article
+      data-tour="question-card"
+      className="lift flex gap-4 rounded-2xl glass shadow-water p-5 sm:gap-6 sm:p-6"
+    >
       <UpvoteButton
         questionId={question.id}
         initialCount={question.upvotes}
@@ -62,6 +67,8 @@ export function QuestionCard({
           ) : (
             <span>Asked by the community</span>
           )}
+          <CopyButton text={question.text} context={question.text} />
+          <ListenButton text={question.text} context={question.text} />
           <ReportButton targetType="question" targetId={question.id} />
         </div>
       </div>

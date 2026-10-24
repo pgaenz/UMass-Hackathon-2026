@@ -1,6 +1,8 @@
 import Link from "next/link";
 
+import { CopyButton } from "@/components/copy-button";
 import { LikeButton } from "@/components/like-button";
+import { ListenButton } from "@/components/listen-button";
 import { Badge } from "@/components/ui/badge";
 import { formatDate, getArticleTitle, truncate } from "@/lib/format";
 import type { AuthorRef, Story, StoryLikeState } from "@/lib/types";
@@ -58,6 +60,8 @@ export function StoryCard({
             initialCount={likeState.count}
             signedIn={signedIn}
           />
+          <CopyButton text={title} context={title} />
+          <ListenButton text={title} context={title} />
         </div>
       </div>
     </article>
