@@ -21,6 +21,7 @@ export function VisitorButton() {
     <button
       type="button"
       onClick={enter}
+      data-tour="visitor"
       disabled={busy}
       className="ripple rounded-lg text-lg font-semibold text-brand underline-offset-4 hover:underline disabled:opacity-60"
     >

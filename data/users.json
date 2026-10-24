@@ -148,6 +148,723 @@
       "bio": "",
       "interests": [],
       "createdAt": "2026-10-23T16:09:57.589Z"
+    },
+    {
+      "id": "u-17495b80-eee5-49a9-918d-94ccfd215385",
+      "role": "river",
+      "name": "Louis",
+      "age": 21,
+      "bio": "",
+      "interests": [],
+      "createdAt": "2026-10-23T17:38:44.056Z"
+    },
+    {
+      "id": "u-06aba051-45bc-4349-9043-7689c6fb58cc",
+      "role": "drop",
+      "name": "Louis",
+      "age": 21,
+      "bio": "",
+      "interests": [],
+      "createdAt": "2026-10-23T17:43:08.883Z"
+    },
+    {
+      "id": "u-river-elena",
+      "role": "river",
+      "name": "Elena Marquez",
+      "age": 74,
+      "bio": "Retired nurse who spent thirty-eight years on hospital wards and still keeps peppermints in her pocket for nervous visitors.",
+      "interests": [
+        "job",
+        "health",
+        "advice"
+      ],
+      "createdAt": "2026-01-18T09:00:00.000Z"
+    },
+    {
+      "id": "u-drop-jordan",
+      "role": "drop",
+      "name": "Jordan Ellis",
+      "age": 22,
+      "bio": "Recent graduate starting a first office job and wondering how anyone learns to feel competent.",
+      "interests": [
+        "job",
+        "advice"
+      ],
+      "createdAt": "2026-01-19T09:00:00.000Z"
+    },
+    {
+      "id": "u-river-walter",
+      "role": "river",
+      "name": "Walter Brooks",
+      "age": 80,
+      "bio": "Retired machinist and machine-shop owner who can still estimate a bolt size by looking at it.",
+      "interests": [
+        "job",
+        "money",
+        "advice"
+      ],
+      "createdAt": "2026-01-18T09:10:00.000Z"
+    },
+    {
+      "id": "u-drop-owen",
+      "role": "drop",
+      "name": "Owen Murphy",
+      "age": 19,
+      "bio": "Apprentice electrician who is learning that being new means making mistakes in front of people.",
+      "interests": [
+        "job",
+        "money",
+        "hobbies"
+      ],
+      "createdAt": "2026-01-19T09:10:00.000Z"
+    },
+    {
+      "id": "u-river-beatrice",
+      "role": "river",
+      "name": "Beatrice Coleman",
+      "age": 84,
+      "bio": "Retired librarian, lifelong mystery reader, and keeper of a blue bicycle that no longer fits anyone.",
+      "interests": [
+        "love-life",
+        "childhood",
+        "hobbies"
+      ],
+      "createdAt": "2026-01-18T09:20:00.000Z"
+    },
+    {
+      "id": "u-drop-grace",
+      "role": "drop",
+      "name": "Grace Kim",
+      "age": 20,
+      "bio": "College junior trying to decide whether a new relationship is worth the risk of getting hurt.",
+      "interests": [
+        "love-life",
+        "advice",
+        "friendship"
+      ],
+      "createdAt": "2026-01-19T09:20:00.000Z"
+    },
+    {
+      "id": "u-river-amina",
+      "role": "river",
+      "name": "Amina Hassan",
+      "age": 71,
+      "bio": "Retired translator and language teacher who once kept a love story alive through letters for two years.",
+      "interests": [
+        "love-life",
+        "travel",
+        "advice"
+      ],
+      "createdAt": "2026-01-18T09:30:00.000Z"
+    },
+    {
+      "id": "u-drop-hana",
+      "role": "drop",
+      "name": "Hana Sato",
+      "age": 26,
+      "bio": "Graduate student in the middle of a long-distance relationship, wondering what distance does to love.",
+      "interests": [
+        "love-life",
+        "travel"
+      ],
+      "createdAt": "2026-01-19T09:30:00.000Z"
+    },
+    {
+      "id": "u-river-marisol",
+      "role": "river",
+      "name": "Marisol Vega",
+      "age": 67,
+      "bio": "Retired social worker who raised three children, fostered six more, and never let a difficult conversation end at the front door.",
+      "interests": [
+        "family",
+        "advice",
+        "health"
+      ],
+      "createdAt": "2026-01-18T09:40:00.000Z"
+    },
+    {
+      "id": "u-drop-camila",
+      "role": "drop",
+      "name": "Camila Torres",
+      "age": 28,
+      "bio": "New parent trying to understand why her own parents made the choices they did.",
+      "interests": [
+        "family",
+        "advice"
+      ],
+      "createdAt": "2026-01-19T09:40:00.000Z"
+    },
+    {
+      "id": "u-river-hiroshi",
+      "role": "river",
+      "name": "Hiroshi Tanaka",
+      "age": 79,
+      "bio": "Retired gardener who keeps his mother's secateurs oiled and still plants one row of tomatoes every spring.",
+      "interests": [
+        "family",
+        "hobbies",
+        "travel"
+      ],
+      "createdAt": "2026-01-18T09:50:00.000Z"
+    },
+    {
+      "id": "u-drop-noah",
+      "role": "drop",
+      "name": "Noah Williams",
+      "age": 16,
+      "bio": "High-school student who has started asking his grandparents about the objects they refuse to throw away.",
+      "interests": [
+        "family",
+        "childhood",
+        "hobbies"
+      ],
+      "createdAt": "2026-01-19T09:50:00.000Z"
+    },
+    {
+      "id": "u-river-samuel",
+      "role": "river",
+      "name": "Samuel Levine",
+      "age": 76,
+      "bio": "Retired English teacher who once kept the school library open late for a student who had nowhere quiet to read.",
+      "interests": [
+        "childhood",
+        "hobbies",
+        "advice"
+      ],
+      "createdAt": "2026-01-18T10:00:00.000Z"
+    },
+    {
+      "id": "u-drop-aisha",
+      "role": "drop",
+      "name": "Aisha Patel",
+      "age": 24,
+      "bio": "Library assistant who worries that the students who need books most are the hardest ones to reach.",
+      "interests": [
+        "childhood",
+        "friendship",
+        "advice"
+      ],
+      "createdAt": "2026-01-19T10:00:00.000Z"
+    },
+    {
+      "id": "u-river-nia",
+      "role": "river",
+      "name": "Nia Okafor",
+      "age": 70,
+      "bio": "Retired seamstress who learned to make her own clothes before she learned to write well, and never forgot either skill.",
+      "interests": [
+        "childhood",
+        "job",
+        "hobbies"
+      ],
+      "createdAt": "2026-01-18T10:10:00.000Z"
+    },
+    {
+      "id": "u-drop-leila",
+      "role": "drop",
+      "name": "Leila Haddad",
+      "age": 23,
+      "bio": "Fashion student who is trying to remember why she fell in love with making things by hand.",
+      "interests": [
+        "childhood",
+        "hobbies",
+        "job"
+      ],
+      "createdAt": "2026-01-19T10:10:00.000Z"
+    },
+    {
+      "id": "u-river-thomas",
+      "role": "river",
+      "name": "Thomas Reed",
+      "age": 69,
+      "bio": "Retired firefighter who spent thirty-one years on the job and still walks a mile after dinner every night.",
+      "interests": [
+        "advice",
+        "health",
+        "job"
+      ],
+      "createdAt": "2026-01-18T10:20:00.000Z"
+    },
+    {
+      "id": "u-drop-sofia",
+      "role": "drop",
+      "name": "Sofia Nguyen",
+      "age": 17,
+      "bio": "High-school senior trying to make a big decision without believing that one mistake will ruin everything.",
+      "interests": [
+        "advice",
+        "health",
+        "childhood"
+      ],
+      "createdAt": "2026-01-19T10:20:00.000Z"
+    },
+    {
+      "id": "u-river-priya",
+      "role": "river",
+      "name": "Priya Raman",
+      "age": 73,
+      "bio": "Retired accountant who kept every family receipt in a shoebox and now teaches neighbors how to read a bank statement.",
+      "interests": [
+        "money",
+        "advice",
+        "family"
+      ],
+      "createdAt": "2026-01-18T10:30:00.000Z"
+    },
+    {
+      "id": "u-drop-malik",
+      "role": "drop",
+      "name": "Malik Turner",
+      "age": 25,
+      "bio": "Gig worker trying to build a stable life out of irregular paychecks and a lot of advice from the internet.",
+      "interests": [
+        "money",
+        "advice",
+        "job"
+      ],
+      "createdAt": "2026-01-19T10:30:00.000Z"
+    },
+    {
+      "id": "u-river-george",
+      "role": "river",
+      "name": "George Whitfield",
+      "age": 78,
+      "bio": "Retired hardware-store owner who still opens the shop on Saturdays to give away advice and sharpen knives.",
+      "interests": [
+        "friendship",
+        "job",
+        "advice"
+      ],
+      "createdAt": "2026-01-18T10:40:00.000Z"
+    },
+    {
+      "id": "u-drop-liam",
+      "role": "drop",
+      "name": "Liam O'Connor",
+      "age": 19,
+      "bio": "University freshman trying to hold on to the friends he made in secondary school.",
+      "interests": [
+        "friendship",
+        "childhood",
+        "advice"
+      ],
+      "createdAt": "2026-01-19T10:40:00.000Z"
+    },
+    {
+      "id": "u-river-rosa",
+      "role": "river",
+      "name": "Rosa Delgado",
+      "age": 65,
+      "bio": "Retired city bus driver who knows almost every long-time passenger by name and still carries extra umbrellas.",
+      "interests": [
+        "friendship",
+        "advice",
+        "travel"
+      ],
+      "createdAt": "2026-01-18T10:50:00.000Z"
+    },
+    {
+      "id": "u-drop-ethan",
+      "role": "drop",
+      "name": "Ethan Park",
+      "age": 21,
+      "bio": "Music student who moved to a new city and is trying to make friends without pretending to be someone else.",
+      "interests": [
+        "friendship",
+        "hobbies",
+        "advice"
+      ],
+      "createdAt": "2026-01-19T10:50:00.000Z"
+    },
+    {
+      "id": "u-river-frank",
+      "role": "river",
+      "name": "Frank Delaney",
+      "age": 74,
+      "bio": "Retired electrician who took one long trip every decade and kept every paper map he ever used.",
+      "interests": [
+        "travel",
+        "hobbies",
+        "money"
+      ],
+      "createdAt": "2026-01-18T11:00:00.000Z"
+    },
+    {
+      "id": "u-drop-nora",
+      "role": "drop",
+      "name": "Nora Bennett",
+      "age": 23,
+      "bio": "Geography student who feels guilty about wanting to travel when the world is in a hurry and everything is online.",
+      "interests": [
+        "travel",
+        "childhood",
+        "hobbies"
+      ],
+      "createdAt": "2026-01-19T11:00:00.000Z"
+    },
+    {
+      "id": "u-river-ingrid",
+      "role": "river",
+      "name": "Ingrid Larsen",
+      "age": 82,
+      "bio": "Retired ship's cook who crossed the Atlantic more times than she can remember and still wakes before dawn.",
+      "interests": [
+        "travel",
+        "job",
+        "advice"
+      ],
+      "createdAt": "2026-01-18T11:10:00.000Z"
+    },
+    {
+      "id": "u-drop-samir",
+      "role": "drop",
+      "name": "Samir Khan",
+      "age": 19,
+      "bio": "First-year student who has never left his home country and is scared that he is already falling behind.",
+      "interests": [
+        "travel",
+        "hobbies",
+        "advice"
+      ],
+      "createdAt": "2026-01-19T11:10:00.000Z"
+    },
+    {
+      "id": "u-river-marcus",
+      "role": "river",
+      "name": "Marcus Bell",
+      "age": 77,
+      "bio": "Retired bank clerk who saved his first paycheck in an envelope and still balances his checkbook every month.",
+      "interests": [
+        "money",
+        "job",
+        "advice"
+      ],
+      "createdAt": "2026-01-18T11:20:00.000Z"
+    },
+    {
+      "id": "u-drop-tessa",
+      "role": "drop",
+      "name": "Tessa Morgan",
+      "age": 18,
+      "bio": "Barista saving for her first car and trying to figure out how much of her paycheck should disappear each week.",
+      "interests": [
+        "money",
+        "job",
+        "advice"
+      ],
+      "createdAt": "2026-01-19T11:20:00.000Z"
+    },
+    {
+      "id": "u-river-joan",
+      "role": "river",
+      "name": "Joan Chen",
+      "age": 68,
+      "bio": "Retired bakery owner who built a business from a borrowed mixer and a debt she paid back one loaf at a time.",
+      "interests": [
+        "money",
+        "job",
+        "family"
+      ],
+      "createdAt": "2026-01-18T11:30:00.000Z"
+    },
+    {
+      "id": "u-drop-andre",
+      "role": "drop",
+      "name": "Andre Lewis",
+      "age": 27,
+      "bio": "Small-business owner in his second year, trying to separate a good opportunity from a costly mistake.",
+      "interests": [
+        "money",
+        "job",
+        "advice"
+      ],
+      "createdAt": "2026-01-19T11:30:00.000Z"
+    },
+    {
+      "id": "u-river-arthur",
+      "role": "river",
+      "name": "Arthur Price",
+      "age": 81,
+      "bio": "Retired band teacher who still practices trumpet on Sunday mornings and claims it keeps his lungs and his neighbors honest.",
+      "interests": [
+        "hobbies",
+        "childhood",
+        "advice"
+      ],
+      "createdAt": "2026-01-18T11:40:00.000Z"
+    },
+    {
+      "id": "u-drop-mia",
+      "role": "drop",
+      "name": "Mia Rossi",
+      "age": 20,
+      "bio": "Art student who keeps starting new hobbies and abandoning them when she is not immediately good.",
+      "interests": [
+        "hobbies",
+        "childhood",
+        "advice"
+      ],
+      "createdAt": "2026-01-19T11:40:00.000Z"
+    },
+    {
+      "id": "u-river-yvonne",
+      "role": "river",
+      "name": "Yvonne Carter",
+      "age": 72,
+      "bio": "Retired dance teacher who ran a Tuesday-night class for beginners for thirty years and never turned anyone away.",
+      "interests": [
+        "hobbies",
+        "friendship",
+        "health"
+      ],
+      "createdAt": "2026-01-18T11:50:00.000Z"
+    },
+    {
+      "id": "u-drop-ben",
+      "role": "drop",
+      "name": "Ben Osei",
+      "age": 24,
+      "bio": "Software developer who spends most of his week at a desk and misses the feeling of moving without a screen.",
+      "interests": [
+        "hobbies",
+        "health",
+        "friendship"
+      ],
+      "createdAt": "2026-01-19T11:50:00.000Z"
+    },
+    {
+      "id": "u-river-miriam",
+      "role": "river",
+      "name": "Dr. Miriam Osei",
+      "age": 75,
+      "bio": "Retired physician who spent forty years telling patients to ask for help and then had to learn the lesson herself.",
+      "interests": [
+        "health",
+        "advice",
+        "family"
+      ],
+      "createdAt": "2026-01-18T12:00:00.000Z"
+    },
+    {
+      "id": "u-drop-nikhil",
+      "role": "drop",
+      "name": "Nikhil Rao",
+      "age": 22,
+      "bio": "Medical student who is afraid that admitting exhaustion will make him look like he cannot handle the work.",
+      "interests": [
+        "health",
+        "advice",
+        "job"
+      ],
+      "createdAt": "2026-01-19T12:00:00.000Z"
+    },
+    {
+      "id": "u-river-leo",
+      "role": "river",
+      "name": "Leo Martinez",
+      "age": 66,
+      "bio": "Retired park ranger who rebuilt his strength after a heart attack by walking the same trail one bench at a time.",
+      "interests": [
+        "health",
+        "travel",
+        "hobbies"
+      ],
+      "createdAt": "2026-01-18T12:10:00.000Z"
+    },
+    {
+      "id": "u-drop-chloe",
+      "role": "drop",
+      "name": "Chloe Dubois",
+      "age": 25,
+      "bio": "Trail runner recovering from an injury and frustrated by how slowly her body is healing.",
+      "interests": [
+        "health",
+        "travel",
+        "hobbies"
+      ],
+      "createdAt": "2026-01-19T12:10:00.000Z"
+    },
+    {
+      "id": "u-river-calvin",
+      "role": "river",
+      "name": "Calvin Wright",
+      "age": 72,
+      "bio": "Retired postal carrier who walked the same route for twenty-nine years and knew which dogs just wanted to be greeted.",
+      "interests": [
+        "job",
+        "friendship",
+        "health"
+      ],
+      "createdAt": "2026-01-18T12:20:00.000Z"
+    },
+    {
+      "id": "u-drop-priya-shah",
+      "role": "drop",
+      "name": "Priya Shah",
+      "age": 20,
+      "bio": "Student who is trying to decide whether a meaningful job and a successful job can be the same thing.",
+      "interests": [
+        "job",
+        "advice",
+        "friendship"
+      ],
+      "createdAt": "2026-01-19T12:20:00.000Z"
+    },
+    {
+      "id": "u-river-mae",
+      "role": "river",
+      "name": "Mae Thompson",
+      "age": 79,
+      "bio": "Retired florist who arranged wedding flowers for forty years and kept a vase of wildflowers on her own table every week.",
+      "interests": [
+        "love-life",
+        "hobbies",
+        "advice"
+      ],
+      "createdAt": "2026-01-18T12:30:00.000Z"
+    },
+    {
+      "id": "u-drop-alex",
+      "role": "drop",
+      "name": "Alex Rivera",
+      "age": 24,
+      "bio": "Newly married and trying to understand why the quiet parts of love feel harder than the exciting parts.",
+      "interests": [
+        "love-life",
+        "advice",
+        "friendship"
+      ],
+      "createdAt": "2026-01-19T12:30:00.000Z"
+    },
+    {
+      "id": "u-river-kenji",
+      "role": "river",
+      "name": "Kenji Mori",
+      "age": 68,
+      "bio": "Retired restaurant cook who still makes a Sunday noodle pot for whoever is hungry.",
+      "interests": [
+        "family",
+        "hobbies",
+        "friendship"
+      ],
+      "createdAt": "2026-01-18T12:40:00.000Z"
+    },
+    {
+      "id": "u-drop-zara",
+      "role": "drop",
+      "name": "Zara Ali",
+      "age": 22,
+      "bio": "Student living far from her family, trying to cook the dishes that make her feel at home.",
+      "interests": [
+        "family",
+        "hobbies",
+        "advice"
+      ],
+      "createdAt": "2026-01-19T12:40:00.000Z"
+    },
+    {
+      "id": "u-river-evelyn",
+      "role": "river",
+      "name": "Evelyn Hart",
+      "age": 76,
+      "bio": "Retired train conductor who once spent a night on a train that seemed to be going nowhere and would not have changed it.",
+      "interests": [
+        "travel",
+        "advice",
+        "money"
+      ],
+      "createdAt": "2026-01-18T12:50:00.000Z"
+    },
+    {
+      "id": "u-drop-lucas",
+      "role": "drop",
+      "name": "Lucas Meyer",
+      "age": 20,
+      "bio": "Student who is saving for his first solo trip and wants to know whether it is worth the money.",
+      "interests": [
+        "travel",
+        "money",
+        "advice"
+      ],
+      "createdAt": "2026-01-19T12:50:00.000Z"
+    },
+    {
+      "id": "u-river-oscar",
+      "role": "river",
+      "name": "Oscar Mendez",
+      "age": 70,
+      "bio": "Retired soccer coach who keeps a bench in the park and still watches the local team on Saturdays.",
+      "interests": [
+        "friendship",
+        "hobbies",
+        "advice"
+      ],
+      "createdAt": "2026-01-18T13:00:00.000Z"
+    },
+    {
+      "id": "u-drop-nina",
+      "role": "drop",
+      "name": "Nina Petrova",
+      "age": 23,
+      "bio": "Young professional worried that she does not know how to help her friend through a difficult year.",
+      "interests": [
+        "friendship",
+        "advice",
+        "health"
+      ],
+      "createdAt": "2026-01-19T13:00:00.000Z"
+    },
+    {
+      "id": "u-river-alma",
+      "role": "river",
+      "name": "Alma Reed",
+      "age": 77,
+      "bio": "Retired yoga teacher who can still sit cross-legged for half an hour and thinks rest is a form of honesty.",
+      "interests": [
+        "health",
+        "advice",
+        "childhood"
+      ],
+      "createdAt": "2026-01-18T13:10:00.000Z"
+    },
+    {
+      "id": "u-drop-kai",
+      "role": "drop",
+      "name": "Kai Nakamura",
+      "age": 21,
+      "bio": "Student balancing classes and work who feels guilty whenever he is not being productive.",
+      "interests": [
+        "health",
+        "advice",
+        "hobbies"
+      ],
+      "createdAt": "2026-01-19T13:10:00.000Z"
+    },
+    {
+      "id": "u-river-hannah",
+      "role": "river",
+      "name": "Hannah Weiss",
+      "age": 75,
+      "bio": "Retired piano tuner who grew up above a bakery and still remembers the sound of the ovens being lit before dawn.",
+      "interests": [
+        "childhood",
+        "hobbies",
+        "family"
+      ],
+      "createdAt": "2026-01-18T13:20:00.000Z"
+    },
+    {
+      "id": "u-drop-eli",
+      "role": "drop",
+      "name": "Eli Brooks",
+      "age": 17,
+      "bio": "High-school student who is trying to hold on to a sense of wonder while growing up faster than he expected.",
+      "interests": [
+        "childhood",
+        "hobbies",
+        "advice"
+      ],
+      "createdAt": "2026-01-19T13:20:00.000Z"
     }
   ]
 }

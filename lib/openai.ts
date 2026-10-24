@@ -12,6 +12,7 @@ interface ChatOptions {
   model?: string;
   temperature?: number;
   timeoutMs?: number;
+  maxTokens?: number;
 }
 
 interface ChatCompletionResponse {
@@ -30,6 +31,7 @@ export async function chat(messages: ChatMessage[], opts: ChatOptions = {}): Pro
       model: opts.model ?? config.llmModel,
       messages,
       temperature: opts.temperature ?? DEFAULT_TEMPERATURE,
+      ...(opts.maxTokens ? { max_tokens: opts.maxTokens } : {}),
     }),
     signal: AbortSignal.timeout(opts.timeoutMs ?? REQUEST_TIMEOUT_MS),
   });

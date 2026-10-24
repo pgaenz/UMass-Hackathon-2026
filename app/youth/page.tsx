@@ -84,7 +84,10 @@ export default async function YouthPage({
   });
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-10 px-6 py-10">
+    <div
+      className="mx-auto w-full max-w-5xl space-y-10 px-6 py-10"
+      data-tour="story-feed"
+    >
       <PageHeader
         title="Stories from Rivers"
         description="Every story here was published by a River, with no invented facts."

@@ -70,6 +70,7 @@ export function ProfileForm({ user, topics }: { user: User; topics: Topic[] }) {
   return (
     <form
       onSubmit={handleSubmit}
+      data-tour="profile-form"
       className="space-y-6 rounded-2xl glass shadow-water p-6 shadow-sm"
     >
       <h2 className="text-2xl font-semibold text-ink">Edit your profile</h2>

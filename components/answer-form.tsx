@@ -161,7 +161,11 @@ export function AnswerForm({
   }
 
   return (
-    <section aria-labelledby="answer-heading" className="space-y-5 rounded-2xl glass shadow-water p-6 shadow-sm">
+    <section
+      aria-labelledby="answer-heading"
+      data-tour="answer-form"
+      className="space-y-5 rounded-2xl glass shadow-water p-6 shadow-sm"
+    >
       <div className="space-y-2">
         <h2 id="answer-heading" className="text-2xl font-semibold text-ink">
           Your answer
@@ -171,7 +175,10 @@ export function AnswerForm({
         </p>
       </div>
 
-      <div className="flex flex-col gap-4 rounded-xl border border-seaglass bg-seaglass/25 p-4 sm:flex-row sm:items-center sm:justify-between">
+      <div
+        className="flex flex-col gap-4 rounded-xl border border-seaglass bg-seaglass/25 p-4 sm:flex-row sm:items-center sm:justify-between"
+        data-tour="interviewer"
+      >
         <div className="space-y-1">
           <p className="text-lg font-semibold text-ink">Prefer a conversation?</p>
           <p className="text-base text-ink/70">
@@ -186,12 +193,18 @@ export function AnswerForm({
         </ButtonLink>
       </div>
 
-      <div className="flex flex-wrap gap-3" role="group" aria-label="Answer method">
+      <div
+        className="flex flex-wrap gap-3"
+        role="group"
+        aria-label="Answer method"
+        data-tour="answer-modes"
+      >
         {(["text", "audio"] as Mode[]).map((option) => (
           <button
             key={option}
             type="button"
             aria-pressed={mode === option}
+            data-tour={option === "audio" ? "record-mode" : "type-mode"}
             onClick={() => setMode(option)}
             className={cn(
               "ripple min-h-12 rounded-xl border-2 px-5 py-2.5 text-lg font-semibold transition",

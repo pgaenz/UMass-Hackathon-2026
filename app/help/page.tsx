@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { FaqHashOpener } from "@/components/faq-hash-opener";
 import { FaqItem } from "@/components/faq-item";
+import { TutorialReplayButton } from "@/components/tutorial/tutorial-replay-button";
 import { ButtonLink } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 
@@ -43,6 +44,12 @@ export default function HelpPage() {
           <span className="font-semibold text-ink">A++</span> buttons at the top of every page.
           Your choice is remembered on this device.
         </p>
+        <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-seaglass/40 bg-white/50 px-5 py-4">
+          <TutorialReplayButton />
+          <p className="text-lg text-ink/80">
+            New here, or want a refresher? The tour points out each part of the site.
+          </p>
+        </div>
       </section>
 
       <section aria-labelledby="getting-started-heading" className="space-y-4">

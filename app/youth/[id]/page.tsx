@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ArticleRenderer } from "@/components/article-renderer";
 import { MessageButton } from "@/components/chat/message-button";
 import { CopyButton } from "@/components/copy-button";
+import { ListenButton } from "@/components/listen-button";
 import { LikeButton } from "@/components/like-button";
 import { ReportButton } from "@/components/report-button";
 import { Badge } from "@/components/ui/badge";
@@ -71,6 +72,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
             signedIn={Boolean(viewer)}
           />
           <CopyButton text={title} context={title} />
+          <ListenButton text={title} context={title} />
           <ReportButton targetType="story" targetId={story.id} />
         </div>
       </header>
@@ -90,6 +92,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
       {story.article.trim() ? (
         <div className="flex flex-wrap items-center justify-end">
           <CopyButton text={toPlainText(story.article)} />
+          <ListenButton text={toPlainText(story.article)} context="this story" />
         </div>
       ) : null}
 

@@ -74,7 +74,7 @@ export default async function SeniorPage({
       />
 
       {suggestions.length > 0 ? (
-        <ul className="space-y-4">
+        <ul className="space-y-4" data-tour="senior-questions">
           {suggestions.map((question) => (
             <li key={question.id}>
               <QuestionCard

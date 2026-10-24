@@ -18,6 +18,12 @@ export async function getSession(): Promise<SessionData | null> {
   return verifySessionToken(store.get(SESSION_COOKIE)?.value);
 }
 
+/** True when this browser has chosen read-only visitor mode. */
+export async function isVisitor(): Promise<boolean> {
+  const store = await cookies();
+  return store.get(VISITOR_COOKIE)?.value === "1";
+}
+
 /**
  * Resolves the signed-in user, if any. Returns null when there is no session or
  * the referenced user no longer exists (e.g. data reset).

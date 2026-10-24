@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { Suspense } from "react";
 
 import { PageBackdrop } from "@/components/page-backdrop";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { TutorialProvider } from "@/components/tutorial/tutorial-provider";
 import { WaterCursor } from "@/components/water-cursor";
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUser, isVisitor } from "@/lib/session";
 
 import "./globals.css";
 
@@ -31,24 +33,29 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const user = await getCurrentUser();
+  const [user, visitor] = await Promise.all([getCurrentUser(), isVisitor()]);
+  const tourTrack = user ? user.role : visitor ? "visitor" : null;
 
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="relative flex min-h-screen flex-col">
-        <PageBackdrop />
-        <WaterCursor />
-        <a
-          href="#main"
-          className="ripple sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-ocean focus:px-4 focus:py-2 focus:text-lg focus:font-semibold focus:text-white"
-        >
-          Skip to content
-        </a>
-        <SiteHeader user={user ? { id: user.id, name: user.name, role: user.role } : null} />
-        <main id="main" className="flex flex-1 flex-col">
-          {children}
-        </main>
-        <SiteFooter />
+        <Suspense fallback={null}>
+          <TutorialProvider track={tourTrack}>
+            <PageBackdrop />
+            <WaterCursor />
+            <a
+              href="#main"
+              className="ripple sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-ocean focus:px-4 focus:py-2 focus:text-lg focus:font-semibold focus:text-white"
+            >
+              Skip to content
+            </a>
+            <SiteHeader user={user ? { id: user.id, name: user.name, role: user.role } : null} />
+            <main id="main" className="flex flex-1 flex-col">
+              {children}
+            </main>
+            <SiteFooter />
+          </TutorialProvider>
+        </Suspense>
       </body>
     </html>
   );

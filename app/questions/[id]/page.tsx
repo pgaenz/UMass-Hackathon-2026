@@ -7,6 +7,7 @@ import { AnswerSortBar } from "@/components/answer-sort-bar";
 import { MessageButton } from "@/components/chat/message-button";
 import { CopyButton } from "@/components/copy-button";
 import { LikeButton } from "@/components/like-button";
+import { ListenButton } from "@/components/listen-button";
 import { ReportButton } from "@/components/report-button";
 import { ShareButton } from "@/components/share-button";
 import { UpvoteButton } from "@/components/upvote-button";
@@ -128,6 +129,7 @@ export default async function QuestionDetailPage({
               ) : null}
               <div className="flex items-center">
                 <CopyButton text={question.text} context={question.text} />
+                <ListenButton text={question.text} context={question.text} />
                 <ShareButton
                   path={`/questions/${question.id}`}
                   title={question.text}
@@ -182,7 +184,13 @@ export default async function QuestionDetailPage({
                       )}
                       <time dateTime={answer.createdAt}>{formatDate(answer.createdAt)}</time>
                       {answer.article.trim() ? (
-                        <CopyButton text={toPlainText(answer.article)} />
+                        <>
+                          <CopyButton text={toPlainText(answer.article)} />
+                          <ListenButton
+                            text={toPlainText(answer.article)}
+                            context="this answer"
+                          />
+                        </>
                       ) : null}
                       {answerAuthor && canSendTo(user, answerAuthor) ? (
                         <MessageButton

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { CopyButton } from "@/components/copy-button";
+import { ListenButton } from "@/components/listen-button";
 import { QUICK_LINKS } from "@/components/quick-links";
 import { UpvoteButton } from "@/components/upvote-button";
 import { WaterLines } from "@/components/water-lines";
@@ -112,7 +113,10 @@ export function QuestionExplorer({
   return (
     <div className="grid flex-1 gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[18rem_minmax(0,1fr)_20rem]">
       {/* Left sidebar — topic filters */}
-      <aside className="h-fit rounded-2xl glass shadow-water p-3 lg:sticky lg:top-24">
+      <aside
+        className="h-fit rounded-2xl glass shadow-water p-3 lg:sticky lg:top-24"
+        data-tour="question-filters"
+      >
         <h2 className="px-2 pt-1 text-xs font-semibold uppercase tracking-wide text-ink/70">
           Topics
         </h2>
@@ -155,7 +159,11 @@ export function QuestionExplorer({
       <div className="min-w-0 space-y-6">
         <Hero canAnswer={canAnswer} />
 
-        <section aria-labelledby="feed-heading" className="space-y-4">
+        <section
+          aria-labelledby="feed-heading"
+          className="space-y-4"
+          data-tour="question-feed"
+        >
           <div>
             <h1 id="feed-heading" className="text-2xl font-bold text-ink">
               Questions from the community
@@ -254,7 +262,11 @@ export function QuestionExplorer({
           </section>
         ) : null}
 
-        <nav aria-label="Quick links" className="rounded-2xl glass shadow-water p-3">
+        <nav
+          aria-label="Quick links"
+          className="rounded-2xl glass shadow-water p-3"
+          data-tour="quick-links-panel"
+        >
           <h2 className="px-2 pt-1 text-xs font-semibold uppercase tracking-wide text-ink/70">
             Quick links
           </h2>
@@ -363,7 +375,10 @@ function QuestionRow({
         <span suppressHydrationWarning className="text-xs text-ink/75">
           {relativeTime(question.createdAt)}
         </span>
-        <CopyButton text={question.text} context={question.text} compact />
+        <span className="flex items-center">
+          <CopyButton text={question.text} context={question.text} compact />
+          <ListenButton text={question.text} context={question.text} compact />
+        </span>
       </div>
     </li>
   );

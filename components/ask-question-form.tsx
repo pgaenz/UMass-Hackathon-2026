@@ -68,6 +68,7 @@ export function AskQuestionForm({
     return (
       <section
         aria-labelledby="ask-question-heading"
+        data-tour="ask-form"
         className="rounded-2xl border border-seaglass/40 bg-seaglass/25 p-6 shadow-sm"
       >
         <h2 id="ask-question-heading" className="text-2xl font-semibold text-ink">
@@ -89,7 +90,11 @@ export function AskQuestionForm({
   }
 
   return (
-    <section aria-labelledby="ask-question-heading" className="rounded-2xl glass shadow-water p-6 shadow-sm">
+    <section
+      aria-labelledby="ask-question-heading"
+      data-tour="ask-form"
+      className="rounded-2xl glass shadow-water p-6 shadow-sm"
+    >
       <h2 id="ask-question-heading" className="text-2xl font-semibold text-ink">
         Ask a question
       </h2>

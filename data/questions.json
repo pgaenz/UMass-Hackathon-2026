@@ -240,6 +240,384 @@
       "upvotes": 0,
       "storyIds": [],
       "createdAt": "2026-10-23T00:54:49.585Z"
+    },
+    {
+      "id": "q-first-real-job",
+      "text": "What did your first real job teach you about yourself?",
+      "topicIds": [
+        "job",
+        "advice"
+      ],
+      "upvotes": 64,
+      "createdAt": "2026-02-01T10:00:00.000Z",
+      "askedBy": "u-drop-jordan",
+      "storyIds": [
+        "s-ward-third-floor"
+      ]
+    },
+    {
+      "id": "q-work-mistake",
+      "text": "What mistake at work taught you the most?",
+      "topicIds": [
+        "job",
+        "advice"
+      ],
+      "upvotes": 41,
+      "createdAt": "2026-02-01T10:05:00.000Z",
+      "askedBy": "u-drop-owen",
+      "storyIds": [
+        "s-apprentice-mistake"
+      ]
+    },
+    {
+      "id": "q-worth-taking-chance",
+      "text": "How did you know someone was worth taking a chance on?",
+      "topicIds": [
+        "love-life",
+        "advice"
+      ],
+      "upvotes": 75,
+      "createdAt": "2026-02-01T10:10:00.000Z",
+      "askedBy": "u-drop-grace",
+      "storyIds": [
+        "s-blue-bicycle"
+      ]
+    },
+    {
+      "id": "q-distance-love",
+      "text": "What kept a long relationship strong through distance and time apart?",
+      "topicIds": [
+        "love-life",
+        "advice"
+      ],
+      "upvotes": 58,
+      "createdAt": "2026-02-01T10:15:00.000Z",
+      "askedBy": "u-drop-hana",
+      "storyIds": [
+        "s-letters-across-sea"
+      ]
+    },
+    {
+      "id": "q-understand-parents",
+      "text": "What did your parents do that you understand better now?",
+      "topicIds": [
+        "family",
+        "advice"
+      ],
+      "upvotes": 51,
+      "createdAt": "2026-02-01T10:20:00.000Z",
+      "askedBy": "u-drop-camila",
+      "storyIds": [
+        "s-kitchen-table"
+      ]
+    },
+    {
+      "id": "q-childhood-smile",
+      "text": "What childhood memory still makes you smile?",
+      "topicIds": [
+        "childhood",
+        "hobbies"
+      ],
+      "upvotes": 36,
+      "createdAt": "2026-02-01T10:30:00.000Z",
+      "askedBy": "u-drop-aisha",
+      "storyIds": [
+        "s-boy-who-read-late"
+      ]
+    },
+    {
+      "id": "q-school-outside-classroom",
+      "text": "What did school teach you outside the classroom?",
+      "topicIds": [
+        "childhood",
+        "advice"
+      ],
+      "upvotes": 55,
+      "createdAt": "2026-02-01T10:35:00.000Z",
+      "askedBy": "u-drop-leila",
+      "storyIds": [
+        "s-green-dress"
+      ]
+    },
+    {
+      "id": "q-advice-at-your-age",
+      "text": "What advice do you wish you had at my age?",
+      "topicIds": [
+        "advice",
+        "health"
+      ],
+      "upvotes": 88,
+      "createdAt": "2026-02-01T10:40:00.000Z",
+      "askedBy": "u-drop-sofia",
+      "storyIds": [
+        "s-long-walk-home"
+      ]
+    },
+    {
+      "id": "q-small-choice-big-difference",
+      "text": "What small choice made a big difference in your life?",
+      "topicIds": [
+        "advice",
+        "money"
+      ],
+      "upvotes": 62,
+      "createdAt": "2026-02-01T10:45:00.000Z",
+      "askedBy": "u-drop-malik",
+      "storyIds": [
+        "s-envelope-on-shelf"
+      ]
+    },
+    {
+      "id": "q-friendship-strong",
+      "text": "How do you keep a friendship strong over the years?",
+      "topicIds": [
+        "friendship",
+        "advice"
+      ],
+      "upvotes": 49,
+      "createdAt": "2026-02-01T10:50:00.000Z",
+      "askedBy": "u-drop-liam",
+      "storyIds": [
+        "s-closing-time"
+      ]
+    },
+    {
+      "id": "q-meet-friend-changed-life",
+      "text": "How did you meet a friend who changed your life?",
+      "topicIds": [
+        "friendship",
+        "advice"
+      ],
+      "upvotes": 44,
+      "createdAt": "2026-02-01T10:55:00.000Z",
+      "askedBy": "u-drop-ethan",
+      "storyIds": [
+        "s-woman-at-bus-stop"
+      ]
+    },
+    {
+      "id": "q-trip-changed-worldview",
+      "text": "What is one trip that changed the way you see the world?",
+      "topicIds": [
+        "travel",
+        "advice"
+      ],
+      "upvotes": 57,
+      "createdAt": "2026-02-01T11:00:00.000Z",
+      "askedBy": "u-drop-nora",
+      "storyIds": [
+        "s-map-drawn-by-hand"
+      ]
+    },
+    {
+      "id": "q-place-feels-like-home",
+      "text": "What is a place that still feels like home to you?",
+      "topicIds": [
+        "travel",
+        "advice"
+      ],
+      "upvotes": 39,
+      "createdAt": "2026-02-01T11:05:00.000Z",
+      "askedBy": "u-drop-samir",
+      "storyIds": [
+        "s-harbor-at-dawn"
+      ]
+    },
+    {
+      "id": "q-first-paycheck",
+      "text": "What did you spend your first paycheck on, and would you do it again?",
+      "topicIds": [
+        "money",
+        "job"
+      ],
+      "upvotes": 69,
+      "createdAt": "2026-02-01T11:10:00.000Z",
+      "askedBy": "u-drop-tessa",
+      "storyIds": [
+        "s-first-paycheck"
+      ]
+    },
+    {
+      "id": "q-loan-saved-us",
+      "text": "What did you learn from taking a financial risk?",
+      "topicIds": [
+        "money",
+        "job"
+      ],
+      "upvotes": 47,
+      "createdAt": "2026-02-01T11:15:00.000Z",
+      "askedBy": "u-drop-andre",
+      "storyIds": [
+        "s-loan-that-saved-us"
+      ]
+    },
+    {
+      "id": "q-hobby-discover-yourself",
+      "text": "What hobby helped you discover something about yourself?",
+      "topicIds": [
+        "hobbies",
+        "childhood"
+      ],
+      "upvotes": 33,
+      "createdAt": "2026-02-01T11:20:00.000Z",
+      "askedBy": "u-drop-mia",
+      "storyIds": [
+        "s-trumpet-in-attic"
+      ]
+    },
+    {
+      "id": "q-hobby-fun-adult",
+      "text": "How do you make time for fun when life gets busy?",
+      "topicIds": [
+        "hobbies",
+        "health"
+      ],
+      "upvotes": 42,
+      "createdAt": "2026-02-01T11:25:00.000Z",
+      "askedBy": "u-drop-ben",
+      "storyIds": [
+        "s-tuesday-night-dance"
+      ]
+    },
+    {
+      "id": "q-ask-for-help-health",
+      "text": "How do you take care of yourself when life gets overwhelming?",
+      "topicIds": [
+        "health",
+        "advice"
+      ],
+      "upvotes": 71,
+      "createdAt": "2026-02-01T11:30:00.000Z",
+      "askedBy": "u-drop-nikhil",
+      "storyIds": [
+        "s-night-i-asked-for-help"
+      ]
+    },
+    {
+      "id": "q-recover-hard-season",
+      "text": "What did you learn from a hard season of life?",
+      "topicIds": [
+        "health",
+        "advice"
+      ],
+      "upvotes": 53,
+      "createdAt": "2026-02-01T11:35:00.000Z",
+      "askedBy": "u-drop-chloe",
+      "storyIds": [
+        "s-long-trail-back"
+      ]
+    },
+    {
+      "id": "q-do-a-job-well",
+      "text": "What does it mean to do a job well?",
+      "topicIds": [
+        "job",
+        "advice"
+      ],
+      "upvotes": 48,
+      "createdAt": "2026-02-01T11:40:00.000Z",
+      "askedBy": "u-drop-priya-shah",
+      "storyIds": [
+        "s-route-knew-by-heart"
+      ]
+    },
+    {
+      "id": "q-love-after-honeymoon",
+      "text": "What does love look like after the honeymoon?",
+      "topicIds": [
+        "love-life",
+        "advice"
+      ],
+      "upvotes": 66,
+      "createdAt": "2026-02-01T11:45:00.000Z",
+      "askedBy": "u-drop-alex",
+      "storyIds": [
+        "s-flowers-never-sent"
+      ]
+    },
+    {
+      "id": "q-family-ritual",
+      "text": "What recipe or ritual holds your family together?",
+      "topicIds": [
+        "family",
+        "hobbies"
+      ],
+      "upvotes": 45,
+      "createdAt": "2026-02-01T11:50:00.000Z",
+      "askedBy": "u-drop-zara",
+      "storyIds": [
+        "s-sunday-noodle-pot"
+      ]
+    },
+    {
+      "id": "q-most-memorable-journey",
+      "text": "What is the most memorable journey you have taken?",
+      "topicIds": [
+        "travel",
+        "advice"
+      ],
+      "upvotes": 50,
+      "createdAt": "2026-02-01T11:55:00.000Z",
+      "askedBy": "u-drop-lucas",
+      "storyIds": [
+        "s-night-train-nowhere"
+      ]
+    },
+    {
+      "id": "q-show-up-for-friend",
+      "text": "How do you show up for a friend who is struggling?",
+      "topicIds": [
+        "friendship",
+        "advice"
+      ],
+      "upvotes": 56,
+      "createdAt": "2026-02-01T12:00:00.000Z",
+      "askedBy": "u-drop-nina",
+      "storyIds": [
+        "s-bench-at-park"
+      ]
+    },
+    {
+      "id": "q-rest-without-guilt",
+      "text": "How do you rest without feeling guilty?",
+      "topicIds": [
+        "health",
+        "advice"
+      ],
+      "upvotes": 73,
+      "createdAt": "2026-02-01T12:05:00.000Z",
+      "askedBy": "u-drop-kai",
+      "storyIds": [
+        "s-year-learned-rest"
+      ]
+    },
+    {
+      "id": "q-childhood-wonder",
+      "text": "What is a small childhood moment you still carry with you?",
+      "topicIds": [
+        "childhood",
+        "hobbies"
+      ],
+      "upvotes": 38,
+      "createdAt": "2026-02-01T12:10:00.000Z",
+      "askedBy": "u-drop-eli",
+      "storyIds": [
+        "s-paper-lantern"
+      ]
+    },
+    {
+      "id": "q-garden-tradition",
+      "text": "What family tradition do you still keep, and why did it matter?",
+      "topicIds": [
+        "family",
+        "childhood"
+      ],
+      "askedBy": "u-drop-noah",
+      "upvotes": 46,
+      "storyIds": [
+        "s-mothers-garden"
+      ],
+      "createdAt": "2026-02-01T10:25:00.000Z"
     }
   ]
 }

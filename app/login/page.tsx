@@ -60,11 +60,12 @@ export default async function LoginPage() {
         </p>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2" data-tour="role-choice">
         {ROLES.map((option) => (
           <Link
             key={option.role}
             href={`/onboarding?role=${option.role}`}
+            data-tour={option.role === "river" ? "role-river" : "role-drop"}
             className={`ripple flex flex-col gap-4 rounded-3xl border-2 bg-white/60 p-7 shadow-water backdrop-blur transition ${option.accent}`}
           >
             <span className="grid h-16 w-16 place-items-center rounded-2xl bg-seaglass/25 text-4xl" aria-hidden="true">
@@ -83,7 +84,10 @@ export default async function LoginPage() {
       </div>
 
       {users.length > 0 ? (
-        <section className="space-y-4 rounded-3xl border-2 border-seaglass/60 bg-white/60 p-6 text-left shadow-water backdrop-blur">
+        <section
+          className="space-y-4 rounded-3xl border-2 border-seaglass/60 bg-white/60 p-6 text-left shadow-water backdrop-blur"
+          data-tour="existing-accounts"
+        >
           <div className="space-y-1">
             <h2 className="text-2xl font-bold text-ink">Already have a profile?</h2>
             <p className="text-lg text-ink/70">

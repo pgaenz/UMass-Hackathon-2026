@@ -55,7 +55,7 @@ export function QuickLinks({ signedIn }: { signedIn: boolean }) {
   const links = QUICK_LINKS.filter((link) => signedIn || !link.signedInOnly);
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative" data-tour="quick-links">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}

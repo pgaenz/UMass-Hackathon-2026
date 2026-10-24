@@ -34,7 +34,7 @@ export function QuestionFilterBar({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-tour="question-filters">
       <div>
         <h2 className="text-lg font-semibold text-ink">Filter by topic</h2>
         <ul className="mt-2 flex flex-wrap gap-2">
