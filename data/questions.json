@@ -74,7 +74,10 @@
       ],
       "askedBy": "u-seed-maya",
       "upvotes": 36,
-      "storyIds": [],
+      "storyIds": [
+        "3ba1a363-3947-4976-95db-fd286feb991d",
+        "d3b24cea-98dd-4185-ac98-5a113fd359bb"
+      ],
       "createdAt": "2026-01-10T09:10:00.000Z"
     },
     {

@@ -528,6 +528,74 @@
       "status": "reviewed",
       "conversationId": null,
       "createdAt": "2026-10-22T21:33:12.208Z"
+    },
+    {
+      "id": "3ba1a363-3947-4976-95db-fd286feb991d",
+      "prompt": "What is the best piece of advice you ever received, and who gave it to you?",
+      "questionId": "q-best-advice",
+      "authorId": "u-ea169e0e-c76a-4089-9fb6-c06631d433c8",
+      "inputType": "conversation",
+      "rawAudioPath": null,
+      "transcript": "Oh, I think the best advice came from my father. He always told me.  Don't be afraid to try. You will regret the things you never did.\n\nI think  It was when I was about 20 years old. I was thinking about changing my job, but I wasn't sure if it was the right decision.\n\nWell, I was first, I was afraid of failing because I had a stable job and I didn't want to risk losing everything I had worked for.  So my father told me that staying somewhere just because I was afraid wouldn't make me happy.  He said that sometimes you have to take a chance to discover what you're capable of.",
+      "conversationContext": "INTERVIEWER: Hello there, I’m so glad we can talk today. Can you tell me about the best piece of advice you ever received, and who gave it to you?\n\nINTERVIEWER: That sounds really meaningful. What was one time you remember taking that advice to heart?\nSENIOR: Oh, I think the best advice came from my father. He always told me.  Don't be afraid to try. You will regret the things you never did.\n\nINTERVIEWER: That sounds like a big moment. What made you decide to go ahead and make the change?\nSENIOR: I think  It was when I was about 20 years old. I was thinking about changing my job, but I wasn't sure if it was the right decision.\n\nINTERVIEWER: I hear that—it must have been a tough balance, staying in the safe zone but wanting to grow. What did you end up doing next?\nSENIOR: Well, I was first, I was afraid of failing because I had a stable job and I didn't want to risk losing everything I had worked for.  So my father told me that staying somewhere just because I was afraid wouldn't make me happy.  He said that sometimes you have to take a chance to discover what you're capable of.",
+      "metadata": {
+        "topic": "Advice",
+        "summary": "The best advice the senior received was from their father about taking risks."
+      },
+      "article": "# Take a Chance\n\nOh, I think the best advice came from my father. He always told me, \"Don't be afraid to try. You will regret the things you never did.\"\n\nI remember when I was about 20 years old, thinking about changing my job but unsure if it was the right decision. I was afraid of failing because I had a stable job and didn't want to risk losing everything I had worked for.\n\nMy father reminded me that staying somewhere just because I was afraid wouldn't make me happy. He said that sometimes you have to take a chance to discover what you're capable of.",
+      "review": {
+        "score": 5,
+        "verdict": "pass",
+        "summary": "Your story was captured accurately and faithfully in your own words.",
+        "issues": [],
+        "createdAt": "2026-10-23T13:38:35.019Z"
+      },
+      "safety": {
+        "verdict": "allow",
+        "issues": [],
+        "summary": "This article shares a personal story about taking chances and following advice from a parent, which is appropriate for all audiences.",
+        "createdAt": "2026-10-23T13:38:30.461Z"
+      },
+      "feedback": [],
+      "groundingScore": 5,
+      "piiDetected": false,
+      "status": "reviewed",
+      "conversationId": "480d04d4-f810-4ed6-b4b4-eaa87b8c6b4e",
+      "createdAt": "2026-10-23T13:36:23.133Z"
+    },
+    {
+      "id": "d3b24cea-98dd-4185-ac98-5a113fd359bb",
+      "prompt": "What is the best piece of advice you ever received, and who gave it to you?",
+      "questionId": "q-best-advice",
+      "authorId": "u-ea169e0e-c76a-4089-9fb6-c06631d433c8",
+      "inputType": "conversation",
+      "rawAudioPath": null,
+      "transcript": "The best piece of advice came from my father.  You always told me.  Don't be afraid to try. You will regret the things you never did.\n\nI remember I was about 20 years old and I was working in a bank but I wasn't really happy with my job.  Thank you.  I wanted to do something more creative but I was afraid to leave that stable position.\n\nWell,  I had always loved cooking and  And the words of my father were kept in my mind.  In my free time I often cook for friends and family. People kept telling me I should do something with it, but I never took the idea seriously.\n\nOh.  He had experienced a lot in his life.  He made mistakes, took risks and learned from them.  He never told me that life would be easy. He just told me that some things  are worth taking a chance on.\n\nWell, at first I was really  Well, at first I was really afraid.  to take  that risk because  I don't know, I was working in a bank, I had a stable income, I had...  I mean...  all I needed, but I wasn't really happy with the job, so it was a tough decision to make.  To go out in the uncertainty and  Go...  To become a chef, a sous chef, that was a tricky decision at the time for me.  Thank you.",
+      "conversationContext": "INTERVIEWER: Hello there, thank you for being here with me today. Could you tell me about the best piece of advice you ever received, and who gave it to you?\n\nINTERVIEWER: That’s a powerful piece of advice. It sounds like it really stayed with you. What was it like hearing that from your father?\nSENIOR: The best piece of advice came from my father.  You always told me.  Don't be afraid to try. You will regret the things you never did.\n\nINTERVIEWER: I see… that sounds like a tough place to be. What made you decide to take that first step toward something more creative?\nSENIOR: I remember I was about 20 years old and I was working in a bank but I wasn't really happy with my job.  Thank you.  I wanted to do something more creative but I was afraid to leave that stable position.\n\nINTERVIEWER: That’s really interesting. What was it like, hearing those words from your father over and over?\nSENIOR: Well,  I had always loved cooking and  And the words of my father were kept in my mind.  In my free time I often cook for friends and family. People kept telling me I should do something with it, but I never took the idea seriously.\n\nINTERVIEWER: That sounds like such meaningful advice. What do you think stopped you from taking that chance at first?\nSENIOR: Oh.  He had experienced a lot in his life.  He made mistakes, took risks and learned from them.  He never told me that life would be easy. He just told me that some things  are worth taking a chance on.\n\nINTERVIEWER: That sounds like a really big step. What was the turning point that made you decide to take that risk?\nSENIOR: Well, at first I was really  Well, at first I was really afraid.  to take  that risk because  I don't know, I was working in a bank, I had a stable income, I had...  I mean...  all I needed, but I wasn't really happy with the job, so it was a tough decision to make.  To go out in the uncertainty and  Go...  To become a chef, a sous chef, that was a tricky decision at the time for me.  Thank you.",
+      "metadata": {
+        "topic": "Advice",
+        "summary": "The best piece of advice came from my father: don't be afraid to try."
+      },
+      "article": "# Take the Chance\n\nThe best piece of advice came from my father: \"Don't be afraid to try. You will regret the things you never did.\" \n\nWhen I was about 20 years old, I was working in a bank, but I wasn't really happy with my job. I wanted to do something more creative, yet I was afraid to leave that stable position.\n\nI had always loved cooking. In my free time, I often cooked for friends and family. People kept telling me I should do something with it, but I never took the idea seriously. My father had experienced a lot in his life. He made mistakes, took risks, and learned from them. He never said life would be easy; he just told me that some things are worth taking a chance on.\n\nAt first, I was really afraid to take that risk. I had a stable income and everything I needed, but I wasn't happy with my job. It was a tough decision to leave that certainty and pursue becoming a chef. It was a tricky decision at the time for me.",
+      "review": {
+        "score": 5,
+        "verdict": "pass",
+        "summary": "Your story has been captured accurately and faithfully in your own voice, focusing on your father's advice and your journey from banking to cooking.",
+        "issues": [],
+        "createdAt": "2026-10-23T13:46:08.014Z"
+      },
+      "safety": {
+        "verdict": "allow",
+        "issues": [],
+        "summary": "This article shares a personal story about taking risks and pursuing one's passion, which is appropriate for all audiences.",
+        "createdAt": "2026-10-23T13:46:00.897Z"
+      },
+      "feedback": [],
+      "groundingScore": 5,
+      "piiDetected": false,
+      "status": "published",
+      "conversationId": "56a81cc4-b8ab-4247-b75e-ea8998841579",
+      "createdAt": "2026-10-23T13:42:31.025Z"
     }
   ]
 }

@@ -19,7 +19,8 @@
         }
       ],
       "createdAt": "2026-10-21T20:42:23.543Z",
-      "updatedAt": "2026-10-21T20:42:27.208Z"
+      "updatedAt": "2026-10-21T20:42:27.208Z",
+      "userId": null
     },
     {
       "id": "7afbb661-7bd2-417b-b667-86a93b22babf",
@@ -85,7 +86,8 @@
         }
       ],
       "createdAt": "2026-10-21T20:44:06.589Z",
-      "updatedAt": "2026-10-21T20:45:58.252Z"
+      "updatedAt": "2026-10-21T20:45:58.252Z",
+      "userId": null
     },
     {
       "id": "9673d0b5-fbaf-4364-b685-e4a5758db777",
@@ -136,7 +138,172 @@
         }
       ],
       "createdAt": "2026-10-21T20:55:04.180Z",
-      "updatedAt": "2026-10-21T20:56:56.217Z"
+      "updatedAt": "2026-10-21T20:56:56.217Z",
+      "userId": null
+    },
+    {
+      "id": "480d04d4-f810-4ed6-b4b4-eaa87b8c6b4e",
+      "storyId": "3ba1a363-3947-4976-95db-fd286feb991d",
+      "prompt": "What is the best piece of advice you ever received, and who gave it to you?",
+      "questionId": "q-best-advice",
+      "userId": "u-ea169e0e-c76a-4089-9fb6-c06631d433c8",
+      "status": "ended",
+      "turns": [
+        {
+          "id": "8ebeca8a-6bdd-40cd-82ea-67d89be3bf0e",
+          "index": 0,
+          "user": null,
+          "assistant": {
+            "text": "Hello there, I’m so glad we can talk today. Can you tell me about the best piece of advice you ever received, and who gave it to you?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-23T13:36:28.223Z"
+        },
+        {
+          "id": "4bf1c2d9-ae0d-4140-8dc5-3b10de334367",
+          "index": 1,
+          "user": {
+            "text": "Oh, I think the best advice came from my father. He always told me.  Don't be afraid to try. You will regret the things you never did.",
+            "audioPath": "data/uploads/conversation-480d04d4-f810-4ed6-b4b4-eaa87b8c6b4e-1792762614876.wav",
+            "durationMs": 11520,
+            "transcriptionStatus": "ok"
+          },
+          "assistant": {
+            "text": "That sounds really meaningful. What was one time you remember taking that advice to heart?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-23T13:36:58.141Z"
+        },
+        {
+          "id": "7b149a42-9957-41f0-a630-0cf7656f2684",
+          "index": 2,
+          "user": {
+            "text": "I think  It was when I was about 20 years old. I was thinking about changing my job, but I wasn't sure if it was the right decision.",
+            "audioPath": "data/uploads/conversation-480d04d4-f810-4ed6-b4b4-eaa87b8c6b4e-1792762638941.wav",
+            "durationMs": 13995,
+            "transcriptionStatus": "ok"
+          },
+          "assistant": {
+            "text": "That sounds like a big moment. What made you decide to go ahead and make the change?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-23T13:37:23.060Z"
+        },
+        {
+          "id": "80470ee7-4c75-4779-841b-66b466c5f619",
+          "index": 3,
+          "user": {
+            "text": "Well, I was first, I was afraid of failing because I had a stable job and I didn't want to risk losing everything I had worked for.  So my father told me that staying somewhere just because I was afraid wouldn't make me happy.  He said that sometimes you have to take a chance to discover what you're capable of.",
+            "audioPath": "data/uploads/conversation-480d04d4-f810-4ed6-b4b4-eaa87b8c6b4e-1792762671597.wav",
+            "durationMs": 20821,
+            "transcriptionStatus": "ok"
+          },
+          "assistant": {
+            "text": "I hear that—it must have been a tough balance, staying in the safe zone but wanting to grow. What did you end up doing next?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-23T13:37:57.073Z"
+        }
+      ],
+      "createdAt": "2026-10-23T13:36:23.143Z",
+      "updatedAt": "2026-10-23T13:38:24.065Z"
+    },
+    {
+      "id": "56a81cc4-b8ab-4247-b75e-ea8998841579",
+      "storyId": "d3b24cea-98dd-4185-ac98-5a113fd359bb",
+      "prompt": "What is the best piece of advice you ever received, and who gave it to you?",
+      "questionId": "q-best-advice",
+      "userId": "u-ea169e0e-c76a-4089-9fb6-c06631d433c8",
+      "status": "ended",
+      "turns": [
+        {
+          "id": "0f201c4c-4ad8-489f-b96e-5be3518817ab",
+          "index": 0,
+          "user": null,
+          "assistant": {
+            "text": "Hello there, thank you for being here with me today. Could you tell me about the best piece of advice you ever received, and who gave it to you?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-23T13:42:40.454Z"
+        },
+        {
+          "id": "e5e63aa3-3947-4dd6-863e-66042810712b",
+          "index": 1,
+          "user": {
+            "text": "The best piece of advice came from my father.  You always told me.  Don't be afraid to try. You will regret the things you never did.",
+            "audioPath": "data/uploads/conversation-56a81cc4-b8ab-4247-b75e-ea8998841579-1792762982788.wav",
+            "durationMs": 11691,
+            "transcriptionStatus": "ok"
+          },
+          "assistant": {
+            "text": "That’s a powerful piece of advice. It sounds like it really stayed with you. What was it like hearing that from your father?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-23T13:43:05.661Z"
+        },
+        {
+          "id": "3e6f2203-809e-4d74-9e14-cf076c58d798",
+          "index": 2,
+          "user": {
+            "text": "I remember I was about 20 years old and I was working in a bank but I wasn't really happy with my job.  Thank you.  I wanted to do something more creative but I was afraid to leave that stable position.",
+            "audioPath": "data/uploads/conversation-56a81cc4-b8ab-4247-b75e-ea8998841579-1792763010126.wav",
+            "durationMs": 16640,
+            "transcriptionStatus": "ok"
+          },
+          "assistant": {
+            "text": "I see… that sounds like a tough place to be. What made you decide to take that first step toward something more creative?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-23T13:43:35.140Z"
+        },
+        {
+          "id": "d8ef4873-9840-4fef-b84f-be5f3aaea6ce",
+          "index": 3,
+          "user": {
+            "text": "Well,  I had always loved cooking and  And the words of my father were kept in my mind.  In my free time I often cook for friends and family. People kept telling me I should do something with it, but I never took the idea seriously.",
+            "audioPath": "data/uploads/conversation-56a81cc4-b8ab-4247-b75e-ea8998841579-1792763043521.wav",
+            "durationMs": 20053,
+            "transcriptionStatus": "ok"
+          },
+          "assistant": {
+            "text": "That’s really interesting. What was it like, hearing those words from your father over and over?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-23T13:44:09.207Z"
+        },
+        {
+          "id": "6c7e0b10-83d8-4c51-a8e2-2f350b542c72",
+          "index": 4,
+          "user": {
+            "text": "Oh.  He had experienced a lot in his life.  He made mistakes, took risks and learned from them.  He never told me that life would be easy. He just told me that some things  are worth taking a chance on.",
+            "audioPath": "data/uploads/conversation-56a81cc4-b8ab-4247-b75e-ea8998841579-1792763089108.wav",
+            "durationMs": 16128,
+            "transcriptionStatus": "ok"
+          },
+          "assistant": {
+            "text": "That sounds like such meaningful advice. What do you think stopped you from taking that chance at first?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-23T13:44:55.498Z"
+        },
+        {
+          "id": "2ffab239-754b-4877-bd0c-11d4bf238ba9",
+          "index": 5,
+          "user": {
+            "text": "Well, at first I was really  Well, at first I was really afraid.  to take  that risk because  I don't know, I was working in a bank, I had a stable income, I had...  I mean...  all I needed, but I wasn't really happy with the job, so it was a tough decision to make.  To go out in the uncertainty and  Go...  To become a chef, a sous chef, that was a tricky decision at the time for me.  Thank you.",
+            "audioPath": "data/uploads/conversation-56a81cc4-b8ab-4247-b75e-ea8998841579-1792763138639.wav",
+            "durationMs": 35925,
+            "transcriptionStatus": "ok"
+          },
+          "assistant": {
+            "text": "That sounds like a really big step. What was the turning point that made you decide to take that risk?",
+            "interrupted": false
+          },
+          "createdAt": "2026-10-23T13:45:44.773Z"
+        }
+      ],
+      "createdAt": "2026-10-23T13:42:31.037Z",
+      "updatedAt": "2026-10-23T13:45:54.498Z"
     }
   ]
 }

@@ -206,6 +206,48 @@
       "createdAt": "2026-10-23T00:51:54.245Z",
       "updatedAt": "2026-10-23T00:51:54.245Z",
       "lastMessageAt": "2026-10-23T00:51:54.245Z"
+    },
+    {
+      "id": "t-f5348331-71d2-4669-b3c7-5bd0e29fb43a",
+      "participantIds": [
+        "u-3da1bddc-3258-4549-a730-ab9cdb8e6bd8",
+        "u-ea169e0e-c76a-4089-9fb6-c06631d433c8"
+      ],
+      "pairKey": "u-3da1bddc-3258-4549-a730-ab9cdb8e6bd8|u-ea169e0e-c76a-4089-9fb6-c06631d433c8",
+      "status": "active",
+      "messages": [],
+      "createdAt": "2026-10-23T16:41:18.266Z",
+      "updatedAt": "2026-10-23T16:41:18.266Z",
+      "lastMessageAt": "2026-10-23T16:41:18.266Z"
+    },
+    {
+      "id": "t-e4b8fa90-bb13-4dfc-bc9a-21d13341c0e6",
+      "participantIds": [
+        "u-ea169e0e-c76a-4089-9fb6-c06631d433c8",
+        "u-seed-maya"
+      ],
+      "pairKey": "u-ea169e0e-c76a-4089-9fb6-c06631d433c8|u-seed-maya",
+      "status": "active",
+      "messages": [
+        {
+          "id": "m-c6d0198b-8093-4704-a567-ec3f53dff7f8",
+          "senderId": "u-ea169e0e-c76a-4089-9fb6-c06631d433c8",
+          "kind": "text",
+          "body": "Hey Maya, I also liked the story of Ruth.",
+          "safety": {
+            "verdict": "allow",
+            "flags": []
+          },
+          "readBy": [
+            "u-ea169e0e-c76a-4089-9fb6-c06631d433c8"
+          ],
+          "createdAt": "2026-10-23T16:48:45.287Z",
+          "deletedAt": null
+        }
+      ],
+      "createdAt": "2026-10-23T16:43:42.740Z",
+      "updatedAt": "2026-10-23T16:48:45.287Z",
+      "lastMessageAt": "2026-10-23T16:48:45.287Z"
     }
   ],
   "blocks": []

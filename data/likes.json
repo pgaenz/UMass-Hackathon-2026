@@ -59,6 +59,11 @@
       "storyId": "s-first-job",
       "userId": "u-b02f6e35-b291-48e3-8a13-f67db6c455dc",
       "createdAt": "2026-10-22T22:38:22.935Z"
+    },
+    {
+      "storyId": "s-best-advice",
+      "userId": "u-ea169e0e-c76a-4089-9fb6-c06631d433c8",
+      "createdAt": "2026-10-23T16:43:35.502Z"
     }
   ]
 }

@@ -139,6 +139,19 @@
       "bio": "",
       "interests": [],
       "createdAt": "2026-10-22T20:47:07.271Z"
+    },
+    {
+      "id": "u-ea169e0e-c76a-4089-9fb6-c06631d433c8",
+      "role": "river",
+      "name": "Philipp Gaenz",
+      "age": 65,
+      "bio": "I like sports and traveling.",
+      "interests": [
+        "travel",
+        "hobbies",
+        "advice"
+      ],
+      "createdAt": "2026-10-23T13:31:10.377Z"
     }
   ]
 }
