@@ -111,24 +111,27 @@ export function UpvoteButton({
           className="fill-none stroke-seaglass stroke-2 transition-colors group-hover:stroke-accent"
         />
 
-        <path
-          d="M20 24 l-4 5 h8 Z"
-          className={cn(
-            "transition-colors duration-500",
-            voted ? "fill-white" : "fill-brand",
-          )}
-        />
-        <text
-          x="20"
-          y="44"
-          textAnchor="middle"
-          className={cn(
-            "text-[13px] font-bold transition-colors duration-500",
-            voted ? "fill-white" : "fill-brand",
-          )}
-        >
-          {count}
-        </text>
+        {/* Shift the arrow and count about 7 CSS pixels upward together. */}
+        <g transform="translate(0 -5.7)">
+          <path
+            d="M20 24 l-4 5 h8 Z"
+            className={cn(
+              "transition-colors duration-500",
+              voted ? "fill-white" : "fill-brand",
+            )}
+          />
+          <text
+            x="20"
+            y="44"
+            textAnchor="middle"
+            className={cn(
+              "text-[13px] font-bold transition-colors duration-500",
+              voted ? "fill-white" : "fill-brand",
+            )}
+          >
+            {count}
+          </text>
+        </g>
       </svg>
       <span className="sr-only" aria-live="polite">
         {count} {count === 1 ? "vote" : "votes"}

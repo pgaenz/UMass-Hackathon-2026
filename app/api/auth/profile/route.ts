@@ -1,6 +1,7 @@
+import { ageRequirement, isValidAgeForRole } from "@/lib/age";
 import { checkSafety, rewriteForSafety } from "@/lib/agents";
 import { authorize } from "@/lib/session";
-import { isValidAge, toPublicUser, updateUser } from "@/lib/users";
+import { toPublicUser, updateUser } from "@/lib/users";
 import type { User } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -63,7 +64,9 @@ export async function PATCH(request: Request): Promise<Response> {
 
   if (body?.age !== undefined) {
     const age = typeof body.age === "number" ? body.age : Number(body.age);
-    if (!isValidAge(age)) return fail(400, "Please enter a valid age (13 or older).");
+    if (!isValidAgeForRole(age, auth.session.role)) {
+      return fail(400, ageRequirement(auth.session.role));
+    }
     patch.age = age;
   }
 

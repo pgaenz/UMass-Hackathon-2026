@@ -17,7 +17,7 @@ const ROLES = [
   {
     role: "river",
     title: "I'm a River",
-    subtitle: "Older adult",
+    subtitle: "Older adult · ages 31+",
     description:
       "Share the stories and lessons of a lifetime. Answer questions from young people.",
     icon: "🌊",
@@ -26,7 +26,7 @@ const ROLES = [
   {
     role: "drop",
     title: "I'm a Drop",
-    subtitle: "Young person",
+    subtitle: "Young person · ages 16–30",
     description:
       "Ask what you have always wondered, and learn from the people who lived it.",
     icon: "💧",

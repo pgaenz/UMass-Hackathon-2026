@@ -92,8 +92,9 @@ export default function HelpPage() {
 
         <FaqItem id="age" question="Is there an age requirement?">
           <p>
-            You must be at least 13 years old. Your exact age is used to confirm that and to
-            show an age range on your profile, but it is never shown in full.
+            Drops must be between 16 and 30 years old. Rivers must be at least 31. Your exact
+            age is used to confirm eligibility and to show an age range on your profile, but it
+            is never shown in full.
           </p>
         </FaqItem>
       </section>

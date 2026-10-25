@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ageRangeForRole, ageRequirement, isValidAgeForRole } from "@/lib/age";
 import { cn } from "@/lib/cn";
 import type { Topic, User } from "@/lib/types";
 
@@ -18,6 +19,7 @@ export function ProfileForm({ user, topics }: { user: User; topics: Topic[] }) {
     null,
   );
   const [saving, setSaving] = useState(false);
+  const ageRange = ageRangeForRole(user.role);
 
   function toggleInterest(topicId: string) {
     setInterests((current) =>
@@ -36,8 +38,8 @@ export function ProfileForm({ user, topics }: { user: User; topics: Topic[] }) {
       return;
     }
     const ageNumber = Number.parseInt(age, 10);
-    if (!Number.isInteger(ageNumber) || ageNumber < 13 || ageNumber > 120) {
-      setNotice({ kind: "error", message: "Please enter an age of 13 or older." });
+    if (!isValidAgeForRole(ageNumber, user.role)) {
+      setNotice({ kind: "error", message: ageRequirement(user.role) });
       return;
     }
 
@@ -99,11 +101,17 @@ export function ProfileForm({ user, topics }: { user: User; topics: Topic[] }) {
             type="number"
             value={age}
             onChange={(event) => setAge(event.target.value)}
-            min={13}
-            max={120}
+            min={ageRange.min}
+            max={ageRange.max}
             inputMode="numeric"
+            aria-describedby="edit-age-hint"
             className="w-full max-w-40 rounded-xl border-2 border-seaglass p-4 text-lg text-ink focus:border-brand"
           />
+          <p id="edit-age-hint" className="text-base text-ink/70">
+            {user.role === "drop"
+              ? `Drops must be between ${ageRange.min} and ${ageRange.max} years old.`
+              : `Only an age range is shown publicly.`}
+          </p>
         </div>
       </div>
 

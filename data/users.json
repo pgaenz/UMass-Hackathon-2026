@@ -57,18 +57,6 @@
       "createdAt": "2026-01-08T09:00:00.000Z"
     },
     {
-      "id": "u-199f012d-1a28-4169-9b3d-24d2eb1a454c",
-      "role": "river",
-      "name": "PPa",
-      "age": 76,
-      "bio": "",
-      "interests": [
-        "friendship",
-        "travel"
-      ],
-      "createdAt": "2026-10-21T22:52:02.252Z"
-    },
-    {
       "id": "u-0655e4b3-6b16-4bbb-8829-1faf7262917f",
       "role": "drop",
       "name": "Pedro",
@@ -79,93 +67,6 @@
         "friendship"
       ],
       "createdAt": "2026-10-21T23:12:59.619Z"
-    },
-    {
-      "id": "u-3da1bddc-3258-4549-a730-ab9cdb8e6bd8",
-      "role": "river",
-      "name": "MM",
-      "age": 65,
-      "bio": "",
-      "interests": [
-        "childhood",
-        "advice"
-      ],
-      "createdAt": "2026-10-21T23:42:46.949Z"
-    },
-    {
-      "id": "u-8d39b7fc-2fdb-44f2-bdf7-b0b49665803b",
-      "role": "river",
-      "name": "Louis",
-      "age": 67,
-      "bio": "",
-      "interests": [],
-      "createdAt": "2026-10-22T18:25:04.622Z"
-    },
-    {
-      "id": "u-b02f6e35-b291-48e3-8a13-f67db6c455dc",
-      "role": "river",
-      "name": "lknl",
-      "age": 66,
-      "bio": "",
-      "interests": [
-        "love-life",
-        "advice"
-      ],
-      "createdAt": "2026-10-22T21:01:14.109Z"
-    },
-    {
-      "id": "u-421cf62b-ecb4-4ca4-8d51-347f40a86b16",
-      "role": "river",
-      "name": "loser",
-      "age": 19,
-      "bio": "",
-      "interests": [],
-      "createdAt": "2026-10-22T19:41:37.528Z"
-    },
-    {
-      "id": "u-aa20ca78-516f-459f-9856-66e30ee0f67f",
-      "role": "river",
-      "name": "Timo Heil",
-      "age": 40,
-      "bio": "",
-      "interests": [],
-      "createdAt": "2026-10-22T19:53:33.773Z"
-    },
-    {
-      "id": "u-845cecdf-1527-4210-9417-d3ee8b2ab548",
-      "role": "river",
-      "name": "yo",
-      "age": 33,
-      "bio": "",
-      "interests": [],
-      "createdAt": "2026-10-22T20:47:07.271Z"
-    },
-    {
-      "id": "u-dea15bcb-8bfb-4d73-9ad7-a6fb05aa15bc",
-      "role": "river",
-      "name": "Louis",
-      "age": 13,
-      "bio": "",
-      "interests": [],
-      "createdAt": "2026-10-23T16:09:57.589Z"
-    },
-    {
-      "id": "u-17495b80-eee5-49a9-918d-94ccfd215385",
-      "role": "river",
-      "name": "Louis",
-      "age": 21,
-      "bio": "",
-      "interests": [],
-      "createdAt": "2026-10-23T17:38:44.056Z"
-    },
-    {
-      "id": "u-06aba051-45bc-4349-9043-7689c6fb58cc",
-      "role": "drop",
-      "name": "Louis",
-      "age": 21,
-      "bio": "",
-      "interests": [],
-      "createdAt": "2026-10-23T17:43:08.883Z"
     },
     {
       "id": "u-river-elena",

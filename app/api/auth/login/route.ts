@@ -1,6 +1,7 @@
+import { ageRequirement, isValidAgeForRole } from "@/lib/age";
 import { checkSafety } from "@/lib/agents";
 import { setSession } from "@/lib/session";
-import { createUser, isValidAge, toPublicUser } from "@/lib/users";
+import { createUser, toPublicUser } from "@/lib/users";
 import type { Role } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -47,8 +48,8 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const age = typeof body?.age === "number" ? body.age : Number(body?.age);
-  if (!isValidAge(age)) {
-    return fail(400, "Please enter a valid age (13 or older).");
+  if (!isValidAgeForRole(age, body.role)) {
+    return fail(400, ageRequirement(body.role));
   }
 
   // Safety gate: a display name is public and cannot be auto-cleaned, so any

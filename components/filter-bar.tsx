@@ -16,21 +16,23 @@ export function QuestionFilterBar({
   topics,
   activeTopic,
   activeSort,
+  basePath = "/questions",
 }: {
   topics: Topic[];
   activeTopic?: string;
   activeSort?: string;
+  basePath?: string;
 }) {
   const sort: Sort = (SORTS.find((item) => item.id === activeSort)?.id ?? "popular") as Sort;
 
   function href(next: { topic?: string | null; sort?: string }): string {
     const params = new URLSearchParams();
-    const topic = next.topic === null ? null : (next.topic ?? activeTopic);
+    const targetTopic = next.topic === null ? null : (next.topic ?? activeTopic);
     const nextSort = next.sort ?? sort;
-    if (topic) params.set("topic", topic);
+    if (targetTopic) params.set("topic", targetTopic);
     if (nextSort) params.set("sort", nextSort);
     const query = params.toString();
-    return query ? `/questions?${query}` : "/questions";
+    return query ? `${basePath}?${query}` : basePath;
   }
 
   return (
@@ -54,7 +56,7 @@ export function QuestionFilterBar({
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-ink">Sort</h2>
+        <h2 className="text-lg font-semibold text-ink">Show</h2>
         <ul className="mt-2 flex flex-wrap gap-2">
           {SORTS.map((option) => (
             <li key={option.id}>
