@@ -74,10 +74,7 @@
       ],
       "askedBy": "u-seed-maya",
       "upvotes": 36,
-      "storyIds": [
-        "3ba1a363-3947-4976-95db-fd286feb991d",
-        "d3b24cea-98dd-4185-ac98-5a113fd359bb"
-      ],
+      "storyIds": [],
       "createdAt": "2026-01-10T09:10:00.000Z"
     },
     {
@@ -90,9 +87,7 @@
       "askedBy": "u-seed-diego",
       "upvotes": 31,
       "storyIds": [
-        "296bb2ff-e540-4d0a-9ce1-74aad4b91720",
-        "64113e58-9b81-4998-980f-5f18729572b2",
-        "d6c08edc-0f4f-4a5b-8257-b15866208582"
+        "296bb2ff-e540-4d0a-9ce1-74aad4b91720"
       ],
       "createdAt": "2026-01-10T09:15:00.000Z"
     },
@@ -206,9 +201,7 @@
       ],
       "askedBy": null,
       "upvotes": 13,
-      "storyIds": [
-        "de5be242-4e2a-4a70-9cdd-2eefcc14812f"
-      ],
+      "storyIds": [],
       "createdAt": "2026-01-10T10:00:00.000Z"
     },
     {

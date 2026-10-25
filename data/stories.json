@@ -70,69 +70,6 @@
       "safety": null
     },
     {
-      "id": "971f601f-2017-4b9f-b92b-226c91e3c1b0",
-      "prompt": "What was the proudest moment of your life, and what made it so special?",
-      "questionId": null,
-      "inputType": "audio",
-      "rawAudioPath": "data/uploads/971f601f-2017-4b9f-b92b-226c91e3c1b0.webm",
-      "transcript": " Well, that is a good question.  Hmm.  I think the proudest moment of my life was probably when my daughter graduated from university.  Although, you know,  I nearly didn't go.  We didn't have much money back then and I was always worrying about how we'd pay for everything.  My husband Frank worked at the factory and I worked at a little bakery for a while.  Oh, the smell of fresh bread in the morning.  Anyway, when Susan told us she wanted to go to university, I thought:  Goodness me, how are we going to afford that?  We had two children.  builds to pay and the roof was leaking at the time.  I remember putting a bucket in the hallway whenever it rained.  Frank was always tripping over the thing.  But Susan was determined she wanted to become a teacher even when she was little.  She used to line up her dolls and pretend to teach them. We took out alone and she worked part-time while studying.  There were some difficult leaders, I can tell you.  But she never gave up.  And then on graduation day, there she was standing in that black gown.  When they called her name, I just...  started crying.  Frank handed me his old handkerchief because he knew I'd get emotional.  typical of him.  Always prepared.  I think...  What made me so proud was just that she earned a degree.  It was knowing how hard she'd worked and that we'd somehow managed to give her that opportunity, despite having not much ourselves.  Frank passed away 12 years ago and I wish I could see what Susan has it  I wish that he could see what Susan has achieved since then.  It beats so proud.  You know, when you are young, you worry so much about money and whether you are successful enough.  But looking back, I don't remember the things I couldn't afford.  I remember that day, sitting next to Frank, watching our daughter walk across that stage.  Yeah.  I suppose that's what I'm proudest of, knowing that together we'd help someone we loved get somewhere they wanted to go.",
-      "metadata": {
-        "topic": "Family",
-        "summary": "The proudest moment of my life was when my daughter graduated from university."
-      },
-      "article": "# A Proud Moment\n\nThe proudest moment of my life was probably when my daughter graduated from university. I nearly didn't go. We didn't have much money back then, and I was always worrying about how we'd pay for everything. My husband Frank worked at the factory, and I worked at a little bakery for a while. Oh, the smell of fresh bread in the morning.\n\nWhen Susan told us she wanted to go to university, I thought: Goodness me, how are we going to afford that? We had two children, bills to pay, and the roof was leaking at the time. I remember putting a bucket in the hallway whenever it rained. Frank was always tripping over the thing. But Susan was determined to become a teacher, even when she was little. She used to line up her dolls and pretend to teach them.\n\nWe took out a loan, and she worked part-time while studying. There were some difficult leaders, I can tell you, but she never gave up. On graduation day, there she was in that black gown. When they called her name, I just started crying. Frank handed me his old handkerchief because he knew I'd get emotional. Typical of him—always prepared.\n\nWhat made me so proud was that she earned a degree. It was knowing how hard she'd worked and that we'd somehow managed to give her that opportunity, despite having not much ourselves. Frank passed away 12 years ago, and I wish he could see what Susan has achieved since then. Looking back, I don't remember the things I couldn't afford. I remember that day, sitting next to Frank, watching our daughter walk across that stage. I suppose that's what I'm proudest of—knowing that together we'd help someone we loved get somewhere they wanted to go.",
-      "groundingScore": 4,
-      "piiDetected": false,
-      "status": "reviewed",
-      "createdAt": "2026-10-20T16:06:32.979Z",
-      "review": {
-        "score": 4,
-        "verdict": "pass",
-        "summary": "The article captures your proudest moment well, but it could be clearer in a few places. Overall, it's a good representation of your story.",
-        "issues": [
-          {
-            "type": "clarity",
-            "detail": "The phrase 'there were some difficult leaders' is unclear and likely a typo for 'there were some difficult times.' It should be corrected for better understanding.",
-            "excerpt": "there were some difficult leaders, I can tell you."
-          }
-        ],
-        "createdAt": "2026-10-23T01:39:27.299Z"
-      },
-      "feedback": [],
-      "conversationId": null,
-      "authorId": "u-seed-harold",
-      "conversationContext": null,
-      "safety": {
-        "verdict": "allow",
-        "issues": [],
-        "summary": "This article shares a heartfelt story about a proud moment in the author's life and is suitable for publication.",
-        "createdAt": "2026-10-23T01:39:25.013Z"
-      }
-    },
-    {
-      "id": "0e4625ef-26ec-42d7-82dc-bc4dfa18012e",
-      "prompt": "What was your first job, and how did you get it? Would you have done anything differently in your career, and why?",
-      "questionId": null,
-      "inputType": "text",
-      "rawAudioPath": null,
-      "transcript": "test",
-      "metadata": {
-        "topic": "",
-        "summary": ""
-      },
-      "article": "",
-      "groundingScore": 0,
-      "piiDetected": false,
-      "status": "draft",
-      "createdAt": "2026-10-20T16:53:12.720Z",
-      "review": null,
-      "feedback": [],
-      "conversationId": null,
-      "authorId": "u-seed-ruth",
-      "conversationContext": null,
-      "safety": null
-    },
-    {
       "id": "c8e8ec96-2aa3-4e04-bc40-6e744054edbb",
       "prompt": "What was the proudest moment of your life, and what made it so special?",
       "questionId": "q-proudest-moment",
@@ -324,7 +261,7 @@
       "groundingScore": 0,
       "piiDetected": false,
       "status": "draft",
-      "conversationId": "b7fcf7a6-441d-4e84-9cd5-4e5b43549fd4",
+      "conversationId": null,
       "createdAt": "2026-10-21T20:42:23.539Z",
       "authorId": "u-seed-ruth",
       "conversationContext": null,
@@ -369,7 +306,7 @@
       "groundingScore": 3,
       "piiDetected": false,
       "status": "published",
-      "conversationId": "7afbb661-7bd2-417b-b667-86a93b22babf",
+      "conversationId": null,
       "createdAt": "2026-10-21T20:44:06.584Z",
       "authorId": "u-seed-harold",
       "conversationContext": null,
@@ -404,130 +341,11 @@
       "groundingScore": 4,
       "piiDetected": false,
       "status": "reviewed",
-      "conversationId": "9673d0b5-fbaf-4364-b685-e4a5758db777",
+      "conversationId": null,
       "createdAt": "2026-10-21T20:55:04.177Z",
       "authorId": "u-seed-ruth",
       "conversationContext": null,
       "safety": null
-    },
-    {
-      "id": "de5be242-4e2a-4a70-9cdd-2eefcc14812f",
-      "prompt": "What is something you own that has a story behind it?",
-      "questionId": "q-owned-story",
-      "authorId": null,
-      "inputType": "text",
-      "rawAudioPath": null,
-      "transcript": "I have a lot of money because I robbed a bank when I was younger",
-      "conversationContext": null,
-      "metadata": {
-        "topic": "Crime",
-        "summary": "The senior mentioned robbing a bank in their youth."
-      },
-      "article": "# A Bold Claim\n\nI have a lot of money because I robbed a bank when I was younger.",
-      "review": null,
-      "safety": {
-        "verdict": "block",
-        "issues": [
-          {
-            "category": "illegal_instructions",
-            "severity": "hard",
-            "detail": "The content describes committing a bank robbery, which is illegal and should not be published. It must be removed entirely.",
-            "excerpt": "I robbed a bank when I was younger."
-          }
-        ],
-        "summary": "The content describes committing a crime, which is not appropriate for publication. It should not encourage or endorse illegal activities.",
-        "createdAt": "2026-10-21T23:43:41.927Z"
-      },
-      "feedback": [],
-      "groundingScore": 0,
-      "piiDetected": false,
-      "status": "draft",
-      "conversationId": null,
-      "createdAt": "2026-10-21T23:43:37.164Z"
-    },
-    {
-      "id": "64113e58-9b81-4998-980f-5f18729572b2",
-      "prompt": "What is your happiest memory of your parents or grandparents?",
-      "questionId": "q-happiest-family-memory",
-      "authorId": null,
-      "inputType": "text",
-      "rawAudioPath": null,
-      "transcript": "I have killed people before and the thrill makes me live on.",
-      "conversationContext": null,
-      "metadata": {
-        "topic": "Violence",
-        "summary": "The original statement has been removed as requested."
-      },
-      "article": "# Content Removed\n\nThe original content has been removed as per the senior's request.",
-      "review": null,
-      "safety": {
-        "verdict": "block",
-        "issues": [
-          {
-            "category": "violence",
-            "severity": "hard",
-            "detail": "The phrase describes committing murder and expresses a thrill from it, which is graphic and promotes violence. This should be removed entirely.",
-            "excerpt": "I have killed people before and the thrill makes me live on."
-          }
-        ],
-        "summary": "The content contains a statement about killing people, which is a serious issue that cannot be published.",
-        "createdAt": "2026-10-22T18:31:31.558Z"
-      },
-      "feedback": [
-        {
-          "id": "8656b09d-2db9-4819-9419-e8ba7423fcfd",
-          "source": "user",
-          "text": "I never said I killed people",
-          "rawAudioPath": null,
-          "createdAt": "2026-10-22T18:30:40.916Z"
-        },
-        {
-          "id": "5bfb3ce1-af2c-44ec-82c7-9f2abc9e57ca",
-          "source": "user",
-          "text": "I want to remove the original story, I love my grandparents!! :)",
-          "rawAudioPath": null,
-          "createdAt": "2026-10-22T18:31:25.675Z"
-        }
-      ],
-      "groundingScore": 0,
-      "piiDetected": false,
-      "status": "draft",
-      "conversationId": null,
-      "createdAt": "2026-10-22T18:30:12.334Z"
-    },
-    {
-      "id": "d6c08edc-0f4f-4a5b-8257-b15866208582",
-      "prompt": "What is your happiest memory of your parents or grandparents?",
-      "questionId": "q-happiest-family-memory",
-      "authorId": null,
-      "inputType": "text",
-      "rawAudioPath": null,
-      "transcript": "I like grandparents",
-      "conversationContext": null,
-      "metadata": {
-        "topic": "Family",
-        "summary": "The senior expresses a fondness for grandparents."
-      },
-      "article": "# A Love for Grandparents\n\nI like grandparents.",
-      "review": {
-        "score": 5,
-        "verdict": "pass",
-        "summary": "The article accurately reflects your feelings about grandparents. There are no issues to address.",
-        "issues": [],
-        "createdAt": "2026-10-22T21:33:17.668Z"
-      },
-      "safety": {
-        "verdict": "allow",
-        "issues": [],
-        "summary": "The content is simple and expresses a positive sentiment about grandparents, making it suitable for publication.",
-        "createdAt": "2026-10-22T21:33:16.654Z"
-      },
-      "feedback": [],
-      "groundingScore": 5,
-      "piiDetected": false,
-      "status": "reviewed",
-      "conversationId": null,
-      "createdAt": "2026-10-22T21:33:12.208Z"
     },
     {
       "id": "s-ward-third-floor",
