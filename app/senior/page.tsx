@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AnswerForm } from "@/components/answer-form";
+import { QuestionFilterBar } from "@/components/filter-bar";
 import { QuestionCard } from "@/components/question-card";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -17,12 +18,14 @@ export const metadata: Metadata = {
   title: "Answer a question",
 };
 
+type Sort = "popular" | "newest" | "unanswered";
+
 export default async function SeniorPage({
   searchParams,
 }: {
-  searchParams: Promise<{ question?: string }>;
+  searchParams: Promise<{ question?: string; topic?: string; sort?: string }>;
 }) {
-  const { question: questionId } = await searchParams;
+  const { question: questionId, topic, sort: rawSort } = await searchParams;
   const [questions, topics, stories] = await Promise.all([
     getQuestions(),
     getTopics(),
@@ -58,11 +61,24 @@ export default async function SeniorPage({
     );
   }
 
-  const unanswered = questions.filter((question) => (counts[question.id] ?? 0) === 0);
-  const suggestions = (unanswered.length > 0 ? unanswered : questions).slice(0, 6);
+  const sort: Sort =
+    rawSort === "newest" || rawSort === "unanswered" ? rawSort : "popular";
+  const sorted = topic
+    ? questions.filter((question) => question.topicIds.includes(topic))
+    : [...questions];
+
+  let list = sorted;
+  if (sort === "newest") {
+    list = [...sorted].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  } else if (sort === "unanswered") {
+    list = sorted.filter((question) => (counts[question.id] ?? 0) === 0);
+  } else {
+    list = [...sorted].sort((a, b) => b.upvotes - a.upvotes);
+  }
+
   const user = await getCurrentUser();
   const voteStates = await getVoteStates(
-    suggestions.map((question) => question.id),
+    list.map((question) => question.id),
     user?.id ?? null,
   );
 
@@ -70,12 +86,19 @@ export default async function SeniorPage({
     <div className="mx-auto w-full max-w-5xl space-y-8 px-6 py-10">
       <PageHeader
         title="Answer a question"
-        description="Pick a question a young person asked, then record or type your answer."
+        description="Browse every question from young people, filter by topic, and choose one to answer."
       />
 
-      {suggestions.length > 0 ? (
+      <QuestionFilterBar
+        topics={topics}
+        activeTopic={topic}
+        activeSort={sort}
+        basePath="/senior"
+      />
+
+      {list.length > 0 ? (
         <ul className="space-y-4" data-tour="senior-questions">
-          {suggestions.map((question) => (
+          {list.map((question) => (
             <li key={question.id}>
               <QuestionCard
                 question={question}
@@ -90,10 +113,16 @@ export default async function SeniorPage({
         </ul>
       ) : (
         <EmptyState
-          title="No questions to answer yet"
-          description="Check back soon, or read stories other seniors have shared."
+          title={
+            sort === "unanswered"
+              ? "No unanswered questions in this topic"
+              : "No questions match these filters"
+          }
+          description="Try another topic, or switch the filter back to all questions."
         >
-          <ButtonLink href="/youth">Read stories</ButtonLink>
+          <ButtonLink href="/senior" variant="secondary">
+            Clear filters
+          </ButtonLink>
         </EmptyState>
       )}
     </div>

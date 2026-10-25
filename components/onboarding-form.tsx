@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ageRangeForRole, ageRequirement, isValidAgeForRole } from "@/lib/age";
 import { cn } from "@/lib/cn";
 import type { Role, Topic } from "@/lib/types";
 
@@ -16,6 +17,7 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
   const [interests, setInterests] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const ageRange = ageRangeForRole(role);
 
   function toggleInterest(topicId: string) {
     setInterests((current) =>
@@ -34,8 +36,8 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
       return;
     }
     const ageNumber = Number.parseInt(age, 10);
-    if (!Number.isInteger(ageNumber) || ageNumber < 13 || ageNumber > 120) {
-      setError("Please enter an age of 13 or older.");
+    if (!isValidAgeForRole(ageNumber, role)) {
+      setError(ageRequirement(role));
       return;
     }
 
@@ -88,15 +90,18 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
           type="number"
           value={age}
           onChange={(event) => setAge(event.target.value)}
-          min={13}
-          max={120}
+          min={ageRange.min}
+          max={ageRange.max}
           inputMode="numeric"
           required
           aria-describedby="profile-age-hint"
           className="w-full max-w-40 rounded-xl border-2 border-seaglass p-4 text-lg text-ink placeholder:text-ink/75 focus:border-brand"
-          placeholder="e.g. 78"
+          placeholder={role === "drop" ? "e.g. 22" : "e.g. 78"}
         />
         <p id="profile-age-hint" className="text-base text-ink/70">
+          {role === "drop"
+            ? `Drops must be between ${ageRange.min} and ${ageRange.max} years old. `
+            : ""}
           Only an age range (like &ldquo;75+&rdquo;) is ever shown on your public profile.
         </p>
       </div>

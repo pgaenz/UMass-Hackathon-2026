@@ -1,8 +1,11 @@
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 
+import { MAX_AGE, MIN_AGE } from "./age";
 import { mutateJson, readJson } from "./json-file";
 import type { AgeBand, PublicUser, Role, User } from "./types";
+
+export { MAX_AGE, MIN_AGE } from "./age";
 
 interface UsersData {
   users: User[];
@@ -12,9 +15,6 @@ const USERS_PATH = path.join(process.cwd(), "data", "users.json");
 const EMPTY: UsersData = { users: [] };
 
 /** The product does not admit children under 13 (see plan/PROFILES.md). */
-export const MIN_AGE = 13;
-export const MAX_AGE = 120;
-
 export function isValidAge(age: number): boolean {
   return Number.isInteger(age) && age >= MIN_AGE && age <= MAX_AGE;
 }

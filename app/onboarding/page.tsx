@@ -46,7 +46,9 @@ export default async function OnboardingPage({
           Tell us about you
         </h1>
         <p className="text-xl text-ink/70">
-          Your name and age are required. Everything else is optional.
+          Your name and age are required.{" "}
+          {isRiver ? "Rivers must be at least 31." : "Drops must be between 16 and 30."}{" "}
+          Everything else is optional.
         </p>
       </div>
 
