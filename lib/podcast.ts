@@ -2,6 +2,7 @@ import { answerTopics, getPublishedStories } from "./answers";
 import { firstName, getArticleTitle, toPlainText } from "./format";
 import { getLikeStates } from "./likes";
 import { chat } from "./openai";
+import { loadPrompt } from "./prompts";
 import {
   PODCAST_WORDS_PER_MINUTE,
   type PodcastAuthor,
@@ -263,57 +264,39 @@ async function writeHostScript(
     Math.round((hostWordTarget * 0.72) / Math.max(1, selected.length)),
   );
 
-  const prompt = `You are the warm, unhurried host of HistorAI Podcasts, a show where younger listeners hear real stories from older adults.
-
-Write the spoken host narration for a ${minutes}-minute episode. The selected story texts will be read aloud separately; do not rewrite or summarize the full stories in your narration. Your job is to introduce the theme, introduce each River and their story, reflect briefly after each story, and close the episode.
-
-Rules:
-- Never invent facts about the storyteller or the events. Use only the supplied text and public author details.
-- Mention the author's name in every segment introduction.
-- In every segment introduction, tell listeners how to connect: they can open the author's profile on HistorAI and send a private message after signing in. Do not invent a URL.
-- Keep the tone warm, reflective, and plain-spoken. No markdown, headings, bullet points, or sound-effect cues.
-- The host narration across intro, all lead-ins and reflections, and outro should total roughly ${hostWordTarget} words. Each story's host portion should be roughly ${perStoryWords} words combined.
-- Do not mention being an AI or a language model.
-
-Stories:
-${JSON.stringify(
-  selected.map((candidate) => ({
-    storyId: candidate.storyId,
-    title: candidate.title,
-    question: candidate.questionText,
-    author: candidate.author
-      ? {
-          name: candidate.author.name,
-          ageBand: candidate.author.ageBand,
-        }
-      : null,
-    topics: candidate.topics.map((topic) => topic.label),
-    storyText: candidate.storyText,
-  })),
-  null,
-  2,
-)}
-
-Return only valid JSON with this exact shape:
-{
-  "title": "episode title",
-  "summary": "one or two spoken-style sentences describing the episode",
-  "intro": "host introduction",
-  "segments": [
-    { "storyId": "the exact id", "leadIn": "host introduction and connection invitation", "reflection": "host reflection after the story" }
-  ],
-  "outro": "host closing"
-}`;
+  const system = await loadPrompt("podcast_agent");
+  const episode = [
+    `Episode length: ${minutes} minutes.`,
+    `Host narration budget: roughly ${hostWordTarget} words total across intro, lead-ins, reflections, and outro.`,
+    `Per-story host budget: roughly ${perStoryWords} words combined for each story's lead-in and reflection.`,
+    interestLabels.length > 0
+      ? `Listener interests for this episode: ${interestLabels.join(", ")}.`
+      : "This episode uses a random mix drawn from across all topics.",
+    "Stories:",
+    JSON.stringify(
+      selected.map((candidate) => ({
+        storyId: candidate.storyId,
+        title: candidate.title,
+        question: candidate.questionText,
+        author: candidate.author
+          ? {
+              name: candidate.author.name,
+              ageBand: candidate.author.ageBand,
+            }
+          : null,
+        topics: candidate.topics.map((topic) => topic.label),
+        storyText: candidate.storyText,
+      })),
+      null,
+      2,
+    ),
+  ].join("\n");
 
   try {
     const raw = await chat(
       [
-        {
-          role: "system",
-          content:
-            "You write natural, audio-ready podcast narration. You are faithful to the source material and return only JSON.",
-        },
-        { role: "user", content: prompt },
+        { role: "system", content: system },
+        { role: "user", content: episode },
       ],
       { temperature: 0.65, timeoutMs: 120_000, maxTokens: 9_000 },
     );
