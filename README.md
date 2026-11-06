@@ -204,8 +204,10 @@ Article appears in the youth feed  →  optional podcast episode
 
 - **Passwordless roles & profiles** — River/Drop login, onboarding, editable profiles, public
   profile pages, and a read-only visitor mode.
-- **Questions** — ask, browse, filter by topic, sort, and upvote questions. Upvotes are
-  tied to the signed-in user (one per account, toggleable), not the browser.
+- **Questions** — ask on a dedicated page, see up to three similar existing questions while
+  typing, browse, filter by topic, sort, and upvote. Drops can follow each question's state
+  (waiting, being answered, answered), edit it while no story is linked, and withdraw it
+  with a confirmation. Upvotes are tied to the signed-in user (one per account, toggleable).
 - **Search** — a header search opens `/search`, matching questions, published stories, and
   public profiles.
 - **Global quick links** — a header menu (hidden on `/login` and `/onboarding`) reaches
@@ -226,7 +228,8 @@ Article appears in the youth feed  →  optional podcast episode
   45-minute listening episode, with play/pause/stop, 15-second skip, a seek bar, and subtitles.
 - **Share & copy actions** — stories, questions, and profiles can be shared via the Web Share
   API where available, falling back to copying a link.
-- **Private 1:1 messaging** — any signed-in user can message any other user.
+- **Private 1:1 messaging** — signed-in users can message each other, but a River cannot
+  start a new conversation with a Drop under 18 (enforced on the server and hidden in the UI).
   Every outbound message is screened server-side (scams, PII, links, abuse, crisis) before
   it is stored, with block/report and per-user rate limits. Client polling every ~4 s.
 - **Story likes & connection pop-up** — any signed-in user can like a published story.
@@ -244,7 +247,9 @@ Article appears in the youth feed  →  optional podcast episode
 | `/login` | Role choice, returning-profile picker, or visitor mode |
 | `/onboarding` | Create a profile |
 | `/search` | Search questions, stories, and people |
-| `/questions` | Browse and ask questions |
+| `/questions` | Browse questions |
+| `/questions/new` | Ask a question (Drops) |
+| `/questions/mine` | My questions, with status, edit, and withdraw |
 | `/questions/[id]` | Question detail |
 | `/senior` | River dashboard: choose a question to answer |
 | `/senior/conversation` | AI speech-to-speech interview |
@@ -263,17 +268,26 @@ Article appears in the youth feed  →  optional podcast episode
 
 | Route | Purpose |
 |-------|---------|
-| `POST /api/intake` | Accept audio or text, transcribe, and create a draft story |
-| `POST /api/generate` | Generate an article and run safety/grounding review |
-| `POST /api/approve` | Publish a reviewed story |
+| `POST /api/intake` | Save an answer (audio or text) and create a story; audio may be typed later if transcription fails |
+| `POST /api/generate` | Generate or rewrite the article and run safety/grounding review |
+| `PATCH /api/stories/[id]` | Edit the answer and/or the story text; strict River ownership; `expectedUpdatedAt` guards conflicts |
+| `DELETE /api/stories/[id]` | Permanently delete a story and cascade to likes, question links, conversations, and uploads |
+| `POST /api/stories/[id]/check` | Re-run the safety and accuracy checks on the current article |
+| `POST /api/stories/[id]/unpublish` | Take a published story off Read stories (keeps likes and the question link) |
+| `POST /api/stories/[id]/restore` | Restore the one saved previous article version |
+| `POST /api/approve` | Publish a reviewed, checked story |
 | `GET /api/questions` | List questions (with filtering/sorting) |
-| `POST /api/questions` | Ask a question |
+| `POST /api/questions` | Ask a question; validates length/topics and runs the safety screen |
+| `GET /api/questions/similar?text=…` | Up to 3 similar questions for the ask form; no author ids |
+| `PATCH /api/questions/[id]` | Edit an owned question while no story is linked (409 otherwise) |
+| `DELETE /api/questions/[id]` | Withdraw an owned question and its votes while no story is linked (409 otherwise) |
 | `POST /api/questions/upvote` | Upvote/un-vote a question (per signed-in user) |
 | `POST /api/podcasts` | Build a podcast episode plan from published stories |
 | `POST /api/reports` | Report a story, question, answer, message, or user |
 | `POST /api/stories/[id]/like` | Like/unlike a published story; returns an interest-based match |
+
 | `GET /api/chat/threads` | List the signed-in user's conversations |
-| `POST /api/chat/threads` | Get or create a 1:1 conversation |
+| `POST /api/chat/threads` | Get or create a 1:1 conversation; Rivers are refused for Drops under 18 |
 | `GET /api/chat/threads/[id]/messages` | Fetch thread history (with `?after=` polling) |
 | `POST /api/chat/threads/[id]/messages` | Screen and send a message |
 | `POST /api/chat/threads/[id]/read` | Mark a thread read |
@@ -288,6 +302,13 @@ Article appears in the youth feed  →  optional podcast episode
 | `POST /api/conversation/[id]/greet` | Open a conversation |
 | `POST /api/conversation/[id]/turn` | Send a conversation turn |
 | `POST /api/conversation/[id]/end` | End a conversation and produce a transcript |
+
+All `/api/stories/[id]/*` routes require a signed-in River and strict ownership: a story with no
+`authorId` (legacy content) is never editable, deletable, or publishable by a River. `PATCH`
+accepts `{ transcript?, article?, expectedUpdatedAt }`; a mismatch returns `409`. Editing an
+article always saves first, then re-runs the checks, and takes a published story off Read stories
+until it is published again. `transcript` is limited to 20,000 characters and `article` to
+30,000 characters; other values return `400`.
 
 The frozen API contract for the original MVP routes is in
 [`docs/api-contract.md`](./docs/api-contract.md).

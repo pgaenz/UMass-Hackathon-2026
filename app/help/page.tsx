@@ -27,7 +27,7 @@ export default function HelpPage() {
           Where would you like to go?
         </h2>
         <div className="grid gap-3 sm:grid-cols-3">
-          <ButtonLink href="/questions" variant="secondary" size="lg" className="w-full">
+          <ButtonLink href="/questions/new" variant="secondary" size="lg" className="w-full">
             Ask a question
           </ButtonLink>
           <ButtonLink href="/senior" variant="secondary" size="lg" className="w-full">
@@ -144,26 +144,63 @@ export default function HelpPage() {
 
         <FaqItem id="ask" question="How do I ask a question?">
           <p>
-            Sign in as a Drop, open <Link href="/questions">Questions</Link>, type your
-            question, and press <strong>Post question</strong>. You can add topics to help
-            Rivers find it. You can also upvote questions you would like answered.
+            Sign in as a Drop, open <Link href="/questions/new">Ask a question</Link>, type
+            your question, and press <strong>Post my question</strong>. You can add topics
+            to help Rivers find it. You can also upvote questions you would like answered.
+          </p>
+        </FaqItem>
+
+        <FaqItem id="after-question" question="What happens after I post?">
+          <p>
+            Your question appears on <Link href="/questions">Browse questions</Link> and on
+            the page Rivers use to choose a question. Open{" "}
+            <Link href="/questions/mine">My questions</Link> to see whether it is waiting,
+            being answered, or answered. There is no notification, email, or alert when a
+            River answers; check My questions or the question page when you return.
+          </p>
+        </FaqItem>
+
+        <FaqItem id="change-question" question="Can I change or withdraw my question?">
+          <p>
+            Yes, while no River has started an answer. Open{" "}
+            <Link href="/questions/mine">My questions</Link> and choose{" "}
+            <strong>Edit question</strong> or <strong>Withdraw question</strong>. Once a River
+            starts an answer, both actions are turned off so their work is not lost. Withdrawing
+            is permanent.
+          </p>
+        </FaqItem>
+
+        <FaqItem id="question-name" question="Can a River see my name?">
+          <p>
+            On public pages, a Drop is shown as a first name and last initial, such as
+            “Maya C.” If you are under 18, that name is not linked to your profile. Your public
+            profile shows the bio and interests you chose to publish, so please do not put
+            private details in them.
+          </p>
+        </FaqItem>
+
+        <FaqItem id="message-river" question="Can I message a River?">
+          <p>
+            Yes. You can send a private message from a River&apos;s story, answer, or profile.
+            Rivers cannot start a new conversation with a Drop under 18. Every message is
+            checked for safety before it is sent, and messages are private to the two people
+            in the conversation.
           </p>
         </FaqItem>
 
         <FaqItem id="answer" question="How do I answer a question?">
           <p>
-            Sign in as a River, open <Link href="/senior">Answer</Link>, and choose a question.
-            Then type your answer or record it. When you are finished, HistorAI writes a
-            story from your answer and shows it to you for review before anything is
-            published.
+            Sign in as a River, open <Link href="/senior">Answer a question</Link>, and choose
+            a question. Then type your answer or record it. When you send it, HistorAI writes a
+            story from your answer and shows it to you before anything is published.
           </p>
         </FaqItem>
 
         <FaqItem id="record" question="Can I answer by speaking instead of typing?">
           <p>
-            Yes. Choose <strong>Record</strong> in the answer form and allow your browser to
-            use the microphone. You can listen to the recording before sending it. If the
-            microphone is not available, you can always type your answer instead.
+            Yes. Choose <strong>Record your answer</strong> in the answer form and allow your
+            browser to use the microphone. You can listen to the recording before sending it.
+            If the microphone is not available, you can always type your answer instead.
           </p>
         </FaqItem>
 
@@ -175,22 +212,49 @@ export default function HelpPage() {
           </p>
         </FaqItem>
 
-        <FaqItem id="after-submit" question="What happens after I submit an answer?">
+        <FaqItem id="after-submit" question="What happens after I send an answer?">
           <p>
-            HistorAI writes a draft story from your words and runs two checks: one for safety
-            and one for accuracy. You then see your original answer next to the story. You can
-            publish it, or ask for changes with written or recorded feedback first.
+            Sending an answer does not publish it. HistorAI writes a story from your words
+            and runs two checks: one for safety and one for accuracy and clarity. You see the
+            story next to your original answer, and you decide whether to publish it or ask for
+            a change first. Nothing is published until you choose to publish. You can also save
+            your answer and finish it later.
           </p>
         </FaqItem>
 
-        <FaqItem
-          id="after-publish"
-          question="Can I change a story after it has been published?"
-        >
+        <FaqItem id="save-later" question="Can I save my answer and finish later?">
           <p>
-            In this demo, publishing is final and there is no edit button afterwards. If
-            something in a published story is wrong or upsetting, use the{" "}
-            <strong>Report</strong> button on the story so it can be reviewed.
+            Yes. In the answer form, choose <strong>Save answer for later</strong>. Your answer is
+            saved without writing or publishing anything, and you will find it under{" "}
+            <Link href="/senior/stories">My stories</Link>. You can write the story whenever you
+            are ready.
+          </p>
+        </FaqItem>
+
+        <FaqItem id="edit-story" question="Can I change the story after I write it?">
+          <p>
+            Yes. Open <Link href="/senior/stories">My stories</Link> and choose the story, then
+            choose <strong>Edit story</strong> to change the words, or{" "}
+            <strong>Edit my answer</strong> to fix something that was heard wrongly. Your changes
+            are saved first, then checked again. You still decide whether to publish.
+          </p>
+        </FaqItem>
+
+        <FaqItem id="after-publish" question="Can I change a story after it has been published?">
+          <p>
+            Yes. Editing a published story takes it off Read stories, and you can publish it again
+            when you are happy with it. You can also choose{" "}
+            <strong>Take off Read stories</strong> to remove it while keeping your words, or{" "}
+            <strong>Delete story</strong> to remove it permanently. Deleting also removes its likes
+            and recordings.
+          </p>
+        </FaqItem>
+
+        <FaqItem id="delete-story" question="How do I take a story off the site or delete it?">
+          <p>
+            Open <Link href="/senior/stories">My stories</Link>, find the story, and choose{" "}
+            <strong>Take off Read stories</strong> to stop readers seeing it while keeping it, or{" "}
+            <strong>Delete story</strong> to remove it permanently. Both ask you to confirm first.
           </p>
         </FaqItem>
       </section>
@@ -202,16 +266,18 @@ export default function HelpPage() {
 
         <FaqItem id="where-stories" question="Where can I read stories?">
           <p>
-            Open <Link href="/youth">Read</Link> in the menu. Every published story appears
-            there with the name of the River who shared it.
+            Open <Link href="/youth">Read stories</Link> in the menu. Every published story
+            appears there with the name of the River who shared it and the question it answers.
           </p>
         </FaqItem>
 
         <FaqItem id="true-stories" question="Are the stories true?">
           <p>
-            Stories are based on a River&apos;s own answer. The AI is instructed not to invent
-            facts, and a separate review checks the story against the original answer before
-            it can be published.
+            Stories are based on a River&apos;s own answer, and the River reads the story
+            before deciding whether to publish it. The writing assistant is instructed not to
+            invent facts, and a separate check compares the story with the original answer. A
+            passing check is not proof that every detail is true — the River&apos;s judgment is
+            what makes a story trustworthy.
           </p>
         </FaqItem>
 
@@ -268,9 +334,11 @@ export default function HelpPage() {
 
         <FaqItem id="privacy" question="What can other people see about me?">
           <p>
-            Other people can see your name, age range, role, bio, interests, your questions,
-            and any stories you have published. Your exact age is not shown. Questions and
-            stories are public, so please do not put private details in them.
+            Other people can see a public name, age range, role, bio, interests, your
+            questions, and any stories you have published. Drops appear as a first name and
+            last initial on public pages; Drops under 18 are not linked to their profile.
+            Your exact age is not shown. Questions and stories are public, so please do not
+            put private details in them.
           </p>
         </FaqItem>
 

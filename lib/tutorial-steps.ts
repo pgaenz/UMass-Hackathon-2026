@@ -37,13 +37,13 @@ export const LOGIN_STEPS: readonly TourStep[] = [
 
 const NAV_STEP: TourStep = {
   title: "Find your way around",
-  body: "Use the top bar to move between Questions, Read, Podcasts, Messages, and your profile. You can come back here at any time.",
+  body: "Use the menu on the left to move between Home, questions, stories, and podcasts. You can come back here at any time.",
   target: '[data-tour="nav"]',
 };
 
 const SEARCH_STEP: TourStep = {
   title: "Search everything",
-  body: "Search questions and stories by a word or a topic. Try it whenever you are looking for a particular memory.",
+  body: "Search questions and stories by a word or a topic. It sits in the left menu whenever you are looking for a particular memory.",
   target: '[data-tour="search"]',
 };
 
@@ -55,14 +55,15 @@ const TEXT_SIZE_STEP: TourStep = {
 
 const HELP_STEP: TourStep = {
   title: "Help is always nearby",
-  body: "The question-mark button opens plain-language answers, privacy information, and a way to replay this tour later.",
+  body: "Help, at the bottom of the left menu, opens plain-language answers, privacy information, and a way to replay this tour later.",
   target: '[data-tour="help"]',
 };
 
-const PROFILE_STEP: TourStep = {
-  title: "Make the profile yours",
-  body: "Your profile holds your name, a short bio, and your interests. Your exact age is never shown publicly — only an age range.",
-  target: '[data-tour="profile"]',
+const READ_STORIES_STEP: TourStep = {
+  title: "Read stories",
+  body: "Read stories collects answers that Rivers reviewed and published. Each story shows the question it answers so you can follow the thread.",
+  path: "/youth",
+  target: '[data-tour="story-feed"]',
 };
 
 /** Role-specific tours. Each step may open a new page before it is shown. */
@@ -73,16 +74,11 @@ export const TRACK_STEPS: Record<TutorialTrack, readonly TourStep[]> = {
     TEXT_SIZE_STEP,
     {
       title: "Browse the questions",
-      body: "Filter by topic or sort by newest, most popular, or unanswered. Open any question to read the answers people have shared.",
+      body: "Filter by topic, or sort to see the newest, the most popular, or the questions that still need an answer.",
       path: "/questions",
       target: '[data-tour="question-filters"]',
     },
-    {
-      title: "Read a story",
-      body: "The Read page collects answers that Rivers have reviewed and published as short stories. You can like the stories that stay with you.",
-      path: "/youth",
-      target: '[data-tour="story-feed"]',
-    },
+    READ_STORIES_STEP,
     HELP_STEP,
     {
       title: "Ready to join in?",
@@ -95,83 +91,41 @@ export const TRACK_STEPS: Record<TutorialTrack, readonly TourStep[]> = {
     {
       title: "Ask a question",
       body: "Start here. Write something you would genuinely like an older person's perspective on, then choose one or more topics so the right people can find it.",
-      path: "/questions",
+      path: "/questions/new",
       target: '[data-tour="ask-form"]',
     },
     {
-      title: "Find questions you care about",
+      title: "See what happened to your question",
+      body: "My questions shows whether your question is waiting, being answered, or answered. You can edit or withdraw it while no River has started an answer.",
+      path: "/questions/mine",
+      target: '[data-tour="my-questions"]',
+    },
+    {
+      title: "Browse questions",
       body: "Filter by topic, or sort to see the newest questions, the most popular ones, or questions that still need an answer.",
+      path: "/questions",
       target: '[data-tour="question-filters"]',
     },
-    {
-      title: "Open, upvote, or share",
-      body: "Open any question to read its answers. Upvote the questions you also want answered, and use Copy or Share to send a question to someone else.",
-      target: '[data-tour="question-card"]',
-    },
-    {
-      title: "Read stories from Rivers",
-      body: "The Read page turns approved answers into stories. Use the filters to follow a topic, and like the stories that help you.",
-      path: "/youth",
-      target: '[data-tour="story-feed"]',
-    },
-    {
-      title: "Your messages",
-      body: "Messages is where your private conversations live. The badge shows unread replies, and nobody else can see your chat.",
-      target: '[data-tour="messages"]',
-    },
-    {
-      title: "Start a conversation",
-      body: "Open Connect to find a River. You can also message someone from their profile, or from a question or answer they wrote.",
-      path: "/connect",
-      target: '[data-tour="connect-directory"]',
-    },
-    PROFILE_STEP,
+    READ_STORIES_STEP,
     HELP_STEP,
   ],
   river: [
     NAV_STEP,
     {
       title: "Pick a question to answer",
-      body: "The Answer page suggests questions that are still waiting for a River's perspective. Choose one that you have a personal story about.",
+      body: "Answer a question shows questions that are still waiting for a River's perspective. Choose one you have a personal story about.",
       path: "/senior",
       target: '[data-tour="senior-questions"]',
     },
     {
       title: "Type it or record it",
-      body: "You can write your answer, or choose Record and speak naturally. Recordings can be previewed before you send them, and you can always type instead.",
+      body: "You can type your answer, or choose Record your answer and speak naturally. You can listen to a recording before sending it, and you can always type instead. If you would rather talk it through, the optional interviewer is there to help.",
       path: "/senior?question=q-first-job",
       target: '[data-tour="answer-modes"]',
     },
     {
-      title: "Recording your answer",
-      body: "Choose Record, allow microphone access, and press Start recording. When you stop, listen to the preview. If the microphone is unavailable, simply switch to Type.",
-      target: '[data-tour="record-mode"]',
-    },
-    {
-      title: "Prefer a conversation?",
-      body: "Talk with an interviewer if you would rather tell the story out loud. It waits while you think, then helps turn the conversation into your answer.",
-      target: '[data-tour="interviewer"]',
-    },
-    {
-      title: "Review before it is shared",
-      body: "After you send an answer, HistorAI prepares a draft story. You review it, make changes if needed, and approve it before it appears on the Read page.",
-    },
-    {
-      title: "Stay in touch",
-      body: "Messages holds your private conversations. The badge shows unread replies; you can also reach someone from their profile, question, or answer.",
-      target: '[data-tour="messages"]',
-    },
-    {
-      title: "Connect with the community",
-      body: "Open Connect to find other Rivers. From a profile you can start a private conversation or learn what someone else has shared.",
-      path: "/connect",
-      target: '[data-tour="connect-directory"]',
-    },
-    {
-      title: "Your profile",
-      body: "Keep your name, bio, and interests up to date. People can learn a little about you before starting a conversation.",
-      path: "/profile",
-      target: '[data-tour="profile-form"]',
+      title: "Save it or write your story",
+      body: "You can save your answer and finish later, or ask HistorAI to write the story. Either way, you read it, correct anything that does not sound right, and choose whether to publish it. Nothing is published automatically. Find everything in My stories.",
     },
     HELP_STEP,
   ],

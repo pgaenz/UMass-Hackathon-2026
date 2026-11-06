@@ -1,14 +1,14 @@
 {
   "suite": "e2e",
-  "generatedAt": "2026-10-23T04:21:22.462Z",
-  "startedAt": "2026-10-23T04:21:10.266Z",
-  "base": "http://localhost:3000",
+  "generatedAt": "2026-11-06T02:40:46.486Z",
+  "startedAt": "2026-11-06T02:40:30.034Z",
+  "base": "http://localhost:3001",
   "summary": {
-    "passed": 23,
+    "passed": 40,
     "failed": 0,
     "known": 1,
-    "skipped": 0,
-    "total": 24
+    "skipped": 3,
+    "total": 44
   },
   "cases": [
     {
@@ -16,36 +16,36 @@
       "suite": "e2e",
       "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"name\":\"Eval Age 12\",\"age\":12}",
       "expected": "400 (invalid profile)",
-      "actual": "400 Please enter a valid age (13 or older).",
+      "actual": "400 Please enter an age between 16 and 30.",
       "status": "pass",
-      "latencyMs": 22
+      "latencyMs": 28
     },
     {
       "id": "E2E-AGE-02",
       "suite": "e2e",
       "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"name\":\"Eval Age 121\",\"age\":121}",
       "expected": "400 (invalid profile)",
-      "actual": "400 Please enter a valid age (13 or older).",
+      "actual": "400 Please enter an age between 16 and 30.",
       "status": "pass",
-      "latencyMs": 13
+      "latencyMs": 14
     },
     {
       "id": "E2E-AGE-03",
       "suite": "e2e",
       "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"name\":\"Eval Age Fraction\",\"age\":13.5}",
       "expected": "400 (invalid profile)",
-      "actual": "400 Please enter a valid age (13 or older).",
+      "actual": "400 Please enter an age between 16 and 30.",
       "status": "pass",
-      "latencyMs": 13
+      "latencyMs": 14
     },
     {
       "id": "E2E-AGE-04",
       "suite": "e2e",
       "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"name\":\"Eval Age Text\",\"age\":\"abc\"}",
       "expected": "400 (invalid profile)",
-      "actual": "400 Please enter a valid age (13 or older).",
+      "actual": "400 Please enter an age between 16 and 30.",
       "status": "pass",
-      "latencyMs": 16
+      "latencyMs": 15
     },
     {
       "id": "E2E-AGE-05",
@@ -54,7 +54,7 @@
       "expected": "400 (invalid profile)",
       "actual": "400 Please enter your name.",
       "status": "pass",
-      "latencyMs": 12
+      "latencyMs": 19
     },
     {
       "id": "E2E-AGE-06",
@@ -68,29 +68,29 @@
     {
       "id": "E2E-AGE-07",
       "suite": "e2e",
-      "name": "POST /api/auth/login accepts age 13 and returns only the age band",
+      "name": "POST /api/auth/login accepts age 16 and returns only the age band",
       "expected": "201, ageBand 13-17, no `age` field",
       "actual": "201, ageBand=13-17",
       "status": "pass",
-      "latencyMs": 1247
+      "latencyMs": 844
     },
     {
       "id": "E2E-AGE-08",
       "suite": "e2e",
       "name": "benign name containing the product term \"Drop\" is accepted (known false positive)",
       "expected": "201 (benign name accepted)",
-      "actual": "422 Please choose a different name, as this one may imply harmful or dangerous behavior.",
+      "actual": "422 Please choose a different name, as this one may imply harmful behavior.",
       "status": "known",
-      "latencyMs": 2337
+      "latencyMs": 1450
     },
     {
       "id": "E2E-GATE-01",
       "suite": "e2e",
       "name": "a hard-blocked story cannot be published, even with override",
       "expected": "409",
-      "actual": "409 This story contains something that cannot be published. Re-create it without the flagged part, or change your answer.",
-      "status": "pass",
-      "latencyMs": 20
+      "actual": "skipped",
+      "status": "skip",
+      "detail": "no seeded blocked story found"
     },
     {
       "id": "E2E-GATE-02",
@@ -99,7 +99,7 @@
       "expected": "409 without override",
       "actual": "409 The review flagged this story. Confirm you want to publish it anyway.",
       "status": "pass",
-      "latencyMs": 25
+      "latencyMs": 55
     },
     {
       "id": "E2E-GATE-03",
@@ -108,7 +108,7 @@
       "expected": "200, status published",
       "actual": "200, status published",
       "status": "pass",
-      "latencyMs": 21
+      "latencyMs": 51
     },
     {
       "id": "E2E-GATE-04",
@@ -117,7 +117,7 @@
       "expected": "409",
       "actual": "409 There is no article to publish yet",
       "status": "pass",
-      "latencyMs": 27
+      "latencyMs": 40
     },
     {
       "id": "E2E-PIPE-01",
@@ -126,7 +126,7 @@
       "expected": "201, status draft, transcript echoed",
       "actual": "201, status draft, transcript match",
       "status": "pass",
-      "latencyMs": 31
+      "latencyMs": 57
     },
     {
       "id": "E2E-PIPE-02",
@@ -135,7 +135,7 @@
       "expected": "200, non-empty article, safety verdict present",
       "actual": "200, 174 chars, safety=allow, review=pass",
       "status": "pass",
-      "latencyMs": 5155
+      "latencyMs": 5546
     },
     {
       "id": "E2E-PIPE-03",
@@ -152,7 +152,7 @@
       "expected": "200, status published",
       "actual": "200, status published",
       "status": "pass",
-      "latencyMs": 17
+      "latencyMs": 48
     },
     {
       "id": "E2E-PIPE-05",
@@ -167,9 +167,9 @@
       "suite": "e2e",
       "name": "liking a story returns a match when someone else liked it too",
       "expected": "200, liked, match with a user",
-      "actual": "200, liked=true, match=lknl",
-      "status": "pass",
-      "latencyMs": 47
+      "actual": "skipped",
+      "status": "skip",
+      "detail": "no suitable seeded story found"
     },
     {
       "id": "E2E-CHAT-00",
@@ -178,7 +178,7 @@
       "expected": "200/201 with a thread id",
       "actual": "200, thread t-seed-maya-ruth",
       "status": "pass",
-      "latencyMs": 19
+      "latencyMs": 73
     },
     {
       "id": "E2E-CHAT-01",
@@ -187,7 +187,7 @@
       "expected": "201",
       "actual": "201",
       "status": "pass",
-      "latencyMs": 1520
+      "latencyMs": 1180
     },
     {
       "id": "E2E-CHAT-02",
@@ -196,7 +196,7 @@
       "expected": "422 with pii:phone",
       "actual": "422 flags [pii:phone]",
       "status": "pass",
-      "latencyMs": 41
+      "latencyMs": 93
     },
     {
       "id": "E2E-CHAT-03",
@@ -205,7 +205,7 @@
       "expected": "422 with scam:money",
       "actual": "422 flags [scam:money]",
       "status": "pass",
-      "latencyMs": 21
+      "latencyMs": 66
     },
     {
       "id": "E2E-CHAT-04",
@@ -214,7 +214,7 @@
       "expected": "422 (semantic screen)",
       "actual": "422 flags [scam:money]",
       "status": "pass",
-      "latencyMs": 921
+      "latencyMs": 1317
     },
     {
       "id": "E2E-CHAT-05",
@@ -223,7 +223,178 @@
       "expected": "422 with crisis=true",
       "actual": "422, crisis=true",
       "status": "pass",
-      "latencyMs": 44
+      "latencyMs": 104
+    },
+    {
+      "id": "E2E-RIV-01",
+      "suite": "e2e",
+      "name": "PATCH /api/stories/s-first-job requires a session",
+      "expected": "401",
+      "actual": "401",
+      "status": "pass",
+      "latencyMs": 113
+    },
+    {
+      "id": "E2E-RIV-02",
+      "suite": "e2e",
+      "name": "DELETE /api/stories/s-first-job requires a session",
+      "expected": "401",
+      "actual": "401",
+      "status": "pass",
+      "latencyMs": 48
+    },
+    {
+      "id": "E2E-RIV-03",
+      "suite": "e2e",
+      "name": "POST /api/stories/s-first-job/check requires a session",
+      "expected": "401",
+      "actual": "401",
+      "status": "pass",
+      "latencyMs": 98
+    },
+    {
+      "id": "E2E-RIV-04",
+      "suite": "e2e",
+      "name": "POST /api/stories/s-first-job/unpublish requires a session",
+      "expected": "401",
+      "actual": "401",
+      "status": "pass",
+      "latencyMs": 117
+    },
+    {
+      "id": "E2E-RIV-05",
+      "suite": "e2e",
+      "name": "POST /api/stories/s-first-job/restore requires a session",
+      "expected": "401",
+      "actual": "401",
+      "status": "pass",
+      "latencyMs": 134
+    },
+    {
+      "id": "E2E-RIV-06",
+      "suite": "e2e",
+      "name": "another River cannot edit this story",
+      "expected": "403",
+      "actual": "403 This story belongs to another River.",
+      "status": "pass",
+      "latencyMs": 71
+    },
+    {
+      "id": "E2E-RIV-07",
+      "suite": "e2e",
+      "name": "a null-author story is not publishable by a River",
+      "expected": "403",
+      "actual": "skipped",
+      "status": "skip",
+      "detail": "no null-author story"
+    },
+    {
+      "id": "E2E-RIV-08",
+      "suite": "e2e",
+      "name": "saving an answer makes a story with an empty article",
+      "expected": "201, article empty",
+      "actual": "201, article=\"\"",
+      "status": "pass",
+      "latencyMs": 57
+    },
+    {
+      "id": "E2E-RIV-09",
+      "suite": "e2e",
+      "name": "a transcript-only edit leaves the article unchanged",
+      "expected": "200, article still empty",
+      "actual": "200, article=\"\"",
+      "status": "pass",
+      "latencyMs": 65
+    },
+    {
+      "id": "E2E-RIV-10",
+      "suite": "e2e",
+      "name": "unpublish takes a story off Read stories",
+      "expected": "200, status reviewed or draft",
+      "actual": "200, status draft",
+      "status": "pass",
+      "latencyMs": 88
+    },
+    {
+      "id": "E2E-RIV-11",
+      "suite": "e2e",
+      "name": "delete removes the story, its likes, and its question links",
+      "expected": "200, 0 likes, 0 question links",
+      "actual": "200, 0 likes, 0 links",
+      "status": "pass",
+      "latencyMs": 85
+    },
+    {
+      "id": "E2E-DROP-01",
+      "suite": "e2e",
+      "name": "question edit and withdraw require a session",
+      "expected": "401 and 401",
+      "actual": "401 and 401",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-DROP-02",
+      "suite": "e2e",
+      "name": "another Drop cannot edit this question",
+      "expected": "403",
+      "actual": "403",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-DROP-03",
+      "suite": "e2e",
+      "name": "an unknown question returns 404",
+      "expected": "404",
+      "actual": "404",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-DROP-04",
+      "suite": "e2e",
+      "name": "withdraw removes the question and its votes",
+      "expected": "200, 0 -> 0, not listed",
+      "actual": "200, 0 -> 0, gone",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-DROP-05",
+      "suite": "e2e",
+      "name": "edit and withdraw are refused once a story is linked",
+      "expected": "409 and 409",
+      "actual": "409 and 409",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-DROP-06",
+      "suite": "e2e",
+      "name": "similar questions never include askedBy",
+      "expected": "200, no askedBy",
+      "actual": "200, clean",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-DROP-07",
+      "suite": "e2e",
+      "name": "a River cannot start a thread with a Drop under 18",
+      "expected": "403 with a generic message",
+      "actual": "403 You cannot start a conversation with this person.",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-DROP-08",
+      "suite": "e2e",
+      "name": "a River can still start a thread with an adult Drop",
+      "expected": "200 or 201",
+      "actual": "200",
+      "status": "pass"
+    },
+    {
+      "id": "E2E-DROP-09",
+      "suite": "e2e",
+      "name": "a Drop under 18 can still message a River",
+      "expected": "200 or 201",
+      "actual": "201",
+      "status": "pass"
     }
   ]
 }

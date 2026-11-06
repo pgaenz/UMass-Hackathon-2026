@@ -155,7 +155,7 @@ export function MessageThread({
         className="flex max-h-[60vh] min-h-64 flex-col gap-3 overflow-y-auto rounded-2xl glass shadow-water p-5"
       >
         {messages.length === 0 ? (
-          <p className="m-auto text-lg text-ink/60">
+          <p className="m-auto text-lg text-ink/70">
             This is the beginning of your conversation with {other.name}.
           </p>
         ) : (
@@ -176,7 +176,7 @@ export function MessageThread({
                 <p
                   className={cn(
                     "mt-1 text-right text-sm",
-                    message.mine ? "text-white/75" : "text-ink/50",
+                    message.mine ? "text-white/75" : "text-ink/80",
                   )}
                   suppressHydrationWarning
                 >

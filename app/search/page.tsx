@@ -46,7 +46,7 @@ export default async function SearchPage({
           // eslint-disable-next-line jsx-a11y/no-autofocus -- a search page should focus its input
           autoFocus
           placeholder="Try “first job”, “travel”, or a name"
-          className="min-h-12 flex-1 rounded-xl border-2 border-seaglass bg-white/70 px-4 text-lg text-ink placeholder:text-ink/60 focus:border-brand focus:outline-none"
+          className="min-h-12 flex-1 rounded-xl border-2 border-seaglass bg-white/70 px-4 text-lg text-ink placeholder:text-ink/70 focus:border-brand focus:outline-none"
         />
         <Button type="submit" size="lg">
           Search
@@ -97,19 +97,29 @@ export default async function SearchPage({
 }
 
 function ResultRow({ result }: { result: SearchResult }) {
+  const content = (
+    <>
+      <span className="block text-lg font-semibold leading-snug text-ink">
+        {result.title}
+      </span>
+      {result.snippet ? (
+        <span className="mt-1 block text-base text-ink/70">{result.snippet}</span>
+      ) : null}
+    </>
+  );
+
   return (
     <li>
-      <Link
-        href={result.href}
-        className="lift block rounded-2xl glass shadow-water p-4 transition hover:border-brand"
-      >
-        <span className="block text-lg font-semibold leading-snug text-ink">
-          {result.title}
-        </span>
-        {result.snippet ? (
-          <span className="mt-1 block text-base text-ink/70">{result.snippet}</span>
-        ) : null}
-      </Link>
+      {result.linkable === false ? (
+        <div className="rounded-2xl glass shadow-water p-4">{content}</div>
+      ) : (
+        <Link
+          href={result.href}
+          className="lift block rounded-2xl glass shadow-water p-4 transition hover:border-brand"
+        >
+          {content}
+        </Link>
+      )}
     </li>
   );
 }

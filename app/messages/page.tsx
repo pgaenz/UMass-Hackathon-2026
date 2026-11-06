@@ -5,7 +5,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { listThreadsForUser } from "@/lib/chat";
-import { requireSession } from "@/lib/session";
+import { getCurrentUser, requireSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +15,10 @@ export const metadata: Metadata = {
 
 export default async function MessagesPage() {
   const session = await requireSession();
-  const threads = await listThreadsForUser(session.userId);
+  const [threads, user] = await Promise.all([
+    listThreadsForUser(session.userId),
+    getCurrentUser(),
+  ]);
 
   return (
     <div
@@ -24,10 +27,10 @@ export default async function MessagesPage() {
     >
       <PageHeader
         title="Messages"
-        description="Private conversations with anyone in the community."
+        description="Private conversations. Messages are checked for safety."
       >
         <ButtonLink href="/connect" variant="secondary" data-tour="connect-link">
-          Find someone to connect with
+          {user?.role === "drop" ? "Find a River" : "Find someone to connect with"}
         </ButtonLink>
       </PageHeader>
 
@@ -35,10 +38,14 @@ export default async function MessagesPage() {
         <ThreadList threads={threads} viewerId={session.userId} />
       ) : (
         <EmptyState
-          title="No conversations yet"
-          description="Start with a River in the directory, or from any public profile."
+          title={user?.role === "drop" ? "Find a River to talk with" : "No conversations yet"}
+          description={
+            user?.role === "drop"
+              ? "Rivers are adults. You can message them privately, and messages are checked for safety."
+              : "Start with a River in the directory, or from any public profile."
+          }
         >
-          <ButtonLink href="/connect">Browse Rivers</ButtonLink>
+          <ButtonLink href="/connect">Find a River</ButtonLink>
         </EmptyState>
       )}
     </div>

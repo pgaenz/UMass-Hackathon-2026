@@ -141,7 +141,7 @@ export function PodcastBuilder({
               );
             })}
           </div>
-          <p className="text-base text-ink/60" aria-live="polite">
+          <p className="text-base text-ink/70" aria-live="polite">
             {mode === "random"
               ? "Random selects stories from across every published topic."
               : selected.length === 0
@@ -172,7 +172,7 @@ export function PodcastBuilder({
               </button>
             ))}
           </div>
-          <p className="text-base text-ink/60">
+          <p className="text-base text-ink/70">
             The current story library holds about {libraryMinutes} minutes of material. The host
             adds introductions, reflections, and connections to reach your chosen length.
           </p>
@@ -247,7 +247,7 @@ export function PodcastBuilder({
               <PodcastPlayer plan={plan} />
 
               {!plan.aiGenerated ? (
-                <p className="text-base text-ink/60">
+                <p className="text-base text-ink/70">
                   The writing service was unavailable, so this episode uses the standard host
                   script.
                 </p>
@@ -273,7 +273,7 @@ export function PodcastBuilder({
                           <h4 className="text-xl font-semibold leading-snug text-ink">
                             {segment.title}
                           </h4>
-                          <span className="text-base text-ink/60">
+                          <span className="text-base text-ink/70">
                             {minutesLabel(segment.storyMinutes)}
                           </span>
                         </div>

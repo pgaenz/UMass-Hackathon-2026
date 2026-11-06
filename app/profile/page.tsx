@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { countAnswersByQuestion, getPublishedStories } from "@/lib/answers";
 import { getArticleTitle } from "@/lib/format";
+import { deriveRiverState } from "@/lib/river-story-state";
 import { getVoteStates } from "@/lib/question-votes";
 import { getQuestionsByUser, getTopics } from "@/lib/questions";
 import { getCurrentUser } from "@/lib/session";
@@ -27,7 +28,13 @@ export default async function ProfilePage() {
 
   const topics = await getTopics();
   const isRiver = user.role === "river";
-  const author = { id: user.id, name: user.name };
+  const profile = toPublicUser(user);
+  const author = {
+    id: user.id,
+    name: user.name,
+    role: user.role,
+    ageBand: profile.ageBand,
+  };
 
   const [questions, stories, published] = await Promise.all([
     isRiver ? Promise.resolve([]) : getQuestionsByUser(user.id),
@@ -55,33 +62,57 @@ export default async function ProfilePage() {
       <ProfileForm user={user} topics={topics} />
 
       <section aria-labelledby="contributions-heading" className="space-y-5">
-        <h2 id="contributions-heading" className="text-2xl font-bold tracking-tight text-ink">
-          {isRiver ? "Your stories" : "Your questions"}
-        </h2>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 id="contributions-heading" className="text-2xl font-bold tracking-tight text-ink">
+            {isRiver ? "Your stories" : "Your questions"}
+          </h2>
+          {!isRiver ? (
+            <Link
+              href="/questions/mine"
+              className="text-base font-semibold text-brand underline-offset-4 hover:underline"
+            >
+              See all my questions →
+            </Link>
+          ) : null}
+        </div>
 
         {isRiver ? (
           stories.length > 0 ? (
-            <ul className="space-y-3">
-              {stories.map((story) => (
-                <li
-                  key={story.id}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-2xl glass shadow-water p-5 shadow-sm"
-                >
-                  <Link
-                    href={story.status === "published" ? `/youth/${story.id}` : `/senior/review/${story.id}`}
-                    className="text-lg font-semibold text-ink underline-offset-4 hover:text-brand hover:underline"
-                  >
-                    {getArticleTitle(story.article) || story.prompt || "Untitled story"}
-                  </Link>
-                  <Badge>{story.status}</Badge>
-                </li>
-              ))}
-            </ul>
+            <div className="space-y-4">
+              <ul className="space-y-3">
+                {[...stories]
+                  .sort((a, b) =>
+                    (b.updatedAt ?? b.createdAt).localeCompare(a.updatedAt ?? a.createdAt),
+                  )
+                  .slice(0, 5)
+                  .map((story) => (
+                    <li
+                      key={story.id}
+                      className="flex flex-wrap items-center justify-between gap-3 rounded-2xl glass shadow-water p-5 shadow-sm"
+                    >
+                      <Link
+                        href={
+                          story.status === "published"
+                            ? `/youth/${story.id}`
+                            : `/senior/review/${story.id}`
+                        }
+                        className="text-lg font-semibold text-ink underline-offset-4 hover:text-brand hover:underline"
+                      >
+                        {getArticleTitle(story.article) || story.prompt || "Untitled story"}
+                      </Link>
+                      <Badge>{deriveRiverState(story).label}</Badge>
+                    </li>
+                  ))}
+              </ul>
+              <Link href="/senior/stories" className="font-semibold text-brand hover:underline">
+                See all my stories
+              </Link>
+            </div>
           ) : (
             <p className="text-lg text-ink/70">
               You have not shared a story yet.{" "}
               <Link href="/senior" className="font-semibold text-brand hover:underline">
-                Answer a question
+                Find a question to answer
               </Link>
               .
             </p>
@@ -104,7 +135,7 @@ export default async function ProfilePage() {
         ) : (
           <p className="text-lg text-ink/70">
             You have not asked a question yet.{" "}
-            <Link href="/questions" className="font-semibold text-brand hover:underline">
+            <Link href="/questions/new" className="font-semibold text-brand hover:underline">
               Ask one
             </Link>
             .

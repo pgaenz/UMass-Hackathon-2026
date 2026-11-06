@@ -1,5 +1,5 @@
 import { getPublishedStories } from "./answers";
-import { getArticleTitle, truncate } from "./format";
+import { getArticleTitle, publicDisplayName, truncate } from "./format";
 import { getQuestions, getTopics } from "./questions";
 import { listUsers, toPublicUser } from "./users";
 
@@ -11,6 +11,8 @@ export interface SearchResult {
   title: string;
   snippet: string;
   href: string;
+  /** False when D2 says the name must not link to a profile (Drop under 18). */
+  linkable?: boolean;
 }
 
 const MIN_QUERY = 2;
@@ -103,6 +105,8 @@ export async function search(rawQuery: string, limit = MAX_RESULTS): Promise<Sea
 
   for (const user of users) {
     const profile = toPublicUser(user);
+    const displayName =
+      profile.role === "drop" ? publicDisplayName(profile) : profile.name;
     const interests = profile.interests.map((id) => topicLabel.get(id) ?? id);
     const score =
       matchScore(profile.name, query) * 2 +
@@ -116,11 +120,12 @@ export async function search(rawQuery: string, limit = MAX_RESULTS): Promise<Sea
         result: {
           kind: "user",
           id: profile.id,
-          title: profile.name,
+          title: displayName,
           snippet:
             profile.bio ||
             `${profile.role === "river" ? "River" : "Drop"} · ${profile.ageBand}`,
           href: `/profile/${profile.id}`,
+          linkable: !(profile.role === "drop" && profile.ageBand === "13-17"),
         },
         score,
       });

@@ -8,9 +8,9 @@ type TextSize = "base" | "large" | "xl";
 
 const STORAGE_KEY = "crosscurrent:text-size";
 const LEVELS: Array<{ id: TextSize; label: string; aria: string }> = [
-  { id: "base", label: "A", aria: "Standard text size" },
-  { id: "large", label: "A+", aria: "Large text size" },
-  { id: "xl", label: "A++", aria: "Extra large text size" },
+  { id: "base", label: "A", aria: "A: standard text size" },
+  { id: "large", label: "A+", aria: "A+: large text size" },
+  { id: "xl", label: "A++", aria: "A++: extra large text size" },
 ];
 
 function applyTextSize(size: TextSize) {
@@ -53,30 +53,34 @@ export function TextSizeToggle() {
   }
 
   return (
-    <div
-      role="group"
-      aria-label="Text size"
-      data-tour="text-size"
-      className="flex items-center gap-0.5 rounded-xl border border-white/25 bg-white/10 p-0.5"
-    >
-      {LEVELS.map((level) => (
-        <button
-          key={level.id}
-          type="button"
-          aria-label={level.aria}
-          aria-pressed={size === level.id}
-          title={level.aria}
-          onClick={() => update(level.id)}
-          className={cn(
-            "ripple grid h-9 min-w-9 place-items-center rounded-lg px-1.5 text-sm font-bold transition",
-            size === level.id
-              ? "bg-white text-ocean"
-              : "text-white/80 hover:bg-white/10 hover:text-white",
-          )}
-        >
-          {level.label}
-        </button>
-      ))}
+    <div data-tour="text-size" className="flex items-center gap-2">
+      <span id="text-size-label" className="text-sm font-medium text-white/80">
+        Text size
+      </span>
+      <div
+        role="group"
+        aria-labelledby="text-size-label"
+        className="flex items-center gap-0.5 rounded-xl border border-white/25 bg-white/10 p-0.5"
+      >
+        {LEVELS.map((level) => (
+          <button
+            key={level.id}
+            type="button"
+            aria-label={level.aria}
+            aria-pressed={size === level.id}
+            title={level.aria}
+            onClick={() => update(level.id)}
+            className={cn(
+              "ripple grid h-9 min-w-9 place-items-center rounded-lg px-1.5 text-sm font-bold transition",
+              size === level.id
+                ? "bg-white text-ocean"
+                : "text-white/80 hover:bg-white/10 hover:text-white",
+            )}
+          >
+            {level.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

@@ -10,12 +10,12 @@ import { LikeButton } from "@/components/like-button";
 import { ReportButton } from "@/components/report-button";
 import { Badge } from "@/components/ui/badge";
 import { canSendTo } from "@/lib/chat";
-import { firstName, formatDate, getArticleTitle, toPlainText } from "@/lib/format";
+import { firstName, formatDate, getArticleTitle, publicDisplayName, toPlainText } from "@/lib/format";
 import { getLikeStates } from "@/lib/likes";
 import { getQuestion } from "@/lib/questions";
 import { getCurrentUser } from "@/lib/session";
 import { getStory } from "@/lib/store";
-import { getUser, toPublicUser } from "@/lib/users";
+import { canLinkPublicProfile, getUser, toPublicUser } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
 
@@ -59,9 +59,13 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
           {story.metadata.topic ? <Badge>{story.metadata.topic}</Badge> : null}
           <time dateTime={story.createdAt}>{formatDate(story.createdAt)}</time>
           {authorRef ? (
-            <Link href={`/profile/${authorRef.id}`} className="font-medium text-brand hover:underline">
-              by {authorRef.name}
-            </Link>
+            canLinkPublicProfile(authorRef) ? (
+              <Link href={`/profile/${authorRef.id}`} className="font-medium text-brand hover:underline">
+                by {publicDisplayName(authorRef)}
+              </Link>
+            ) : (
+              <span className="font-medium">by {publicDisplayName(authorRef)}</span>
+            )
           ) : (
             <span>HistorAI community</span>
           )}
@@ -79,7 +83,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
 
       {question ? (
         <p className="rounded-2xl glass shadow-water p-4 text-lg text-ink">
-          <span className="font-semibold text-ink/60">Answering: </span>
+          <span className="font-semibold text-ink/70">Answering: </span>
           <Link
             href={`/questions/${question.id}`}
             className="font-medium text-brand underline-offset-4 hover:underline"
@@ -101,11 +105,12 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
       {author && canAskAuthor ? (
         <section className="flex flex-wrap items-center justify-between gap-4 rounded-2xl glass shadow-water p-6">
           <h2 className="text-xl font-bold tracking-tight text-ink">
-            Want to know more about {author.name}?
+            Send {firstName(author.name)} a message
           </h2>
           <MessageButton
             participantId={author.id}
-            label={`Ask ${firstName(author.name)} a Question?`}
+            label={`Send ${firstName(author.name)} a message`}
+            description="Private message. Only you two can see it."
             variant="secondary"
           />
         </section>

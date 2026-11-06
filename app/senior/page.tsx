@@ -11,6 +11,7 @@ import { countAnswersByQuestion, getPublishedStories } from "@/lib/answers";
 import { getVoteStates } from "@/lib/question-votes";
 import { getQuestions, getTopics } from "@/lib/questions";
 import { getCurrentUser } from "@/lib/session";
+import { getStoriesByAuthor } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
@@ -61,8 +62,9 @@ export default async function SeniorPage({
     );
   }
 
+  // Default to questions that still need an answer: that is the River's job.
   const sort: Sort =
-    rawSort === "newest" || rawSort === "unanswered" ? rawSort : "popular";
+    rawSort === "newest" || rawSort === "popular" ? rawSort : "unanswered";
   const sorted = topic
     ? questions.filter((question) => question.topicIds.includes(topic))
     : [...questions];
@@ -81,12 +83,20 @@ export default async function SeniorPage({
     list.map((question) => question.id),
     user?.id ?? null,
   );
+  // A River can see a saved answer that is not published yet on the question card.
+  const ownStories = user ? await getStoriesByAuthor(user.id) : [];
+  const savedByQuestion = new Map<string, string>();
+  for (const story of ownStories) {
+    if (story.questionId && story.status !== "published" && !savedByQuestion.has(story.questionId)) {
+      savedByQuestion.set(story.questionId, story.id);
+    }
+  }
 
   return (
     <div className="mx-auto w-full max-w-5xl space-y-8 px-6 py-10">
       <PageHeader
         title="Answer a question"
-        description="Browse every question from young people, filter by topic, and choose one to answer."
+        description="Choose a question you have personal experience with. Then answer by speaking or typing, review the story, and decide whether to publish it."
       />
 
       <QuestionFilterBar
@@ -107,6 +117,22 @@ export default async function SeniorPage({
                 href={`/senior?question=${question.id}`}
                 voteState={voteStates[question.id]}
                 signedIn={Boolean(user)}
+                action={
+                  savedByQuestion.has(question.id) ? (
+                    <div className="space-y-2">
+                      <p className="text-base font-semibold text-ocean">
+                        You have a saved answer for this question.
+                      </p>
+                      <ButtonLink href={`/senior/review/${savedByQuestion.get(question.id)}`} variant="secondary">
+                        Continue my answer
+                      </ButtonLink>
+                    </div>
+                  ) : (
+                    <ButtonLink href={`/senior?question=${question.id}`}>
+                      Answer this question
+                    </ButtonLink>
+                  )
+                }
               />
             </li>
           ))}
@@ -118,10 +144,14 @@ export default async function SeniorPage({
               ? "No unanswered questions in this topic"
               : "No questions match these filters"
           }
-          description="Try another topic, or switch the filter back to all questions."
+          description={
+            sort === "unanswered"
+              ? "Every question in this view already has a published answer. Browse popular questions instead, or try another topic."
+              : "Try another topic, or switch back to questions that need an answer."
+          }
         >
-          <ButtonLink href="/senior" variant="secondary">
-            Clear filters
+          <ButtonLink href="/senior?sort=popular" variant="secondary">
+            Browse popular questions
           </ButtonLink>
         </EmptyState>
       )}

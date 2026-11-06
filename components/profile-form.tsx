@@ -126,7 +126,11 @@ export function ProfileForm({ user, topics }: { user: User; topics: Topic[] }) {
           rows={3}
           maxLength={300}
           className="w-full rounded-xl border-2 border-seaglass p-4 text-lg text-ink focus:border-brand"
+          aria-describedby="edit-bio-hint"
         />
+        <p id="edit-bio-hint" className="text-base text-ink/70">
+          Your bio and interests are public. Please do not include private details.
+        </p>
       </div>
 
       {topics.length > 0 ? (

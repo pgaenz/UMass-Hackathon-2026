@@ -102,7 +102,7 @@ export function LikeMatchDialog({
 
             {match.sharedInterests.length > 0 ? (
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wide text-ink/60">
+                <p className="text-sm font-semibold uppercase tracking-wide text-ink/80">
                   Interests you share
                 </p>
                 <ul className="flex flex-wrap gap-2" aria-label="Shared interests">

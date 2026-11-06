@@ -1,11 +1,13 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { CopyButton } from "@/components/copy-button";
 import { ListenButton } from "@/components/listen-button";
 import { ReportButton } from "@/components/report-button";
 import { UpvoteButton } from "@/components/upvote-button";
 import { Badge } from "@/components/ui/badge";
-import { formatDate } from "@/lib/format";
+import { formatDate, isNewQuestion, publicDisplayName } from "@/lib/format";
+import { canLinkPublicProfile } from "@/lib/users";
 import type { AuthorRef, Question, QuestionVoteState, Topic } from "@/lib/types";
 
 export function QuestionCard({
@@ -16,6 +18,7 @@ export function QuestionCard({
   author,
   voteState,
   signedIn = false,
+  action,
 }: {
   question: Question;
   topics: Topic[];
@@ -24,6 +27,8 @@ export function QuestionCard({
   author?: AuthorRef | null;
   voteState?: QuestionVoteState;
   signedIn?: boolean;
+  /** Optional call-to-action rendered under the question (e.g. "Answer this question"). */
+  action?: ReactNode;
 }) {
   const labels = question.topicIds
     .map((id) => topics.find((topic) => topic.id === id)?.label)
@@ -58,12 +63,21 @@ export function QuestionCard({
         ) : null}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-base text-ink/70">
           <span>{answerCount === 1 ? "1 answer" : `${answerCount} answers`}</span>
+          {isNewQuestion(question.createdAt) ? (
+            <span className="rounded-full border border-brand/40 px-2 py-0.5 text-sm font-semibold text-brand">
+              New
+            </span>
+          ) : null}
           <span aria-hidden="true">·</span>
           <time dateTime={question.createdAt}>{formatDate(question.createdAt)}</time>
           {author ? (
-            <Link href={`/profile/${author.id}`} className="font-medium text-brand hover:underline">
-              asked by {author.name}
-            </Link>
+            canLinkPublicProfile(author) ? (
+              <Link href={`/profile/${author.id}`} className="font-medium text-brand hover:underline">
+                asked by {publicDisplayName(author)}
+              </Link>
+            ) : (
+              <span className="font-medium">asked by {publicDisplayName(author)}</span>
+            )
           ) : (
             <span>Asked by the community</span>
           )}
@@ -71,6 +85,7 @@ export function QuestionCard({
           <ListenButton text={question.text} context={question.text} />
           <ReportButton targetType="question" targetId={question.id} />
         </div>
+        {action ? <div className="pt-1">{action}</div> : null}
       </div>
     </article>
   );

@@ -23,22 +23,39 @@ interface ChatData {
 const CHAT_PATH = path.join(process.cwd(), "data", "chat.json");
 const EMPTY: ChatData = { threads: [], blocks: [] };
 
+/** Minimal identity needed by the messaging rule. */
+export interface MessagingUser {
+  id: string;
+  role: Role;
+  /** Optional so public-only views can reuse the helper without exposing age. */
+  age?: number;
+}
+
 /**
- * Any signed-in user may start a 1:1 thread with any other user, including
- * Drop↔Drop. Self-messaging is rejected separately. Enforced here and in the UI.
+ * D1: an adult may not start a conversation with a Drop under 18. Drops may
+ * still message Rivers, and Rivers may message adult Drops. Existing threads are
+ * not affected because callers check this only when creating a new thread.
  */
-export function canMessage(_a: Role, _b: Role): boolean {
+export function canMessage(initiator: MessagingUser, target: MessagingUser): boolean {
+  if (initiator.id === target.id) return false;
+  if (
+    initiator.role === "river" &&
+    target.role === "drop" &&
+    typeof target.age === "number" &&
+    target.age < 18
+  ) {
+    return false;
+  }
   return true;
 }
 
-/** UI helper: can this viewer open a thread with this target? */
+/** UI helper: can this viewer open a new thread with this target? */
 export function canSendTo(
-  viewer: { id: string; role: Role } | null,
-  target: { id: string; role: Role } | null,
+  viewer: MessagingUser | null,
+  target: MessagingUser | null,
 ): boolean {
   if (!viewer || !target) return false;
-  if (viewer.id === target.id) return false;
-  return canMessage(viewer.role, target.role);
+  return canMessage(viewer, target);
 }
 
 /** Stable, order-independent key that makes a 1:1 conversation unique. */

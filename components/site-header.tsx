@@ -4,50 +4,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { UnreadBadge } from "@/components/chat/unread-badge";
 import { LogoutButton } from "@/components/logout-button";
-import { QuickLinks } from "@/components/quick-links";
+import { PointerToggle } from "@/components/pointer-toggle";
+import type { HeaderUser } from "@/components/site-nav";
 import { TextSizeToggle } from "@/components/text-size-toggle";
-import type { Role } from "@/lib/types";
 
-export interface HeaderUser {
-  id: string;
-  name: string;
-  role: Role;
-}
-
-function navItemsFor(user: HeaderUser | null) {
-  return [
-    { href: "/", label: "Home" },
-    { href: "/questions", label: "Questions" },
-    { href: "/youth", label: "Read" },
-    { href: "/podcasts", label: "Podcasts" },
-    ...(user ? [{ href: "/messages", label: "Messages" }] : []),
-    ...(user?.role === "river" ? [{ href: "/senior", label: "Answer" }] : []),
-  ];
-}
-
-function isActive(pathname: string, href: string): boolean {
-  if (href === "/") {
-    return pathname === "/";
-  }
-  return pathname === href || pathname.startsWith(`${href}/`);
-}
+/** Auth entry screens keep their focus: brand, text-size, and Help only. */
+const AUTH_PATHS = new Set(["/login", "/onboarding"]);
 
 /**
- * Shared top navigation: brand left, primary links center, text-size + profile
- * right. Sticks to the top through deep scrolling. The active link is
- * highlighted from the current route; "Answer" only appears for Rivers.
+ * Compact top header: brand left; text-size, profile, and sign-in/out right.
+ * Primary navigation lives in the left rail (`SiteNav`) so this stays one row
+ * at every desktop width and text size.
  */
 export function SiteHeader({ user }: { user: HeaderUser | null }) {
   const pathname = usePathname();
-  const navItems = navItemsFor(user);
-  // Auth entry screens keep their focus: no quick links there.
-  const hideQuickLinks = pathname === "/login" || pathname === "/onboarding";
+  const authScreen = AUTH_PATHS.has(pathname);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-ocean/95 text-white shadow-water backdrop-blur">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-3">
+    <header className="sticky top-0 z-40 flex h-[var(--header-height)] items-center border-b border-white/10 bg-ocean/95 text-white shadow-water backdrop-blur">
+      <div className="mx-auto flex w-full max-w-5xl flex-nowrap items-center justify-between gap-3 px-6">
         <Link
           href="/"
           className="ripple flex items-center gap-2 rounded-xl text-xl font-bold tracking-tight text-white"
@@ -68,91 +44,38 @@ export function SiteHeader({ user }: { user: HeaderUser | null }) {
           </span>
         </Link>
 
-        <nav aria-label="Primary" data-tour="nav">
-          <ul className="flex flex-wrap items-center gap-1">
-            {navItems.map((item) => {
-              const active = isActive(pathname, item.href);
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    aria-current={active ? "page" : undefined}
-                    data-tour={
-                      item.href === "/messages"
-                        ? "messages"
-                        : item.href === "/senior"
-                          ? "nav-answer"
-                          : undefined
-                    }
-                    className={
-                      active
-                        ? "ripple inline-flex min-h-10 items-center rounded-xl bg-brand px-4 text-sm font-semibold text-white"
-                        : "ripple inline-flex min-h-10 items-center rounded-xl px-4 text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white"
-                    }
-                  >
-                    {item.label}
-                    {item.href === "/messages" ? <UnreadBadge /> : null}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <Link
-            href="/help"
-            data-tour="help"
-            aria-label="Help and frequently asked questions"
-            aria-current={pathname === "/help" ? "page" : undefined}
-            title="Help and frequently asked questions"
-            className={
-              pathname === "/help"
-                ? "ripple grid h-10 w-10 place-items-center rounded-xl bg-white text-ocean"
-                : "ripple grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
-            }
-          >
-            <svg
-              viewBox="0 0 24 24"
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="9" />
-              <path d="M9.6 9.2a2.5 2.5 0 1 1 3.7 2.3c-.8.4-1.3 1-1.3 1.9" strokeLinecap="round" />
-              <path d="M12 17h.01" strokeLinecap="round" />
-            </svg>
-          </Link>
-
+        <div className="flex shrink-0 flex-nowrap items-center gap-2">
           <TextSizeToggle />
+          <PointerToggle />
 
-          <Link
-            href="/search"
-            data-tour="search"
-            aria-label="Search"
-            title="Search"
-            className="ripple grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m20 20-3.5-3.5" strokeLinecap="round" />
-            </svg>
-          </Link>
-
-          {hideQuickLinks ? null : <QuickLinks signedIn={Boolean(user)} />}
-
-          {user ? (
+          {authScreen ? (
+            <Link
+              href="/help"
+              title="Help and frequently asked questions"
+              className="ripple inline-flex min-h-10 items-center rounded-xl border border-white/20 bg-white/10 px-3 text-sm font-medium text-white transition hover:bg-white/20"
+            >
+              Help
+            </Link>
+          ) : user ? (
             <>
               <Link
                 href="/profile"
                 data-tour="profile"
                 aria-label={`Your profile, ${user.name}`}
-                className="ripple grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
                 title={`${user.name} · ${user.role === "river" ? "River" : "Drop"}`}
+                className="ripple grid h-10 w-10 place-items-center rounded-xl border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
               >
-                <span aria-hidden="true">{user.role === "river" ? "🌊" : "💧"}</span>
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 20a8 8 0 0 1 16 0" strokeLinecap="round" />
+                </svg>
               </Link>
               <LogoutButton compact />
             </>

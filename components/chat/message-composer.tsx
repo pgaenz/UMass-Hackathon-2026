@@ -73,7 +73,7 @@ export function MessageComposer({
         className="w-full rounded-2xl border-2 border-seaglass bg-white/80 p-4 text-lg leading-relaxed text-ink focus:border-brand"
       />
 
-      <p className="text-sm text-ink/60">
+      <p className="text-sm text-ink/80">
         Never share bank details, passwords, or your home address.
       </p>
 
@@ -91,7 +91,7 @@ export function MessageComposer({
       ) : null}
 
       <div className="flex items-center justify-between gap-3">
-        <span className="text-sm text-ink/50">Enter to send · Shift+Enter for a new line</span>
+        <span className="text-sm text-ink/80">Enter to send · Shift+Enter for a new line</span>
         <Button type="submit" disabled={sending || !text.trim()}>
           {sending ? "Sending…" : "Send"}
         </Button>

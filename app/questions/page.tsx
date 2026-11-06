@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { AskQuestionForm } from "@/components/ask-question-form";
 import { QuestionFilterBar } from "@/components/filter-bar";
 import { QuestionCard } from "@/components/question-card";
 import { ButtonLink } from "@/components/ui/button";
@@ -55,10 +54,14 @@ export default async function QuestionsPage({
     <div className="mx-auto w-full max-w-5xl space-y-10 px-6 py-10">
       <PageHeader
         title="Questions"
-        description="Ask a question, add topics, and upvote the ones you want answered."
-      />
-
-      <AskQuestionForm topics={topics} canAsk={user?.role === "drop"} signedIn={Boolean(user)} />
+        description="Read questions from young people. Choose one to read the answers, or ask your own."
+      >
+        {user?.role === "drop" ? (
+          <ButtonLink href="/questions/new" size="lg">
+            Ask a question
+          </ButtonLink>
+        ) : null}
+      </PageHeader>
 
       <section aria-labelledby="browse-heading" className="space-y-5">
         <h2 id="browse-heading" className="text-2xl font-bold tracking-tight text-ink">
@@ -84,7 +87,7 @@ export default async function QuestionsPage({
         ) : (
           <EmptyState
             title="No questions match this filter"
-            description="Try a different topic or sort, or post a new question above."
+            description="Try a different topic or sort, or ask a new question."
           >
             <ButtonLink href="/questions" variant="secondary">
               Clear filters
@@ -92,6 +95,25 @@ export default async function QuestionsPage({
           </EmptyState>
         )}
       </section>
+
+      {user?.role !== "drop" ? (
+        <section className="rounded-2xl border border-seaglass/40 bg-seaglass/25 p-6">
+          <h2 className="text-2xl font-semibold text-ink">
+            {user?.role === "river" ? "Answer a question" : "Sign in to ask a question"}
+          </h2>
+          <p className="mt-2 text-lg text-ink/70">
+            {user?.role === "river"
+              ? "Rivers answer questions. Choose one you have personal experience with."
+              : "Sign in as a Drop to ask a question and learn from a River."}
+          </p>
+          <ButtonLink
+            href={user?.role === "river" ? "/senior" : "/login"}
+            className="mt-4"
+          >
+            {user?.role === "river" ? "Answer a question" : "Sign in to ask"}
+          </ButtonLink>
+        </section>
+      ) : null}
     </div>
   );
 }

@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
+import { POINTER_CHANGE_EVENT, readWaterPointerPreference } from "@/components/pointer-toggle";
+
 /** Tip of the cursor droplet sits at (14, 1.5) inside the 28x36 viewBox. */
 const CURSOR_TIP_X = 14;
 const CURSOR_TIP_Y = 2;
@@ -12,11 +14,12 @@ function dropletMarkup(color: string): string {
 }
 
 /**
- * Themed pointer: a blue pointed water-drop that trails the mouse, plus tiny
- * droplets that splash downward and fade out on each click.
+ * Opt-in themed pointer: a blue pointed water-drop that trails the mouse, plus
+ * tiny droplets that splash downward and fade out on each click.
  *
- * Only active for fine pointers and when the user has not asked for reduced
- * motion — otherwise the native cursor is left untouched.
+ * Off by default — the native pointer is never hidden unless the person turned
+ * on "Water pointer". Also stays off for coarse pointers and when the OS asks
+ * for reduced motion, regardless of the switch.
  */
 export function WaterCursor() {
   const cursorRef = useRef<HTMLDivElement | null>(null);
@@ -24,170 +27,197 @@ export function WaterCursor() {
 
   useEffect(() => {
     const finePointer = window.matchMedia("(pointer: fine)").matches;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!finePointer || reducedMotion) return;
-
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const cursor = cursorRef.current;
     const layer = layerRef.current;
     if (!cursor || !layer) return;
 
-    document.documentElement.classList.add("water-cursor-active");
+    let teardown: (() => void) | null = null;
 
-    // Native <dialog> opened with showModal() lives in the browser top layer,
-    // which paints above every z-index. Join that layer with the Popover API so
-    // the cursor (and its droplets) stay visible over pop-ups.
-    const supportsPopover = typeof cursor.showPopover === "function";
-    if (supportsPopover) {
-      cursor.setAttribute("popover", "manual");
-      layer.setAttribute("popover", "manual");
-    }
+    const wanted = () =>
+      finePointer && !motionQuery.matches && readWaterPointerPreference();
 
-    const raiseTopLayer = () => {
-      // Drop then cursor so the cursor ends up above the droplet layer.
-      for (const element of [layer, cursor]) {
-        try {
-          element.hidePopover();
-        } catch {
-          // Not currently open — fine.
-        }
-        try {
-          element.showPopover();
-        } catch {
-          // Ignore; the fallback below covers unsupported cases.
-        }
+    const start = () => {
+      if (teardown) return;
+
+      document.documentElement.classList.add("water-cursor-active");
+
+      // Native <dialog> opened with showModal() lives in the browser top layer,
+      // which paints above every z-index. Join that layer with the Popover API so
+      // the cursor (and its droplets) stay visible over pop-ups.
+      const supportsPopover = typeof cursor.showPopover === "function";
+      if (supportsPopover) {
+        cursor.setAttribute("popover", "manual");
+        layer.setAttribute("popover", "manual");
       }
-    };
 
-    const updateNativeFallback = () => {
-      const anyOpen = document.querySelector("dialog[open]") !== null;
-      document.documentElement.classList.toggle("water-cursor-native", anyOpen);
-    };
+      const raiseTopLayer = () => {
+        // Drop then cursor so the cursor ends up above the droplet layer.
+        for (const element of [layer, cursor]) {
+          try {
+            element.hidePopover();
+          } catch {
+            // Not currently open — fine.
+          }
+          try {
+            element.showPopover();
+          } catch {
+            // Ignore; the fallback below covers unsupported cases.
+          }
+        }
+      };
 
-    // `toggle` does not bubble for <dialog>, so listen in the capture phase.
-    const onToggle = (event: Event) => {
-      const target = event.target;
-      if (!(target instanceof HTMLDialogElement)) return;
-      if (!supportsPopover) {
-        updateNativeFallback();
-        return;
-      }
-      // A dialog just entered the top layer; re-promote the cursor so it lands
-      // on top of it. Closing dialogs need no action.
-      if (target.open) raiseTopLayer();
-    };
+      const updateNativeFallback = () => {
+        const anyOpen = document.querySelector("dialog[open]") !== null;
+        document.documentElement.classList.toggle("water-cursor-native", anyOpen);
+      };
 
-    if (supportsPopover) raiseTopLayer();
-    document.addEventListener("toggle", onToggle, true);
+      // `toggle` does not bubble for <dialog>, so listen in the capture phase.
+      const onToggle = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLDialogElement)) return;
+        if (!supportsPopover) {
+          updateNativeFallback();
+          return;
+        }
+        // A dialog just entered the top layer; re-promote the cursor so it lands
+        // on top of it. Closing dialogs need no action.
+        if (target.open) raiseTopLayer();
+      };
 
-    const target = { x: window.innerWidth / 2, y: window.innerHeight / 3 };
-    const current = { x: target.x, y: target.y };
-    let visible = false;
-    let frame = 0;
-    const timers: number[] = [];
+      if (supportsPopover) raiseTopLayer();
+      document.addEventListener("toggle", onToggle, true);
 
-    const render = () => {
-      current.x += (target.x - current.x) * 0.4;
-      current.y += (target.y - current.y) * 0.4;
-      cursor.style.transform = `translate3d(${current.x - CURSOR_TIP_X}px, ${
-        current.y - CURSOR_TIP_Y
-      }px, 0)`;
+      const target = { x: window.innerWidth / 2, y: window.innerHeight / 3 };
+      const current = { x: target.x, y: target.y };
+      let visible = false;
+      let frame = 0;
+      const timers: number[] = [];
+
+      const render = () => {
+        current.x += (target.x - current.x) * 0.4;
+        current.y += (target.y - current.y) * 0.4;
+        cursor.style.transform = `translate3d(${current.x - CURSOR_TIP_X}px, ${
+          current.y - CURSOR_TIP_Y
+        }px, 0)`;
+        frame = window.requestAnimationFrame(render);
+      };
       frame = window.requestAnimationFrame(render);
-    };
-    frame = window.requestAnimationFrame(render);
 
-    const onMove = (event: PointerEvent) => {
-      target.x = event.clientX;
-      target.y = event.clientY;
-      if (!visible) {
-        visible = true;
-        current.x = target.x;
-        current.y = target.y;
-        cursor.style.opacity = "1";
-      }
-    };
+      const onMove = (event: PointerEvent) => {
+        target.x = event.clientX;
+        target.y = event.clientY;
+        if (!visible) {
+          visible = true;
+          current.x = target.x;
+          current.y = target.y;
+          cursor.style.opacity = "1";
+        }
+      };
 
-    const onLeave = () => {
-      visible = false;
-      cursor.style.opacity = "0";
-    };
+      const onLeave = () => {
+        visible = false;
+        cursor.style.opacity = "0";
+      };
 
-    const spawnDroplet = (x: number, y: number) => {
-      if (!layer.isConnected) return;
-      const droplet = document.createElement("span");
-      droplet.className = "water-drop";
-      const size = 5 + Math.random() * 6;
-      droplet.style.width = `${size}px`;
-      droplet.style.height = `${size}px`;
-      droplet.style.left = `${x}px`;
-      droplet.style.top = `${y}px`;
-      droplet.innerHTML = dropletMarkup(Math.random() > 0.5 ? "#2f92b8" : "#7cc4de");
-      layer.appendChild(droplet);
+      const spawnDroplet = (x: number, y: number) => {
+        if (!layer.isConnected) return;
+        const droplet = document.createElement("span");
+        droplet.className = "water-drop";
+        const size = 5 + Math.random() * 6;
+        droplet.style.width = `${size}px`;
+        droplet.style.height = `${size}px`;
+        droplet.style.left = `${x}px`;
+        droplet.style.top = `${y}px`;
+        droplet.innerHTML = dropletMarkup(Math.random() > 0.5 ? "#2f92b8" : "#7cc4de");
+        layer.appendChild(droplet);
 
-      if (typeof droplet.animate !== "function") {
-        droplet.remove();
-        return;
-      }
+        if (typeof droplet.animate !== "function") {
+          droplet.remove();
+          return;
+        }
 
-      const driftX = (Math.random() - 0.5) * 90;
-      const lift = 8 + Math.random() * 34;
-      const fall = 140 + Math.random() * 190;
-      const spin = (Math.random() - 0.5) * 90;
+        const driftX = (Math.random() - 0.5) * 90;
+        const lift = 8 + Math.random() * 34;
+        const fall = 140 + Math.random() * 190;
+        const spin = (Math.random() - 0.5) * 90;
 
-      const animation = droplet.animate(
-        [
-          { transform: "translate(-50%, -50%) translate(0, 0) scale(1)", opacity: 1 },
+        const animation = droplet.animate(
+          [
+            { transform: "translate(-50%, -50%) translate(0, 0) scale(1)", opacity: 1 },
+            {
+              transform: `translate(-50%, -50%) translate(${driftX * 0.4}px, ${-lift}px) scale(0.95)`,
+              opacity: 0.95,
+              offset: 0.28,
+            },
+            {
+              transform: `translate(-50%, -50%) translate(${driftX}px, ${fall}px) scale(0.55) rotate(${spin}deg)`,
+              opacity: 0,
+            },
+          ],
           {
-            transform: `translate(-50%, -50%) translate(${driftX * 0.4}px, ${-lift}px) scale(0.95)`,
-            opacity: 0.95,
-            offset: 0.28,
+            duration: DROP_LIFETIME_MS,
+            easing: "cubic-bezier(.35,.02,.75,.5)",
+            fill: "forwards",
           },
-          {
-            transform: `translate(-50%, -50%) translate(${driftX}px, ${fall}px) scale(0.55) rotate(${spin}deg)`,
-            opacity: 0,
-          },
-        ],
-        {
-          duration: DROP_LIFETIME_MS,
-          easing: "cubic-bezier(.35,.02,.75,.5)",
-          fill: "forwards",
-        },
-      );
-      animation.onfinish = () => droplet.remove();
-    };
-
-    const onDown = (event: PointerEvent) => {
-      if (event.button !== 0) return;
-      const count = 5 + Math.floor(Math.random() * 4);
-      for (let i = 0; i < count; i += 1) {
-        timers.push(
-          window.setTimeout(() => spawnDroplet(event.clientX, event.clientY), i * 35),
         );
-      }
+        animation.onfinish = () => droplet.remove();
+      };
+
+      const onDown = (event: PointerEvent) => {
+        if (event.button !== 0) return;
+        const count = 5 + Math.floor(Math.random() * 4);
+        for (let i = 0; i < count; i += 1) {
+          timers.push(
+            window.setTimeout(() => spawnDroplet(event.clientX, event.clientY), i * 35),
+          );
+        }
+      };
+
+      window.addEventListener("pointermove", onMove, { passive: true });
+      window.addEventListener("pointerdown", onDown);
+      document.addEventListener("mouseleave", onLeave);
+      window.addEventListener("blur", onLeave);
+
+      teardown = () => {
+        window.cancelAnimationFrame(frame);
+        timers.forEach((timer) => window.clearTimeout(timer));
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerdown", onDown);
+        document.removeEventListener("mouseleave", onLeave);
+        window.removeEventListener("blur", onLeave);
+        document.removeEventListener("toggle", onToggle, true);
+        document.documentElement.classList.remove("water-cursor-native");
+        for (const element of [layer, cursor]) {
+          try {
+            element.hidePopover();
+          } catch {
+            // Ignore.
+          }
+        }
+        document.documentElement.classList.remove("water-cursor-active");
+        layer.replaceChildren();
+      };
     };
 
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerdown", onDown);
-    document.addEventListener("mouseleave", onLeave);
-    window.addEventListener("blur", onLeave);
+    const stop = () => {
+      teardown?.();
+      teardown = null;
+    };
+
+    const sync = () => {
+      if (wanted()) start();
+      else stop();
+    };
+
+    sync();
+    window.addEventListener(POINTER_CHANGE_EVENT, sync);
+    motionQuery.addEventListener("change", sync);
 
     return () => {
-      window.cancelAnimationFrame(frame);
-      timers.forEach((timer) => window.clearTimeout(timer));
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerdown", onDown);
-      document.removeEventListener("mouseleave", onLeave);
-      window.removeEventListener("blur", onLeave);
-      document.removeEventListener("toggle", onToggle, true);
-      document.documentElement.classList.remove("water-cursor-native");
-      for (const element of [layer, cursor]) {
-        try {
-          element.hidePopover();
-        } catch {
-          // Ignore.
-        }
-      }
-      document.documentElement.classList.remove("water-cursor-active");
-      layer.replaceChildren();
+      window.removeEventListener(POINTER_CHANGE_EVENT, sync);
+      motionQuery.removeEventListener("change", sync);
+      stop();
     };
   }, []);
 

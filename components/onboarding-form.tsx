@@ -118,7 +118,11 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
           maxLength={300}
           className="w-full rounded-xl border-2 border-seaglass p-4 text-lg text-ink placeholder:text-ink/75 focus:border-brand"
           placeholder="A sentence about you."
+          aria-describedby="profile-bio-hint"
         />
+        <p id="profile-bio-hint" className="text-base text-ink/70">
+          Your bio and interests are public. Please do not include private details.
+        </p>
       </div>
 
       {topics.length > 0 ? (

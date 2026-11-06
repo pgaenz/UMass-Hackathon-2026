@@ -97,3 +97,16 @@ export async function setVote(
   });
   return delta;
 }
+
+/** Removes every stored vote for a withdrawn question. */
+export async function removeVotesForQuestion(questionId: string): Promise<number> {
+  let removed = 0;
+  await mutateJson<VotesData>(VOTES_PATH, EMPTY, (current) => {
+    const data = normalize(current);
+    const next = data.votes.filter((vote) => vote.questionId !== questionId);
+    removed = data.votes.length - next.length;
+    data.votes = next;
+    return data;
+  });
+  return removed;
+}

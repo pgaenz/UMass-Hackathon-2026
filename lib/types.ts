@@ -98,6 +98,21 @@ export interface Story {
   status: StoryStatus;
   conversationId: string | null;
   createdAt: string;
+  // --- River experience fields (plan/river-experience.md §6) ---
+  // Last change to any River-editable field. Defaults to createdAt.
+  updatedAt?: string;
+  // When the story was last published.
+  publishedAt?: string | null;
+  // True once the River has edited the story text directly.
+  riverEdited?: boolean;
+  // When review + safety were last computed for the current article.
+  checkedAt?: string | null;
+  // Plain-language message when a check could not complete.
+  checkError?: string | null;
+  // Hash of the transcript used for the current article.
+  writtenFromHash?: string | null;
+  // One snapshot kept for "Restore my previous version".
+  previousArticle?: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -214,6 +229,8 @@ export interface User {
 export interface AuthorRef {
   id: string;
   name: string;
+  role: Role;
+  ageBand: AgeBand;
 }
 
 // What other users are allowed to see.
@@ -268,6 +285,9 @@ export interface Question {
   upvotes: number;
   storyIds: string[];
   createdAt: string;
+  // Defaults to createdAt. Kept optional so existing records load unchanged.
+  updatedAt?: string;
+  editedAt?: string | null;
 }
 
 // ---------------------------------------------------------------------------

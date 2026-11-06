@@ -1,9 +1,9 @@
 # HistorAI evaluation — offline
 
-Generated: 2026-10-23T04:22:08.009Z  
-Started: 2026-10-23T04:22:08.001Z
+Generated: 2026-11-06T02:44:11.109Z  
+Started: 2026-11-06T02:44:11.088Z
 
-**Summary:** 61 passed · 0 failed · 0 skipped · 61 total
+**Summary:** 98 passed · 0 failed · 0 skipped · 98 total
 
 - **Node:** v22.23.3
 - **Network:** none (deterministic logic only)
@@ -71,3 +71,40 @@ Started: 2026-10-23T04:22:08.001Z
 | CHAT-R19 | Send me a photo of yourself. | grooming | grooming | pass | — |
 | CHAT-R20 | Check out https://example.com for details. | link | link | pass | — |
 | CHAT-R21 | Visit www.example.com. | link | link | pass | — |
+| RIV-01 | published story | published | published | pass | — |
+| RIV-02 | saved answer without an article | answer_saved | answer_saved | pass | — |
+| RIV-03 | hard safety block | blocked | blocked | pass | — |
+| RIV-04 | checks pending | needs_check | needs_check | pass | — |
+| RIV-05 | review needs changes | needs_changes | needs_changes | pass | — |
+| RIV-06 | reviewed and passing | ready | ready | pass | — |
+| RIV-07 | answer changed after writing | needs_check | needs_check | pass | — |
+| RIV-08 | legacy record has no stored hash | ready | ready | pass | — |
+| RIV-09 | changed-answer modifier flag | true | true | pass | — |
+| RIV-10 | article title composition round-trip | My First Job | My First Job | pass | — |
+| RIV-11 | upload path guard: data/uploads/answer.webm | true | true | pass | — |
+| RIV-12 | upload path guard: data/uploads/../../etc/passwd | false | false | pass | — |
+| RIV-13 | upload path guard: data/uploads/../secrets.json | false | false | pass | — |
+| RIV-14 | upload path guard: /etc/passwd | false | false | pass | — |
+| DROP-Q01 | question text length 7 | rejected | rejected | pass | — |
+| DROP-Q02 | question text length 8 | accepted | accepted | pass | — |
+| DROP-Q03 | question text length 300 | accepted | accepted | pass | — |
+| DROP-Q04 | question text length 301 | rejected | rejected | pass | — |
+| DROP-T01 | question topics ["job"] | accepted | accepted | pass | — |
+| DROP-T02 | question topics ["unknown"] | rejected | rejected | pass | — |
+| DROP-T03 | question topics ["job","family","a","b","c","d"] | rejected | rejected | pass | — |
+| DROP-M01 | river (60) -> drop (16) | refused | refused | pass | — |
+| DROP-M02 | river (60) -> drop (18) | allowed | allowed | pass | — |
+| DROP-M03 | drop (17) -> river (60) | allowed | allowed | pass | — |
+| DROP-M04 | river (60) -> river (65) | allowed | allowed | pass | — |
+| DROP-M05 | drop (20) -> drop (20) | refused | refused | pass | — |
+| DROP-N01 | public name "Maya Chen" | "Maya C." | "Maya C." | pass | — |
+| DROP-N02 | public name "Maya" | "Maya" | "Maya" | pass | — |
+| DROP-N03 | public name "   " | "" | "" | pass | — |
+| DROP-N04 | public name "Liam O'Connor" | "Liam O." | "Liam O." | pass | — |
+| DROP-S01 | question state (waiting) | waiting | waiting | pass | — |
+| DROP-S02 | question state (in_progress) | in_progress | in_progress | pass | — |
+| DROP-S03 | question state (answered) | answered | answered | pass | — |
+| DROP-S04 | question state (waiting) | waiting | waiting | pass | — |
+| DROP-S05 | edited modifier | true | true | pass | — |
+| DROP-SIM01 | similar questions need 15 characters | 0 | 0 | pass | — |
+| DROP-SIM02 | keyword overlap ranks the first-job question first | q-a | q-a | pass | — |
