@@ -78,6 +78,21 @@ export async function createConversation(input: {
   return created;
 }
 
+/** Removes every conversation for a story and returns the removed records. */
+export async function removeConversationsForStory(storyId: string): Promise<Conversation[]> {
+  let removed: Conversation[] = [];
+  await mutateJson<ConversationStoreData>(STORE_PATH, EMPTY, (current) => {
+    const data = normalize(current);
+    removed = data.conversations.filter((conversation) => conversation.storyId === storyId);
+    return {
+      conversations: data.conversations.filter(
+        (conversation) => conversation.storyId !== storyId,
+      ),
+    };
+  });
+  return removed;
+}
+
 export interface AppendTurnInput {
   user?: ConversationTurn["user"];
   assistant?: ConversationTurn["assistant"];

@@ -49,6 +49,7 @@ export default async function ConnectPage() {
         title="Connect"
         description="Rivers are the heart of HistorAI. Reach out to someone whose story you would like to know."
       />
+      <p className="text-lg text-ink/70">Only age bands are shown.</p>
       <ConnectDirectory people={people} topics={topics} />
     </div>
   );

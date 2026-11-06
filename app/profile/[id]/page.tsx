@@ -4,16 +4,18 @@ import { notFound } from "next/navigation";
 
 import { MessageButton } from "@/components/chat/message-button";
 import { QuestionCard } from "@/components/question-card";
+import { RoleIcon } from "@/components/role-icon";
 import { StoryCard } from "@/components/story-card";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { countAnswersByQuestion, getPublishedStories } from "@/lib/answers";
-import { canMessage } from "@/lib/chat";
+import { canSendTo } from "@/lib/chat";
 import { getLikeStates } from "@/lib/likes";
 import { getVoteStates } from "@/lib/question-votes";
 import { getQuestionsByUser, getTopics } from "@/lib/questions";
-import { getSession } from "@/lib/session";
+import { getCurrentUser } from "@/lib/session";
 import { getStoriesByAuthor } from "@/lib/store";
+import { publicDisplayName } from "@/lib/format";
 import { getUser, toPublicUser } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
@@ -25,7 +27,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const user = await getUser(id);
-  return { title: user ? user.name : "Profile" };
+  if (!user) return { title: "Profile" };
+  return { title: user.role === "drop" ? publicDisplayName(user) : user.name };
 }
 
 export default async function PublicProfilePage({
@@ -37,13 +40,14 @@ export default async function PublicProfilePage({
   const user = await getUser(id);
   if (!user) notFound();
 
-  const [session, topics, published] = await Promise.all([
-    getSession(),
+  const [viewer, topics, published] = await Promise.all([
+    getCurrentUser(),
     getTopics(),
     getPublishedStories(),
   ]);
   const profile = toPublicUser(user);
-  const isSelf = session?.userId === user.id;
+  const displayName = user.role === "drop" ? publicDisplayName(user) : profile.name;
+  const isSelf = viewer?.id === user.id;
   const isRiver = user.role === "river";
 
   const questions = isRiver ? [] : await getQuestionsByUser(user.id);
@@ -54,24 +58,32 @@ export default async function PublicProfilePage({
   const [likeStates, voteStates] = await Promise.all([
     getLikeStates(
       stories.map((story) => story.id),
-      session?.userId ?? null,
+      viewer?.id ?? null,
     ),
     getVoteStates(
       questions.map((question) => question.id),
-      session?.userId ?? null,
+      viewer?.id ?? null,
     ),
   ]);
-  const author = { id: user.id, name: user.name };
+  const author = {
+    id: user.id,
+    name: user.name,
+    role: user.role,
+    ageBand: profile.ageBand,
+  };
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-10 px-6 py-10">
       <header className="space-y-4 rounded-3xl glass shadow-water p-8 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="grid h-16 w-16 place-items-center rounded-2xl bg-seaglass/25 text-4xl" aria-hidden="true">
-            {isRiver ? "🌊" : "💧"}
+          <span
+            className="grid h-16 w-16 place-items-center rounded-2xl bg-seaglass/25 text-brand"
+            aria-hidden="true"
+          >
+            <RoleIcon role={isRiver ? "river" : "drop"} />
           </span>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-ink">{profile.name}</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-ink">{displayName}</h1>
             <p className="text-lg text-ink/70">
               {isRiver ? "River · Older adult" : "Drop · Young person"} · {profile.ageBand}
             </p>
@@ -96,8 +108,12 @@ export default async function PublicProfilePage({
           </ButtonLink>
         ) : null}
 
-        {!isSelf && session && canMessage(session.role, user.role) ? (
-          <MessageButton participantId={user.id} />
+        {!isSelf && viewer && canSendTo(viewer, user) ? (
+          <MessageButton
+            participantId={user.id}
+            label={`Send ${user.name.trim().split(/\s+/)[0]} a message`}
+            description="Private message. Only you two can see it."
+          />
         ) : null}
       </header>
 
@@ -115,7 +131,7 @@ export default async function PublicProfilePage({
                     story={story}
                     author={author}
                     likeState={likeStates[story.id] ?? { liked: false, count: 0 }}
-                    signedIn={Boolean(session)}
+                    signedIn={Boolean(viewer)}
                   />
                 </li>
               ))}
@@ -133,7 +149,7 @@ export default async function PublicProfilePage({
                   answerCount={counts[question.id] ?? 0}
                   author={author}
                   voteState={voteStates[question.id]}
-                  signedIn={Boolean(session)}
+                  signedIn={Boolean(viewer)}
                 />
               </li>
             ))}

@@ -8,6 +8,17 @@ export function firstName(name: string): string {
   return name.trim().split(/\s+/)[0] || name;
 }
 
+/**
+ * Public name for a Drop: first name and last initial (plan D2).
+ * A single-word name is shown unchanged.
+ */
+export function publicDisplayName(person: { name: string }): string {
+  const parts = person.name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "";
+  if (parts.length === 1) return parts[0];
+  return `${parts[0]} ${parts[parts.length - 1][0]?.toUpperCase() ?? ""}.`;
+}
+
 export function formatTime(iso: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "";
@@ -25,6 +36,14 @@ export function formatRelativeTime(iso: string): string {
   const days = Math.round(hours / 24);
   if (days < 7) return `${days} d ago`;
   return formatDate(iso);
+}
+
+/** True for a question created in the last `days` days (never for future dates). */
+export function isNewQuestion(iso: string, days = 7): boolean {
+  const created = new Date(iso).getTime();
+  if (Number.isNaN(created)) return false;
+  const age = Date.now() - created;
+  return age >= 0 && age <= days * 24 * 60 * 60 * 1000;
 }
 
 export function getArticleTitle(article: string): string {

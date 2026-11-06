@@ -21,7 +21,14 @@
       "conversationId": null,
       "authorId": "u-seed-ruth",
       "conversationContext": null,
-      "safety": null
+      "safety": null,
+      "updatedAt": "2026-01-11T10:00:00.000Z",
+      "publishedAt": "2026-01-11T10:00:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-true-love",
@@ -44,7 +51,14 @@
       "conversationId": null,
       "authorId": "u-seed-harold",
       "conversationContext": null,
-      "safety": null
+      "safety": null,
+      "updatedAt": "2026-01-11T10:05:00.000Z",
+      "publishedAt": "2026-01-11T10:05:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-best-advice",
@@ -67,7 +81,14 @@
       "conversationId": null,
       "authorId": "u-seed-ruth",
       "conversationContext": null,
-      "safety": null
+      "safety": null,
+      "updatedAt": "2026-01-11T10:10:00.000Z",
+      "publishedAt": "2026-01-11T10:10:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "c8e8ec96-2aa3-4e04-bc40-6e744054edbb",
@@ -96,7 +117,14 @@
       "conversationId": null,
       "authorId": "u-seed-harold",
       "conversationContext": null,
-      "safety": null
+      "safety": null,
+      "updatedAt": "2026-10-21T17:32:03.307Z",
+      "publishedAt": "2026-10-21T17:32:03.307Z",
+      "riverEdited": false,
+      "checkedAt": "2026-10-21T17:32:12.541Z",
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "494c10c5-5eb0-499d-a554-a2866abe17f0",
@@ -125,7 +153,14 @@
       "conversationId": null,
       "authorId": "u-seed-ruth",
       "conversationContext": null,
-      "safety": null
+      "safety": null,
+      "updatedAt": "2026-10-21T17:39:05.130Z",
+      "publishedAt": "2026-10-21T17:39:05.130Z",
+      "riverEdited": false,
+      "checkedAt": "2026-10-21T17:39:10.341Z",
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "b535c2ff-0d49-4ed5-a37c-c7469bdd6d0f",
@@ -178,7 +213,14 @@
         "issues": [],
         "summary": "This article offers valuable insights about career choices and personal growth without any inappropriate content. It is safe to publish as is.",
         "createdAt": "2026-10-23T01:40:38.464Z"
-      }
+      },
+      "updatedAt": "2026-10-21T17:43:13.672Z",
+      "publishedAt": null,
+      "riverEdited": false,
+      "checkedAt": "2026-10-23T01:40:40.654Z",
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "24aa29f4-67b3-46ba-a2c1-b23e11b47754",
@@ -207,7 +249,14 @@
       "conversationId": null,
       "authorId": "u-seed-ruth",
       "conversationContext": null,
-      "safety": null
+      "safety": null,
+      "updatedAt": "2026-10-21T17:52:25.023Z",
+      "publishedAt": null,
+      "riverEdited": false,
+      "checkedAt": "2026-10-21T17:52:32.665Z",
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "cd3029b1-0042-47b5-98c1-13cdeb165eb9",
@@ -242,7 +291,14 @@
       "conversationId": null,
       "authorId": "u-seed-harold",
       "conversationContext": null,
-      "safety": null
+      "safety": null,
+      "updatedAt": "2026-10-21T17:54:52.853Z",
+      "publishedAt": "2026-10-21T17:54:52.853Z",
+      "riverEdited": false,
+      "checkedAt": "2026-10-21T17:55:01.451Z",
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "52b9e81b-9a78-4f7e-b2d6-2856cdb55c8a",
@@ -265,7 +321,14 @@
       "createdAt": "2026-10-21T20:42:23.539Z",
       "authorId": "u-seed-ruth",
       "conversationContext": null,
-      "safety": null
+      "safety": null,
+      "updatedAt": "2026-10-21T20:42:23.539Z",
+      "publishedAt": null,
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "ffe8db14-cd35-48ef-b4a0-f331254bfb1f",
@@ -310,7 +373,14 @@
       "createdAt": "2026-10-21T20:44:06.584Z",
       "authorId": "u-seed-harold",
       "conversationContext": null,
-      "safety": null
+      "safety": null,
+      "updatedAt": "2026-10-21T20:44:06.584Z",
+      "publishedAt": "2026-10-21T20:44:06.584Z",
+      "riverEdited": false,
+      "checkedAt": "2026-10-21T20:46:07.043Z",
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "296bb2ff-e540-4d0a-9ce1-74aad4b91720",
@@ -345,7 +415,14 @@
       "createdAt": "2026-10-21T20:55:04.177Z",
       "authorId": "u-seed-ruth",
       "conversationContext": null,
-      "safety": null
+      "safety": null,
+      "updatedAt": "2026-10-21T20:55:04.177Z",
+      "publishedAt": null,
+      "riverEdited": false,
+      "checkedAt": "2026-10-21T20:57:00.535Z",
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-ward-third-floor",
@@ -368,7 +445,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-02T10:00:00.000Z"
+      "createdAt": "2026-02-02T10:00:00.000Z",
+      "updatedAt": "2026-02-02T10:00:00.000Z",
+      "publishedAt": "2026-02-02T10:00:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-apprentice-mistake",
@@ -391,7 +475,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-03T10:05:00.000Z"
+      "createdAt": "2026-02-03T10:05:00.000Z",
+      "updatedAt": "2026-02-03T10:05:00.000Z",
+      "publishedAt": "2026-02-03T10:05:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-blue-bicycle",
@@ -414,7 +505,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-04T10:10:00.000Z"
+      "createdAt": "2026-02-04T10:10:00.000Z",
+      "updatedAt": "2026-02-04T10:10:00.000Z",
+      "publishedAt": "2026-02-04T10:10:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-letters-across-sea",
@@ -437,7 +535,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-05T10:15:00.000Z"
+      "createdAt": "2026-02-05T10:15:00.000Z",
+      "updatedAt": "2026-02-05T10:15:00.000Z",
+      "publishedAt": "2026-02-05T10:15:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-kitchen-table",
@@ -460,7 +565,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-06T10:20:00.000Z"
+      "createdAt": "2026-02-06T10:20:00.000Z",
+      "updatedAt": "2026-02-06T10:20:00.000Z",
+      "publishedAt": "2026-02-06T10:20:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-mothers-garden",
@@ -483,7 +595,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-07T10:25:00.000Z"
+      "createdAt": "2026-02-07T10:25:00.000Z",
+      "updatedAt": "2026-02-07T10:25:00.000Z",
+      "publishedAt": "2026-02-07T10:25:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-boy-who-read-late",
@@ -506,7 +625,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-08T10:30:00.000Z"
+      "createdAt": "2026-02-08T10:30:00.000Z",
+      "updatedAt": "2026-02-08T10:30:00.000Z",
+      "publishedAt": "2026-02-08T10:30:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-green-dress",
@@ -529,7 +655,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-09T10:35:00.000Z"
+      "createdAt": "2026-02-09T10:35:00.000Z",
+      "updatedAt": "2026-02-09T10:35:00.000Z",
+      "publishedAt": "2026-02-09T10:35:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-long-walk-home",
@@ -552,7 +685,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-10T10:40:00.000Z"
+      "createdAt": "2026-02-10T10:40:00.000Z",
+      "updatedAt": "2026-02-10T10:40:00.000Z",
+      "publishedAt": "2026-02-10T10:40:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-envelope-on-shelf",
@@ -575,7 +715,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-11T10:45:00.000Z"
+      "createdAt": "2026-02-11T10:45:00.000Z",
+      "updatedAt": "2026-02-11T10:45:00.000Z",
+      "publishedAt": "2026-02-11T10:45:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-closing-time",
@@ -598,7 +745,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-12T10:50:00.000Z"
+      "createdAt": "2026-02-12T10:50:00.000Z",
+      "updatedAt": "2026-02-12T10:50:00.000Z",
+      "publishedAt": "2026-02-12T10:50:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-woman-at-bus-stop",
@@ -621,7 +775,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-13T10:55:00.000Z"
+      "createdAt": "2026-02-13T10:55:00.000Z",
+      "updatedAt": "2026-02-13T10:55:00.000Z",
+      "publishedAt": "2026-02-13T10:55:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-map-drawn-by-hand",
@@ -644,7 +805,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-14T11:00:00.000Z"
+      "createdAt": "2026-02-14T11:00:00.000Z",
+      "updatedAt": "2026-02-14T11:00:00.000Z",
+      "publishedAt": "2026-02-14T11:00:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-harbor-at-dawn",
@@ -667,7 +835,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-15T11:05:00.000Z"
+      "createdAt": "2026-02-15T11:05:00.000Z",
+      "updatedAt": "2026-02-15T11:05:00.000Z",
+      "publishedAt": "2026-02-15T11:05:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-first-paycheck",
@@ -690,7 +865,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-02T11:10:00.000Z"
+      "createdAt": "2026-02-02T11:10:00.000Z",
+      "updatedAt": "2026-02-02T11:10:00.000Z",
+      "publishedAt": "2026-02-02T11:10:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-loan-that-saved-us",
@@ -713,7 +895,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-03T11:15:00.000Z"
+      "createdAt": "2026-02-03T11:15:00.000Z",
+      "updatedAt": "2026-02-03T11:15:00.000Z",
+      "publishedAt": "2026-02-03T11:15:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-trumpet-in-attic",
@@ -736,7 +925,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-04T11:20:00.000Z"
+      "createdAt": "2026-02-04T11:20:00.000Z",
+      "updatedAt": "2026-02-04T11:20:00.000Z",
+      "publishedAt": "2026-02-04T11:20:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-tuesday-night-dance",
@@ -759,7 +955,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-05T11:25:00.000Z"
+      "createdAt": "2026-02-05T11:25:00.000Z",
+      "updatedAt": "2026-02-05T11:25:00.000Z",
+      "publishedAt": "2026-02-05T11:25:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-night-i-asked-for-help",
@@ -782,7 +985,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-06T11:30:00.000Z"
+      "createdAt": "2026-02-06T11:30:00.000Z",
+      "updatedAt": "2026-02-06T11:30:00.000Z",
+      "publishedAt": "2026-02-06T11:30:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-long-trail-back",
@@ -805,7 +1015,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-07T11:35:00.000Z"
+      "createdAt": "2026-02-07T11:35:00.000Z",
+      "updatedAt": "2026-02-07T11:35:00.000Z",
+      "publishedAt": "2026-02-07T11:35:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-route-knew-by-heart",
@@ -828,7 +1045,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-08T11:40:00.000Z"
+      "createdAt": "2026-02-08T11:40:00.000Z",
+      "updatedAt": "2026-02-08T11:40:00.000Z",
+      "publishedAt": "2026-02-08T11:40:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-flowers-never-sent",
@@ -851,7 +1075,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-09T11:45:00.000Z"
+      "createdAt": "2026-02-09T11:45:00.000Z",
+      "updatedAt": "2026-02-09T11:45:00.000Z",
+      "publishedAt": "2026-02-09T11:45:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-sunday-noodle-pot",
@@ -874,7 +1105,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-10T11:50:00.000Z"
+      "createdAt": "2026-02-10T11:50:00.000Z",
+      "updatedAt": "2026-02-10T11:50:00.000Z",
+      "publishedAt": "2026-02-10T11:50:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-night-train-nowhere",
@@ -897,7 +1135,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-11T11:55:00.000Z"
+      "createdAt": "2026-02-11T11:55:00.000Z",
+      "updatedAt": "2026-02-11T11:55:00.000Z",
+      "publishedAt": "2026-02-11T11:55:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-bench-at-park",
@@ -920,7 +1165,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-12T12:00:00.000Z"
+      "createdAt": "2026-02-12T12:00:00.000Z",
+      "updatedAt": "2026-02-12T12:00:00.000Z",
+      "publishedAt": "2026-02-12T12:00:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-year-learned-rest",
@@ -943,7 +1195,14 @@
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-13T12:05:00.000Z"
+      "createdAt": "2026-02-13T12:05:00.000Z",
+      "updatedAt": "2026-02-13T12:05:00.000Z",
+      "publishedAt": "2026-02-13T12:05:00.000Z",
+      "riverEdited": false,
+      "checkedAt": null,
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     },
     {
       "id": "s-paper-lantern",
@@ -959,14 +1218,38 @@
         "summary": "A paper lantern made from a bakery bag taught Hannah that wonder can be made from ordinary things."
       },
       "article": "# The Paper Lantern\n\nWe lived above the bakery my grandparents owned. The apartment had two small rooms, a kitchen with a window that looked onto the alley, and a stairway that creaked in a different place every year. My brother and I shared a bed until I was nine. We did not have a garden or a yard. We had the bakery, the alley, and the street, and we made a world out of all three.\n\nMy favorite time was before dawn. The bakers came in at three in the morning to light the ovens. I would wake to the sound of the metal doors and the smell of yeast rising through the floor. It was warm and safe and secret. I would lie in the dark and listen to the men talking in low voices, their words blurred by the floorboards. I did not understand what they were saying. I only knew that the day was beginning, and I was part of it.\n\nOne winter, the bakery had a promotion. Every loaf came in a white paper bag with a red stamp on the side. My mother saved the bags because they were good for covering schoolbooks. I saved one because it was beautiful. The paper was thin enough to let light through. I held it up to the window and saw the red stamp glowing like a window in a tiny house.\n\nI decided to make a lantern. I did not know how to make a lantern. I had seen one in a book, a paper box with a candle inside. I folded the bag, cut slots in the sides, and taped it into a rough cube. I found a stub of a candle in the kitchen drawer. I asked my father to light it. He looked at the paper, then at my face, and said, \"We will do this outside.\" We went down to the alley. He lit the candle and set the lantern on the step. The paper glowed. The red stamp became a warm square. It was the most beautiful thing I had ever made.\n\nThe lantern lasted about four minutes before the paper caught fire. My father stamped on it before it could spread. I was heartbroken. He picked up the blackened remains and said, \"That was a good first try. Next time, we will use a jar.\" I did not want a jar. I wanted the paper bag. But he was right. The jar was safer. We made another lantern the next week, with a candle inside a jam jar and a wire handle. It was less beautiful but it lasted. I kept it on the windowsill until spring.\n\nI have thought about that lantern more often as I have gotten older. It was not a grand childhood. There were hard winters, and my parents worried about money, and my brother was often sick. But there were also these small acts of making. A paper bag, a candle, a father who said \"we will do this outside\" instead of \"that is a bad idea.\" The wonder was not in the object. It was in the permission.\n\nChildren are always making things out of the wrong materials. A cardboard box becomes a house. A stick becomes a sword. A paper bag becomes a lantern. Somewhere along the way, many of us stop doing that. We learn the correct materials and the correct uses. We become efficient. We forget that a paper bag can hold light for four minutes. Four minutes is enough to change the way you see a winter.\n\nI became a piano tuner, which is a job about listening. I sit with an instrument that someone else has owned for years and try to hear what it is trying to become. It is not so different from making a lantern. You work with what is there. You listen for the note that is almost right. You make a small adjustment and see if it holds. You do not always succeed. But sometimes the room fills with a sound that was not there before, and everyone looks up.\n\nSo, Eli, do not be in a hurry to put away the wrong materials. Make the lantern. Use the paper bag. Let it burn for four minutes. Then make another one. The point is not to keep the first thing forever. The point is to remember that you are the kind of person who can make light out of ordinary things. That is a thing worth carrying into adulthood.",
-      "review": null,
-      "safety": null,
+      "review": {
+        "score": 1,
+        "verdict": "revise",
+        "summary": "The generated article invents almost the entire story—including living above a bakery, family members, the father lighting the candle in an alley, a job as a piano tuner, and addressing 'Eli'—none of which were in your transcript. Please rewrite it using only what you actually said about Hannah and her paper lantern.",
+        "issues": [
+          {
+            "type": "invented_fact",
+            "detail": "The transcript only states that a paper lantern made from a bakery bag taught Hannah that wonder can be made from ordinary things. Nearly all details in the article (the apartment, the brother, the father, the lantern catching fire, the piano tuner career, addressing Eli) are completely fabricated and must be removed.",
+            "excerpt": "We lived above the bakery my grandparents owned."
+          }
+        ],
+        "createdAt": "2026-11-06T02:31:22.855Z"
+      },
+      "safety": {
+        "verdict": "allow",
+        "issues": [],
+        "summary": "This article reflects on childhood creativity and the lessons learned from making a paper lantern. It is safe for publication as it contains no inappropriate content.",
+        "createdAt": "2026-11-06T02:31:16.255Z"
+      },
       "feedback": [],
-      "groundingScore": 5,
+      "groundingScore": 1,
       "piiDetected": false,
       "status": "published",
       "conversationId": null,
-      "createdAt": "2026-02-14T12:10:00.000Z"
+      "createdAt": "2026-02-14T12:10:00.000Z",
+      "updatedAt": "2026-11-06T02:32:52.184Z",
+      "publishedAt": "2026-11-06T02:32:52.184Z",
+      "riverEdited": false,
+      "checkedAt": "2026-11-06T02:31:22.856Z",
+      "checkError": null,
+      "writtenFromHash": null,
+      "previousArticle": null
     }
   ]
 }

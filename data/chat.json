@@ -138,6 +138,74 @@
       "createdAt": "2026-10-21T18:40:00.000Z",
       "updatedAt": "2026-10-21T19:15:00.000Z",
       "lastMessageAt": "2026-10-21T19:15:00.000Z"
+    },
+    {
+      "id": "t-3c39032f-2091-4393-af4f-cc7bd168446e",
+      "participantIds": [
+        "u-drop-grace",
+        "u-river-mae"
+      ],
+      "pairKey": "u-drop-grace|u-river-mae",
+      "status": "active",
+      "messages": [
+        {
+          "id": "m-e3cea21e-1a39-4670-a5ae-f671fb6d2b07",
+          "senderId": "u-drop-grace",
+          "kind": "text",
+          "body": "How you doin?",
+          "safety": {
+            "verdict": "allow",
+            "flags": []
+          },
+          "readBy": [
+            "u-drop-grace"
+          ],
+          "createdAt": "2026-11-06T02:49:32.506Z",
+          "deletedAt": null
+        }
+      ],
+      "createdAt": "2026-11-06T02:49:21.283Z",
+      "updatedAt": "2026-11-06T02:49:32.506Z",
+      "lastMessageAt": "2026-11-06T02:49:32.506Z"
+    },
+    {
+      "id": "t-83434ce8-2bbe-42b3-9838-2a248f8022c3",
+      "participantIds": [
+        "u-drop-grace",
+        "u-drop-sofia"
+      ],
+      "pairKey": "u-drop-grace|u-drop-sofia",
+      "status": "active",
+      "messages": [],
+      "createdAt": "2026-11-06T02:51:19.411Z",
+      "updatedAt": "2026-11-06T02:51:19.411Z",
+      "lastMessageAt": "2026-11-06T02:51:19.411Z"
+    },
+    {
+      "id": "t-e1d7a4f0-db9c-4f0e-861f-e89de43bf3a3",
+      "participantIds": [
+        "u-river-george",
+        "u-river-rosa"
+      ],
+      "pairKey": "u-river-george|u-river-rosa",
+      "status": "active",
+      "messages": [],
+      "createdAt": "2026-11-06T03:03:27.069Z",
+      "updatedAt": "2026-11-06T03:03:27.069Z",
+      "lastMessageAt": "2026-11-06T03:03:27.069Z"
+    },
+    {
+      "id": "t-cbabe431-2f63-4e00-977e-0ef92b535d4b",
+      "participantIds": [
+        "u-drop-tessa",
+        "u-seed-ruth"
+      ],
+      "pairKey": "u-drop-tessa|u-seed-ruth",
+      "status": "active",
+      "messages": [],
+      "createdAt": "2026-11-06T03:16:38.816Z",
+      "updatedAt": "2026-11-06T03:16:38.816Z",
+      "lastMessageAt": "2026-11-06T03:16:38.816Z"
     }
   ],
   "blocks": []

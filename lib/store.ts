@@ -13,15 +13,27 @@ const EMPTY: StoreData = { stories: [] };
 
 /** Fills fields added after a story was first persisted (no DB migration needed). */
 function normalizeStory(story: Story): Story {
+  const createdAt = story.createdAt ?? new Date(0).toISOString();
+  const review = story.review ?? null;
   return {
     ...story,
+    createdAt,
     authorId: story.authorId ?? null,
     metadata: story.metadata ?? { topic: "", summary: "" },
-    review: story.review ?? null,
+    review,
     safety: story.safety ?? null,
     feedback: Array.isArray(story.feedback) ? story.feedback : [],
     conversationId: story.conversationId ?? null,
     conversationContext: story.conversationContext ?? null,
+    updatedAt: story.updatedAt ?? createdAt,
+    publishedAt: story.publishedAt ?? (story.status === "published" ? createdAt : null),
+    riverEdited: story.riverEdited ?? false,
+    // Legacy reviewed stories keep publishing rights; without this default every
+    // seeded reviewed story would be locked behind the new check gate.
+    checkedAt: story.checkedAt === undefined ? (review ? review.createdAt : null) : story.checkedAt,
+    checkError: story.checkError ?? null,
+    writtenFromHash: story.writtenFromHash ?? null,
+    previousArticle: story.previousArticle ?? null,
   };
 }
 
@@ -77,6 +89,13 @@ export async function createStory(input: Partial<Story> = {}): Promise<Story> {
       status: input.status ?? "draft",
       conversationId: input.conversationId ?? null,
       createdAt: input.createdAt ?? new Date().toISOString(),
+      updatedAt: input.updatedAt ?? input.createdAt ?? new Date().toISOString(),
+      publishedAt: input.publishedAt ?? null,
+      riverEdited: input.riverEdited ?? false,
+      checkedAt: input.checkedAt ?? null,
+      checkError: input.checkError ?? null,
+      writtenFromHash: input.writtenFromHash ?? null,
+      previousArticle: input.previousArticle ?? null,
     };
     data.stories.push(created);
     return data;
@@ -96,6 +115,17 @@ export async function updateStory(id: string, patch: Partial<Story>): Promise<St
     return data;
   });
   return updated;
+}
+
+export async function deleteStory(id: string): Promise<boolean> {
+  let deleted = false;
+  await mutateJson<StoreData>(STORE_PATH, EMPTY, (current) => {
+    const data = normalize(current);
+    const next = data.stories.filter((story) => story.id !== id);
+    deleted = next.length !== data.stories.length;
+    return { stories: next };
+  });
+  return deleted;
 }
 
 /** Appends one feedback entry under the file lock so concurrent writes never clobber. */

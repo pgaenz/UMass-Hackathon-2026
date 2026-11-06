@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { ExistingAccountPicker } from "@/components/existing-account-picker";
+import { RoleIcon } from "@/components/role-icon";
 import { VisitorButton } from "@/components/visitor-button";
 import { getCurrentUser } from "@/lib/session";
 import { listUsers, toPublicUser } from "@/lib/users";
@@ -20,7 +21,6 @@ const ROLES = [
     subtitle: "Older adult · ages 31+",
     description:
       "Share the stories and lessons of a lifetime. Answer questions from young people.",
-    icon: "🌊",
     accent: "border-brand hover:bg-seaglass/25",
   },
   {
@@ -29,7 +29,6 @@ const ROLES = [
     subtitle: "Young person · ages 16–30",
     description:
       "Ask what you have always wondered, and learn from the people who lived it.",
-    icon: "💧",
     accent: "border-seaglass hover:bg-seaglass/25",
   },
 ] as const;
@@ -68,8 +67,11 @@ export default async function LoginPage() {
             data-tour={option.role === "river" ? "role-river" : "role-drop"}
             className={`ripple flex flex-col gap-4 rounded-3xl border-2 bg-white/60 p-7 shadow-water backdrop-blur transition ${option.accent}`}
           >
-            <span className="grid h-16 w-16 place-items-center rounded-2xl bg-seaglass/25 text-4xl" aria-hidden="true">
-              {option.icon}
+            <span
+              className="grid h-16 w-16 place-items-center rounded-2xl bg-seaglass/25 text-brand"
+              aria-hidden="true"
+            >
+              <RoleIcon role={option.role} />
             </span>
             <span className="space-y-1">
               <span className="block text-sm font-semibold uppercase tracking-wide text-brand">

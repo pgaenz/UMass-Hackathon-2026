@@ -98,6 +98,18 @@ export async function setLike(
   return count;
 }
 
+/** Removes every like for a story (used by the delete cascade). */
+export async function removeLikesForStory(storyId: string): Promise<number> {
+  let removed = 0;
+  await mutateJson<LikesData>(LIKES_PATH, EMPTY, (current) => {
+    const data = normalize(current);
+    const next = data.likes.filter((like) => like.storyId !== storyId);
+    removed = data.likes.length - next.length;
+    return { likes: next };
+  });
+  return removed;
+}
+
 /**
  * The other liker to surface after a like (see plan/LIKES.md §5).
  *

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { RoleIcon } from "@/components/role-icon";
 import { Badge } from "@/components/ui/badge";
 import { formatRelativeTime, truncate } from "@/lib/format";
 import type { ThreadSummary } from "@/lib/types";
@@ -27,10 +28,10 @@ export function ThreadList({
             className="lift flex items-center gap-4 rounded-2xl glass shadow-water p-5 hover:border-brand"
           >
             <span
-              className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-seaglass/25 text-3xl"
+              className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-seaglass/25 text-brand"
               aria-hidden="true"
             >
-              {thread.other.role === "river" ? "🌊" : "💧"}
+              <RoleIcon role={thread.other.role} />
             </span>
 
             <span className="min-w-0 flex-1">
@@ -50,7 +51,7 @@ export function ThreadList({
 
             <time
               dateTime={thread.updatedAt}
-              className="shrink-0 text-sm text-ink/50"
+              className="shrink-0 text-sm text-ink/80"
               suppressHydrationWarning
             >
               {formatRelativeTime(thread.updatedAt)}

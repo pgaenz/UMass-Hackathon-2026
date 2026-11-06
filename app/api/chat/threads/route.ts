@@ -36,11 +36,14 @@ export async function POST(request: Request): Promise<Response> {
   if (!me || !other) {
     return Response.json({ error: "That person could not be found." }, { status: 404 });
   }
-  if (!canMessage(me.role, other.role)) {
-    return Response.json({ error: "You cannot message this person." }, { status: 403 });
+  const existing = await getThreadByPair(me.id, other.id);
+  if (!existing && !canMessage(me, other)) {
+    return Response.json(
+      { error: "You cannot start a conversation with this person." },
+      { status: 403 },
+    );
   }
 
-  const existing = await getThreadByPair(me.id, other.id);
   const thread = await getOrCreateThread(me, other);
   return Response.json({ thread }, { status: existing ? 200 : 201 });
 }

@@ -12,11 +12,13 @@ import { Button } from "@/components/ui/button";
 export function MessageButton({
   participantId,
   label = "Message",
+  description,
   variant = "primary",
   size = "md",
 }: {
   participantId: string;
   label?: string;
+  description?: string;
   variant?: "primary" | "brand" | "secondary" | "ghost";
   size?: "md" | "lg";
 }) {
@@ -59,6 +61,9 @@ export function MessageButton({
       <Button variant={variant} size={size} onClick={handleClick} disabled={loading}>
         {loading ? "Opening…" : label}
       </Button>
+      {description ? (
+        <span className="text-sm text-ink/70">{description}</span>
+      ) : null}
       {error ? (
         <span role="alert" className="text-sm font-medium text-coral">
           {error}

@@ -3,8 +3,10 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 
 import { checkSafety, reviewArticle, reviseArticle, writeArticle } from "@/lib/agents";
+import { hashTranscript } from "@/lib/river-story-state";
 import { authorize } from "@/lib/session";
-import { appendFeedback, getStory, updateStory } from "@/lib/store";
+import { requireOwnedStory } from "@/lib/story-access";
+import { appendFeedback, updateStory } from "@/lib/store";
 import { transcribe } from "@/lib/transcribe";
 import type { FeedbackEntry, Story } from "@/lib/types";
 
@@ -35,13 +37,9 @@ async function runPipeline(
   audio: AudioFeedback | null,
   ownerId: string,
 ): Promise<Response> {
-  const story = await getStory(id);
-  if (!story) {
-    return fail(404, "Unknown story");
-  }
-  if (story.authorId && story.authorId !== ownerId) {
-    return fail(403, "This story belongs to another River.");
-  }
+  const owned = await requireOwnedStory(id, ownerId);
+  if ("response" in owned) return owned.response;
+  const story = owned.story;
   if (!story.transcript.trim()) {
     return fail(400, "This answer has no transcript to write from");
   }
@@ -110,6 +108,7 @@ async function runPipeline(
     await appendFeedback(id, feedbackEntry);
   }
 
+  const now = new Date().toISOString();
   const updated = await updateStory(id, {
     article: draft.article,
     metadata: draft.metadata,
@@ -117,6 +116,14 @@ async function runPipeline(
     safety,
     groundingScore: review?.score ?? 0,
     status: review?.verdict === "pass" ? "reviewed" : "draft",
+    // A new article is fresh: reset the River-edit and check bookkeeping.
+    writtenFromHash: hashTranscript(story.transcript),
+    checkedAt: now,
+    checkError: null,
+    riverEdited: false,
+    previousArticle: hasArticle ? story.article : story.previousArticle,
+    publishedAt: null,
+    updatedAt: now,
   });
 
   return Response.json(

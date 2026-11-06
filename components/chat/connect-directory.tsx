@@ -64,7 +64,7 @@ export function ConnectDirectory({
             </option>
           ))}
         </select>
-        <span className="text-base text-ink/60" role="status">
+        <span className="text-base text-ink/70" role="status">
           {visible.length === 1 ? "1 River" : `${visible.length} Rivers`}
         </span>
       </div>

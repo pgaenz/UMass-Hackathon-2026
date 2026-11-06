@@ -5,9 +5,11 @@ import { Suspense } from "react";
 import { PageBackdrop } from "@/components/page-backdrop";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { SiteNav } from "@/components/site-nav";
 import { TutorialProvider } from "@/components/tutorial/tutorial-provider";
 import { WaterCursor } from "@/components/water-cursor";
 import { getCurrentUser, isVisitor } from "@/lib/session";
+import { getStoriesByAuthor } from "@/lib/store";
 
 import "./globals.css";
 
@@ -35,6 +37,11 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const [user, visitor] = await Promise.all([getCurrentUser(), isVisitor()]);
   const tourTrack = user ? user.role : visitor ? "visitor" : null;
+  const myStoriesCount =
+    user?.role === "river"
+      ? (await getStoriesByAuthor(user.id)).filter((story) => story.status !== "published")
+          .length
+      : 0;  
 
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
@@ -50,10 +57,18 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               Skip to content
             </a>
             <SiteHeader user={user ? { id: user.id, name: user.name, role: user.role } : null} />
-            <main id="main" className="flex flex-1 flex-col">
-              {children}
-            </main>
-            <SiteFooter />
+            <div className="flex w-full flex-1 gap-6">
+              <SiteNav
+                user={user ? { id: user.id, name: user.name, role: user.role } : null}
+                myStoriesCount={myStoriesCount}
+              />
+              <div className="flex min-w-0 flex-1 flex-col">
+                <main id="main" className="flex flex-1 flex-col">
+                  {children}
+                </main>
+                <SiteFooter />
+              </div>
+            </div>
           </TutorialProvider>
         </Suspense>
       </body>

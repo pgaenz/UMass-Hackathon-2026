@@ -5,6 +5,16 @@ import { MAX_AGE, MIN_AGE } from "./age";
 import { mutateJson, readJson } from "./json-file";
 import type { AgeBand, PublicUser, Role, User } from "./types";
 
+export { publicDisplayName } from "./format";
+
+/** D2: a Drop under 18 is shown by name but never linked to their profile. */
+export function canLinkPublicProfile(person: {
+  role?: Role;
+  ageBand?: AgeBand;
+}): boolean {
+  return !(person.role === "drop" && person.ageBand === "13-17");
+}
+
 export { MAX_AGE, MIN_AGE } from "./age";
 
 interface UsersData {

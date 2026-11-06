@@ -17,7 +17,7 @@
  * The `data/` files touched by the run are snapshotted before the first request
  * and restored afterwards, so repeated runs stay reproducible.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -32,7 +32,26 @@ const SNAPSHOT_FILES = [
   "chat.json",
   "question-votes.json",
   "questions.json",
+  "conversations.json",
 ];
+const UPLOAD_DIR = path.join(DATA_DIR, "uploads");
+
+/** Upload files that existed before the run, so any new ones can be cleaned up. */
+function listUploads() {
+  if (!existsSync(UPLOAD_DIR)) return [];
+  return readdirSync(UPLOAD_DIR);
+}
+
+function removeNewUploads(before) {
+  for (const name of listUploads()) {
+    if (before.includes(name)) continue;
+    try {
+      unlinkSync(path.join(UPLOAD_DIR, name));
+    } catch {
+      // Best effort: a missing file is not a test failure.
+    }
+  }
+}
 
 const startedAt = new Date().toISOString();
 const results = [];
@@ -195,14 +214,14 @@ async function ageCases() {
   const valid = await req(jar, "POST", "/api/auth/login", {
     role: "drop",
     name: "Alice Johnson",
-    age: 13,
+    age: 16,
   });
   const user = valid.json?.user;
   const leaksAge = user ? "age" in user : true;
   const ok = valid.status === 201 && user?.ageBand === "13-17" && !leaksAge;
   expectCase({
     id: "E2E-AGE-07",
-    name: "POST /api/auth/login accepts age 13 and returns only the age band",
+    name: "POST /api/auth/login accepts age 16 and returns only the age band",
     expected: "201, ageBand 13-17, no `age` field",
     actual: `${valid.status}, ageBand=${user?.ageBand ?? "—"}${leaksAge ? ", LEAKED age" : ""}`,
     ok,
@@ -547,6 +566,334 @@ async function likesAndChatCases() {
 }
 
 // ---------------------------------------------------------------------------
+// E2E-E: River ownership, save-only intake, transcript-only edit, cascade
+// ---------------------------------------------------------------------------
+
+async function riverExperienceCases() {
+  const stories = readData("stories.json").stories;
+  const target = stories.find((story) => story.authorId && story.article?.trim());
+  if (!target) {
+    skipCase({
+      id: "E2E-RIV-01",
+      name: "River story routes require a session",
+      expected: "401",
+      detail: "no authored story found in seed data",
+    });
+    return;
+  }
+  const storyId = target.id;
+
+  // 1. Every new mutating route refuses an anonymous caller.
+  const anon = makeJar();
+  const routes = [
+    { id: "E2E-RIV-01", method: "PATCH", route: `/api/stories/${storyId}`, body: { transcript: "x" } },
+    { id: "E2E-RIV-02", method: "DELETE", route: `/api/stories/${storyId}` },
+    { id: "E2E-RIV-03", method: "POST", route: `/api/stories/${storyId}/check` },
+    { id: "E2E-RIV-04", method: "POST", route: `/api/stories/${storyId}/unpublish` },
+    { id: "E2E-RIV-05", method: "POST", route: `/api/stories/${storyId}/restore` },
+  ];
+  for (const item of routes) {
+    const res = await req(anon, item.method, item.route, item.body);
+    expectCase({
+      id: item.id,
+      name: `${item.method} ${item.route} requires a session`,
+      expected: "401",
+      actual: String(res.status),
+      ok: res.status === 401,
+      latencyMs: res.ms,
+    });
+  }
+
+  // 2. A different River is refused with 403.
+  const otherRiver = readData("users.json").users.find(
+    (user) => user.role === "river" && user.id !== target.authorId,
+  );
+  if (otherRiver) {
+    const other = makeJar();
+    await signIn(other, otherRiver.id);
+    const res = await req(other, "PATCH", `/api/stories/${storyId}`, { transcript: "x" });
+    expectCase({
+      id: "E2E-RIV-06",
+      name: "another River cannot edit this story",
+      expected: "403",
+      actual: `${res.status} ${res.json?.error ?? ""}`.trim(),
+      ok: res.status === 403,
+      latencyMs: res.ms,
+    });
+  } else {
+    skipCase({ id: "E2E-RIV-06", name: "another River cannot edit this story", expected: "403", detail: "only one river" });
+  }
+
+  // 3. A legacy story with no author cannot be published by any River.
+  const legacy = stories.find((story) => story.authorId === null && story.article?.trim());
+  if (legacy) {
+    const jar = makeJar();
+    await signIn(jar, target.authorId);
+    const res = await req(jar, "POST", "/api/approve", { id: legacy.id, override: true });
+    expectCase({
+      id: "E2E-RIV-07",
+      name: "a null-author story is not publishable by a River",
+      expected: "403",
+      actual: String(res.status),
+      ok: res.status === 403,
+      latencyMs: res.ms,
+    });
+  } else {
+    skipCase({ id: "E2E-RIV-07", name: "a null-author story is not publishable by a River", expected: "403", detail: "no null-author story" });
+  }
+
+  const owner = makeJar();
+  await signIn(owner, target.authorId);
+
+  // 4. Saving an answer only creates a story with an empty article.
+  const intake = await req(owner, "POST", "/api/intake", {
+    inputType: "text",
+    prompt: "E2E river fixture",
+    text: "EVAL-RIVEMARKER a saved answer with no story yet.",
+  });
+  const newId = intake.json?.story?.id;
+  expectCase({
+    id: "E2E-RIV-08",
+    name: "saving an answer makes a story with an empty article",
+    expected: "201, article empty",
+    actual: `${intake.status}, article=${JSON.stringify(intake.json?.story?.article ?? null)}`,
+    ok: intake.status === 201 && intake.json?.story?.article === "",
+    latencyMs: intake.ms,
+  });
+
+  if (newId) {
+    // 5. A transcript-only PATCH never touches the article.
+    const before = readData("stories.json").stories.find((story) => story.id === newId);
+    const patch = await req(owner, "PATCH", `/api/stories/${newId}`, {
+      transcript: "EVAL-RIVEMARKER corrected answer.",
+      expectedUpdatedAt: before?.updatedAt,
+    });
+    expectCase({
+      id: "E2E-RIV-09",
+      name: "a transcript-only edit leaves the article unchanged",
+      expected: "200, article still empty",
+      actual: `${patch.status}, article=${JSON.stringify(patch.json?.story?.article ?? null)}`,
+      ok: patch.status === 200 && patch.json?.story?.article === "",
+      latencyMs: patch.ms,
+    });
+  }
+
+  // 6. Unpublish returns the story to reviewed or draft.
+  const published = stories.find((story) => story.status === "published" && story.authorId);
+  if (published) {
+    const jar = makeJar();
+    await signIn(jar, published.authorId);
+    const res = await req(jar, "POST", `/api/stories/${published.id}/unpublish`);
+    const status = res.json?.story?.status;
+    expectCase({
+      id: "E2E-RIV-10",
+      name: "unpublish takes a story off Read stories",
+      expected: "200, status reviewed or draft",
+      actual: `${res.status}, status ${status ?? "—"}`,
+      ok: res.status === 200 && (status === "reviewed" || status === "draft"),
+      latencyMs: res.ms,
+    });
+  }
+
+  // 7. Delete removes likes and question links.
+  const likes = readData("likes.json").likes;
+  const liked = stories.find(
+    (story) =>
+      story.authorId && likes.some((like) => like.storyId === story.id),
+  );
+  if (liked) {
+    const jar = makeJar();
+    await signIn(jar, liked.authorId);
+    const res = await req(jar, "DELETE", `/api/stories/${liked.id}`);
+    const likesAfter = readData("likes.json").likes.filter((like) => like.storyId === liked.id);
+    const linksAfter = readData("questions.json").questions.filter((question) =>
+      question.storyIds.includes(liked.id),
+    );
+    expectCase({
+      id: "E2E-RIV-11",
+      name: "delete removes the story, its likes, and its question links",
+      expected: "200, 0 likes, 0 question links",
+      actual: `${res.status}, ${likesAfter.length} likes, ${linksAfter.length} links`,
+      ok: res.status === 200 && likesAfter.length === 0 && linksAfter.length === 0,
+      latencyMs: res.ms,
+    });
+  } else {
+    skipCase({ id: "E2E-RIV-11", name: "delete removes likes and question links", expected: "200, 0, 0", detail: "no liked story" });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// E2E-F: Drop experience — question ownership and the messaging age rule
+// ---------------------------------------------------------------------------
+
+async function dropExperienceCases() {
+  const questions = readData("questions.json").questions;
+  const users = readData("users.json").users;
+  const stories = readData("stories.json").stories;
+  const hasLinkedStory = (questionId) =>
+    stories.some((story) => story.questionId === questionId);
+  const owned = questions.find(
+    (question) =>
+      question.askedBy &&
+      users.find((user) => user.id === question.askedBy)?.role === "drop" &&
+      question.storyIds.length === 0 &&
+      !hasLinkedStory(question.id),
+  );
+  const linked = questions.find(
+    (question) =>
+      question.askedBy &&
+      users.find((user) => user.id === question.askedBy)?.role === "drop" &&
+      question.storyIds.length > 0,
+  );
+
+  if (owned) {
+    const anon = makeJar();
+    const anonPatch = await req(anon, "PATCH", `/api/questions/${owned.id}`, {
+      text: "A question edited without signing in.",
+    });
+    const anonDelete = await req(anon, "DELETE", `/api/questions/${owned.id}`);
+    expectCase({
+      id: "E2E-DROP-01",
+      name: "question edit and withdraw require a session",
+      expected: "401 and 401",
+      actual: `${anonPatch.status} and ${anonDelete.status}`,
+      ok: anonPatch.status === 401 && anonDelete.status === 401,
+    });
+
+    const otherDrop = users.find(
+      (user) => user.role === "drop" && user.id !== owned.askedBy,
+    );
+    if (otherDrop) {
+      const other = makeJar();
+      await signIn(other, otherDrop.id);
+      const res = await req(other, "PATCH", `/api/questions/${owned.id}`, {
+        topicIds: [],
+      });
+      expectCase({
+        id: "E2E-DROP-02",
+        name: "another Drop cannot edit this question",
+        expected: "403",
+        actual: String(res.status),
+        ok: res.status === 403,
+      });
+    }
+
+    const signedIn = makeJar();
+    await signIn(signedIn, owned.askedBy);
+    const unknown = await req(signedIn, "PATCH", "/api/questions/q-does-not-exist", {
+      topicIds: [],
+    });
+    expectCase({
+      id: "E2E-DROP-03",
+      name: "an unknown question returns 404",
+      expected: "404",
+      actual: String(unknown.status),
+      ok: unknown.status === 404,
+    });
+
+    const owner = makeJar();
+    await signIn(owner, owned.askedBy);
+    const votesBefore = readData("question-votes.json").votes.filter(
+      (vote) => vote.questionId === owned.id,
+    ).length;
+    const deleted = await req(owner, "DELETE", `/api/questions/${owned.id}`);
+    const votesAfter = readData("question-votes.json").votes.filter(
+      (vote) => vote.questionId === owned.id,
+    ).length;
+    const stillListed = readData("questions.json").questions.some(
+      (question) => question.id === owned.id,
+    );
+    expectCase({
+      id: "E2E-DROP-04",
+      name: "withdraw removes the question and its votes",
+      expected: `200, ${votesBefore} -> 0, not listed`,
+      actual: `${deleted.status}, ${votesBefore} -> ${votesAfter}, ${stillListed ? "listed" : "gone"}`,
+      ok: deleted.status === 200 && votesAfter === 0 && !stillListed,
+    });
+  } else {
+    skipCase({ id: "E2E-DROP-01..04", name: "Drop question mutation cases", expected: "200/401/403/404", detail: "no unlinked Drop question" });
+  }
+
+  if (linked) {
+    const owner = makeJar();
+    await signIn(owner, linked.askedBy);
+    const patch = await req(owner, "PATCH", `/api/questions/${linked.id}`, {
+      topicIds: [],
+    });
+    const del = await req(owner, "DELETE", `/api/questions/${linked.id}`);
+    expectCase({
+      id: "E2E-DROP-05",
+      name: "edit and withdraw are refused once a story is linked",
+      expected: "409 and 409",
+      actual: `${patch.status} and ${del.status}`,
+      ok: patch.status === 409 && del.status === 409,
+    });
+  }
+
+  const similar = await req(makeJar(), "GET", "/api/questions/similar?text=What%20was%20your%20first%20job%3F");
+  const leaked = Array.isArray(similar.json?.questions)
+    ? similar.json.questions.some((question) => "askedBy" in question)
+    : true;
+  expectCase({
+    id: "E2E-DROP-06",
+    name: "similar questions never include askedBy",
+    expected: "200, no askedBy",
+    actual: `${similar.status}, ${leaked ? "leaked" : "clean"}`,
+    ok: similar.status === 200 && !leaked,
+  });
+
+  const river = users.find((user) => user.role === "river");
+  const minor = users.find((user) => user.role === "drop" && user.age < 18);
+  const adultDrop = users.find((user) => user.role === "drop" && user.age >= 18);
+  if (river && minor) {
+    const jar = makeJar();
+    await signIn(jar, river.id);
+    const res = await req(jar, "POST", "/api/chat/threads", {
+      participantId: minor.id,
+    });
+    expectCase({
+      id: "E2E-DROP-07",
+      name: "a River cannot start a thread with a Drop under 18",
+      expected: "403 with a generic message",
+      actual: `${res.status} ${res.json?.error ?? ""}`.trim(),
+      ok:
+        res.status === 403 &&
+        res.json?.error === "You cannot start a conversation with this person.",
+    });
+  }
+
+  if (river && adultDrop) {
+    const jar = makeJar();
+    await signIn(jar, river.id);
+    const res = await req(jar, "POST", "/api/chat/threads", {
+      participantId: adultDrop.id,
+    });
+    expectCase({
+      id: "E2E-DROP-08",
+      name: "a River can still start a thread with an adult Drop",
+      expected: "200 or 201",
+      actual: String(res.status),
+      ok: res.status === 200 || res.status === 201,
+    });
+  }
+
+  if (river && minor) {
+    const jar = makeJar();
+    await signIn(jar, minor.id);
+    const res = await req(jar, "POST", "/api/chat/threads", {
+      participantId: river.id,
+    });
+    expectCase({
+      id: "E2E-DROP-09",
+      name: "a Drop under 18 can still message a River",
+      expected: "200 or 201",
+      actual: String(res.status),
+      ok: res.status === 200 || res.status === 201,
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Reports
 // ---------------------------------------------------------------------------
 
@@ -618,13 +965,17 @@ async function main() {
   }
 
   const snapshot = takeSnapshot();
+  const uploadsBefore = listUploads();
   try {
     await ageCases();
     await gateCases();
     await pipelineCases();
     await likesAndChatCases();
+    await riverExperienceCases();
+    await dropExperienceCases();
   } finally {
     restoreSnapshot(snapshot);
+    removeNewUploads(uploadsBefore);
   }
 
   writeReports();

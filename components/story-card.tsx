@@ -4,7 +4,8 @@ import { CopyButton } from "@/components/copy-button";
 import { LikeButton } from "@/components/like-button";
 import { ListenButton } from "@/components/listen-button";
 import { Badge } from "@/components/ui/badge";
-import { formatDate, getArticleTitle, truncate } from "@/lib/format";
+import { formatDate, getArticleTitle, publicDisplayName, truncate } from "@/lib/format";
+import { canLinkPublicProfile } from "@/lib/users";
 import type { AuthorRef, Story, StoryLikeState } from "@/lib/types";
 
 export function StoryCard({
@@ -35,7 +36,7 @@ export function StoryCard({
         ) : null}
         {question ? (
           <p className="text-base text-ink/70">
-            <span className="font-medium text-ink/60">From the question: </span>
+            <span className="font-medium text-ink/70">From the question: </span>
             <Link
               href={`/questions/${question.id}`}
               className="font-medium text-brand underline-offset-4 hover:underline"
@@ -48,9 +49,13 @@ export function StoryCard({
           {story.metadata.topic ? <Badge>{story.metadata.topic}</Badge> : null}
           <time dateTime={story.createdAt}>{formatDate(story.createdAt)}</time>
           {author ? (
-            <Link href={`/profile/${author.id}`} className="font-medium text-brand hover:underline">
-              by {author.name}
-            </Link>
+            canLinkPublicProfile(author) ? (
+              <Link href={`/profile/${author.id}`} className="font-medium text-brand hover:underline">
+                by {publicDisplayName(author)}
+              </Link>
+            ) : (
+              <span className="font-medium">by {publicDisplayName(author)}</span>
+            )
           ) : (
             <span>HistorAI community</span>
           )}

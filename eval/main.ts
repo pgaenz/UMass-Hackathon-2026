@@ -15,7 +15,15 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { scanMessage } from "../lib/chat-patterns";
-import type { ReviewIssue, SafetyIssue, User } from "../lib/types";
+import { canMessage } from "../lib/chat";
+import { deriveDropQuestionState } from "../lib/drop-question-state";
+import { publicDisplayName } from "../lib/format";
+import { validateQuestionText, validateQuestionTopics } from "../lib/question-rules";
+import { findSimilarQuestions } from "../lib/similar-questions";
+import { isInsideUploads } from "../lib/delete-story";
+import { getArticleTitle } from "../lib/format";
+import { deriveRiverState, hashTranscript } from "../lib/river-story-state";
+import type { Question, ReviewIssue, ReviewResult, SafetyIssue, SafetyResult, Story, User } from "../lib/types";
 import { MAX_AGE, MIN_AGE, ageBand, isValidAge, toPublicUser } from "../lib/users";
 import { deriveReviewVerdict, deriveSafetyVerdict } from "../lib/verdicts";
 
@@ -281,6 +289,342 @@ function runChatPatternCases(): void {
           : undefined,
     });
   }
+}
+
+// ---------------------------------------------------------------------------
+// Offline suite 4 — River story state and helpers (lib/river-story-state.ts)
+// ---------------------------------------------------------------------------
+
+const ISO = "2024-01-01T00:00:00.000Z";
+
+function baseStory(overrides: Partial<Story> = {}): Story {
+  return {
+    id: "s-test",
+    prompt: "",
+    questionId: null,
+    authorId: "u-1",
+    inputType: "text",
+    rawAudioPath: null,
+    transcript: "hello",
+    conversationContext: null,
+    metadata: { topic: "", summary: "" },
+    article: "# Title\n\nBody",
+    review: null,
+    safety: null,
+    feedback: [],
+    groundingScore: 0,
+    piiDetected: false,
+    status: "draft",
+    conversationId: null,
+    createdAt: ISO,
+    updatedAt: ISO,
+    publishedAt: null,
+    riverEdited: false,
+    checkedAt: ISO,
+    checkError: null,
+    writtenFromHash: null,
+    previousArticle: null,
+    ...overrides,
+  };
+}
+
+const PASS_REVIEW: ReviewResult = {
+  score: 5,
+  verdict: "pass",
+  summary: "ok",
+  issues: [],
+  createdAt: ISO,
+};
+const ALLOW_SAFETY: SafetyResult = {
+  verdict: "allow",
+  issues: [],
+  summary: "ok",
+  createdAt: ISO,
+};
+
+function runRiverExperienceCases(): void {
+  const cases: Array<{ id: string; name: string; story: Story; expected: string }> = [
+    {
+      id: "RIV-01",
+      name: "published story",
+      story: baseStory({ status: "published" }),
+      expected: "published",
+    },
+    {
+      id: "RIV-02",
+      name: "saved answer without an article",
+      story: baseStory({ article: "" }),
+      expected: "answer_saved",
+    },
+    {
+      id: "RIV-03",
+      name: "hard safety block",
+      story: baseStory({ safety: { ...ALLOW_SAFETY, verdict: "block" } }),
+      expected: "blocked",
+    },
+    {
+      id: "RIV-04",
+      name: "checks pending",
+      story: baseStory({ checkedAt: null }),
+      expected: "needs_check",
+    },
+    {
+      id: "RIV-05",
+      name: "review needs changes",
+      story: baseStory({
+        safety: ALLOW_SAFETY,
+        review: { ...PASS_REVIEW, verdict: "revise" },
+      }),
+      expected: "needs_changes",
+    },
+    {
+      id: "RIV-06",
+      name: "reviewed and passing",
+      story: baseStory({ status: "reviewed", safety: ALLOW_SAFETY, review: PASS_REVIEW }),
+      expected: "ready",
+    },
+    {
+      id: "RIV-07",
+      name: "answer changed after writing",
+      story: baseStory({
+        transcript: "a corrected answer",
+        writtenFromHash: hashTranscript("the original answer"),
+        safety: ALLOW_SAFETY,
+        review: PASS_REVIEW,
+        status: "reviewed",
+      }),
+      expected: "needs_check",
+    },
+    {
+      id: "RIV-08",
+      name: "legacy record has no stored hash",
+      story: baseStory({ writtenFromHash: null, safety: ALLOW_SAFETY, review: PASS_REVIEW, status: "reviewed" }),
+      expected: "ready",
+    },
+  ];
+
+  for (const testCase of cases) {
+    const state = deriveRiverState(testCase.story);
+    expectCase({
+      id: testCase.id,
+      suite: "river-experience",
+      name: testCase.name,
+      expected: testCase.expected,
+      actual: state.id,
+      ok: state.id === testCase.expected,
+    });
+  }
+
+  // The changed-answer modifier is exposed independently of the state.
+  const changed = deriveRiverState(
+    baseStory({ transcript: "new", writtenFromHash: hashTranscript("old") }),
+  );
+  expectCase({
+    id: "RIV-09",
+    suite: "river-experience",
+    name: "changed-answer modifier flag",
+    expected: "true",
+    actual: String(changed.answerChangedSinceWriting),
+    ok: changed.answerChangedSinceWriting === true,
+  });
+
+  // Article title composition round-trips through getArticleTitle.
+  const composed = `# My First Job\n\nI was sixteen.`;
+  const title = getArticleTitle(composed);
+  expectCase({
+    id: "RIV-10",
+    suite: "river-experience",
+    name: "article title composition round-trip",
+    expected: "My First Job",
+    actual: title,
+    ok: title === "My First Job",
+  });
+
+  // Upload cascade only deletes inside data/uploads/.
+  const traversalCases: Array<{ id: string; path: string; expected: boolean }> = [
+    { id: "RIV-11", path: "data/uploads/answer.webm", expected: true },
+    { id: "RIV-12", path: "data/uploads/../../etc/passwd", expected: false },
+    { id: "RIV-13", path: "data/uploads/../secrets.json", expected: false },
+    { id: "RIV-14", path: "/etc/passwd", expected: false },
+  ];
+  for (const testCase of traversalCases) {
+    const actual = isInsideUploads(testCase.path);
+    expectCase({
+      id: testCase.id,
+      suite: "river-experience",
+      name: `upload path guard: ${testCase.path}`,
+      expected: String(testCase.expected),
+      actual: String(actual),
+      ok: actual === testCase.expected,
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Offline suite 5 — Drop experience rules (plan/drop-experience.md)
+// ---------------------------------------------------------------------------
+
+function runDropExperienceCases(): void {
+  const textCases: Array<{ id: string; text: string; expected: boolean }> = [
+    { id: "DROP-Q01", text: "abcdefg", expected: false },
+    { id: "DROP-Q02", text: "abcdefgh", expected: true },
+    { id: "DROP-Q03", text: "a".repeat(300), expected: true },
+    { id: "DROP-Q04", text: "a".repeat(301), expected: false },
+  ];
+  for (const testCase of textCases) {
+    const result = validateQuestionText(testCase.text);
+    expectCase({
+      id: testCase.id,
+      suite: "drop-experience",
+      name: `question text length ${testCase.text.length}`,
+      expected: testCase.expected ? "accepted" : "rejected",
+      actual: result.ok ? "accepted" : "rejected",
+      ok: result.ok === testCase.expected,
+    });
+  }
+
+  const knownTopics = ["job", "family"];
+  const topicCases: Array<{ id: string; topics: unknown; expected: boolean }> = [
+    { id: "DROP-T01", topics: ["job"], expected: true },
+    { id: "DROP-T02", topics: ["unknown"], expected: false },
+    { id: "DROP-T03", topics: ["job", "family", "a", "b", "c", "d"], expected: false },
+  ];
+  for (const testCase of topicCases) {
+    const result = validateQuestionTopics(testCase.topics, knownTopics);
+    expectCase({
+      id: testCase.id,
+      suite: "drop-experience",
+      name: `question topics ${JSON.stringify(testCase.topics)}`,
+      expected: testCase.expected ? "accepted" : "rejected",
+      actual: result.ok ? "accepted" : "rejected",
+      ok: result.ok === testCase.expected,
+    });
+  }
+
+  const messageCases: Array<{
+    id: string;
+    a: { id: string; role: "river" | "drop"; age: number };
+    b: { id: string; role: "river" | "drop"; age: number };
+    expected: boolean;
+  }> = [
+    { id: "DROP-M01", a: { id: "a", role: "river", age: 60 }, b: { id: "b", role: "drop", age: 16 }, expected: false },
+    { id: "DROP-M02", a: { id: "a", role: "river", age: 60 }, b: { id: "b", role: "drop", age: 18 }, expected: true },
+    { id: "DROP-M03", a: { id: "a", role: "drop", age: 17 }, b: { id: "b", role: "river", age: 60 }, expected: true },
+    { id: "DROP-M04", a: { id: "a", role: "river", age: 60 }, b: { id: "b", role: "river", age: 65 }, expected: true },
+    { id: "DROP-M05", a: { id: "a", role: "drop", age: 20 }, b: { id: "a", role: "drop", age: 20 }, expected: false },
+  ];
+  for (const testCase of messageCases) {
+    const actual = canMessage(testCase.a, testCase.b);
+    expectCase({
+      id: testCase.id,
+      suite: "drop-experience",
+      name: `${testCase.a.role} (${testCase.a.age}) -> ${testCase.b.role} (${testCase.b.age})`,
+      expected: testCase.expected ? "allowed" : "refused",
+      actual: actual ? "allowed" : "refused",
+      ok: actual === testCase.expected,
+    });
+  }
+
+  const nameCases: Array<{ id: string; name: string; expected: string }> = [
+    { id: "DROP-N01", name: "Maya Chen", expected: "Maya C." },
+    { id: "DROP-N02", name: "Maya", expected: "Maya" },
+    { id: "DROP-N03", name: "   ", expected: "" },
+    { id: "DROP-N04", name: "Liam O'Connor", expected: "Liam O." },
+  ];
+  for (const testCase of nameCases) {
+    const actual = publicDisplayName({ name: testCase.name });
+    expectCase({
+      id: testCase.id,
+      suite: "drop-experience",
+      name: `public name ${JSON.stringify(testCase.name)}`,
+      expected: JSON.stringify(testCase.expected),
+      actual: JSON.stringify(actual),
+      ok: actual === testCase.expected,
+    });
+  }
+
+  const question = (overrides: Partial<Question> = {}): Question => ({
+    id: "q-drop-eval",
+    text: "What was your first job?",
+    topicIds: ["job"],
+    askedBy: "u-drop-eval",
+    upvotes: 0,
+    storyIds: [],
+    createdAt: ISO,
+    updatedAt: ISO,
+    editedAt: null,
+    ...overrides,
+  });
+  const stateCases: Array<{
+    id: string;
+    question: Question;
+    stories: Story[];
+    expected: string;
+  }> = [
+    { id: "DROP-S01", question: question(), stories: [], expected: "waiting" },
+    {
+      id: "DROP-S02",
+      question: question({ storyIds: ["s-drop-draft"] }),
+      stories: [baseStory({ id: "s-drop-draft", questionId: "q-drop-eval", status: "draft" })],
+      expected: "in_progress",
+    },
+    {
+      id: "DROP-S03",
+      question: question({ storyIds: ["s-drop-live"] }),
+      stories: [baseStory({ id: "s-drop-live", questionId: "q-drop-eval", status: "published" })],
+      expected: "answered",
+    },
+    {
+      id: "DROP-S04",
+      question: question({ editedAt: ISO }),
+      stories: [],
+      expected: "waiting",
+    },
+  ];
+  for (const testCase of stateCases) {
+    const state = deriveDropQuestionState(testCase.question, testCase.stories);
+    expectCase({
+      id: testCase.id,
+      suite: "drop-experience",
+      name: `question state (${testCase.expected})`,
+      expected: testCase.expected,
+      actual: state.id,
+      ok: state.id === testCase.expected,
+    });
+  }
+  const edited = deriveDropQuestionState(question({ editedAt: ISO }), []);
+  expectCase({
+    id: "DROP-S05",
+    suite: "drop-experience",
+    name: "edited modifier",
+    expected: "true",
+    actual: String(edited.edited),
+    ok: edited.edited === true,
+  });
+
+  const similarPool = [
+    question({ id: "q-a", text: "What was your first job and how did you get it?" }),
+    question({ id: "q-b", text: "How did you choose your career when you were young?" }),
+    question({ id: "q-c", text: "What is your favourite family recipe?" }),
+  ];
+  const shortMatches = findSimilarQuestions("first job", similarPool);
+  expectCase({
+    id: "DROP-SIM01",
+    suite: "drop-experience",
+    name: "similar questions need 15 characters",
+    expected: "0",
+    actual: String(shortMatches.length),
+    ok: shortMatches.length === 0,
+  });
+  const matches = findSimilarQuestions("How did you get your first job?", similarPool);
+  expectCase({
+    id: "DROP-SIM02",
+    suite: "drop-experience",
+    name: "keyword overlap ranks the first-job question first",
+    expected: "q-a",
+    actual: matches[0]?.question.id ?? "none",
+    ok: matches[0]?.question.id === "q-a",
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -705,6 +1049,8 @@ async function main(): Promise<void> {
   runVerdictCases();
   runAgeCases();
   runChatPatternCases();
+  runRiverExperienceCases();
+  runDropExperienceCases();
 
   if (includeLive) {
     await runLive();

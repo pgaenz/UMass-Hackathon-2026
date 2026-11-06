@@ -1,12 +1,12 @@
 {
   "suite": "offline",
-  "generatedAt": "2026-10-23T04:22:08.009Z",
-  "startedAt": "2026-10-23T04:22:08.001Z",
+  "generatedAt": "2026-11-06T02:44:11.109Z",
+  "startedAt": "2026-11-06T02:44:11.088Z",
   "summary": {
-    "passed": 61,
+    "passed": 98,
     "failed": 0,
     "skipped": 0,
-    "total": 61
+    "total": 98
   },
   "meta": {
     "Node": "v22.23.3",
@@ -499,6 +499,302 @@
       "name": "Visit www.example.com.",
       "expected": "link",
       "actual": "link",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-01",
+      "suite": "river-experience",
+      "name": "published story",
+      "expected": "published",
+      "actual": "published",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-02",
+      "suite": "river-experience",
+      "name": "saved answer without an article",
+      "expected": "answer_saved",
+      "actual": "answer_saved",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-03",
+      "suite": "river-experience",
+      "name": "hard safety block",
+      "expected": "blocked",
+      "actual": "blocked",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-04",
+      "suite": "river-experience",
+      "name": "checks pending",
+      "expected": "needs_check",
+      "actual": "needs_check",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-05",
+      "suite": "river-experience",
+      "name": "review needs changes",
+      "expected": "needs_changes",
+      "actual": "needs_changes",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-06",
+      "suite": "river-experience",
+      "name": "reviewed and passing",
+      "expected": "ready",
+      "actual": "ready",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-07",
+      "suite": "river-experience",
+      "name": "answer changed after writing",
+      "expected": "needs_check",
+      "actual": "needs_check",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-08",
+      "suite": "river-experience",
+      "name": "legacy record has no stored hash",
+      "expected": "ready",
+      "actual": "ready",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-09",
+      "suite": "river-experience",
+      "name": "changed-answer modifier flag",
+      "expected": "true",
+      "actual": "true",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-10",
+      "suite": "river-experience",
+      "name": "article title composition round-trip",
+      "expected": "My First Job",
+      "actual": "My First Job",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-11",
+      "suite": "river-experience",
+      "name": "upload path guard: data/uploads/answer.webm",
+      "expected": "true",
+      "actual": "true",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-12",
+      "suite": "river-experience",
+      "name": "upload path guard: data/uploads/../../etc/passwd",
+      "expected": "false",
+      "actual": "false",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-13",
+      "suite": "river-experience",
+      "name": "upload path guard: data/uploads/../secrets.json",
+      "expected": "false",
+      "actual": "false",
+      "status": "pass"
+    },
+    {
+      "id": "RIV-14",
+      "suite": "river-experience",
+      "name": "upload path guard: /etc/passwd",
+      "expected": "false",
+      "actual": "false",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-Q01",
+      "suite": "drop-experience",
+      "name": "question text length 7",
+      "expected": "rejected",
+      "actual": "rejected",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-Q02",
+      "suite": "drop-experience",
+      "name": "question text length 8",
+      "expected": "accepted",
+      "actual": "accepted",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-Q03",
+      "suite": "drop-experience",
+      "name": "question text length 300",
+      "expected": "accepted",
+      "actual": "accepted",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-Q04",
+      "suite": "drop-experience",
+      "name": "question text length 301",
+      "expected": "rejected",
+      "actual": "rejected",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-T01",
+      "suite": "drop-experience",
+      "name": "question topics [\"job\"]",
+      "expected": "accepted",
+      "actual": "accepted",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-T02",
+      "suite": "drop-experience",
+      "name": "question topics [\"unknown\"]",
+      "expected": "rejected",
+      "actual": "rejected",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-T03",
+      "suite": "drop-experience",
+      "name": "question topics [\"job\",\"family\",\"a\",\"b\",\"c\",\"d\"]",
+      "expected": "rejected",
+      "actual": "rejected",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-M01",
+      "suite": "drop-experience",
+      "name": "river (60) -> drop (16)",
+      "expected": "refused",
+      "actual": "refused",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-M02",
+      "suite": "drop-experience",
+      "name": "river (60) -> drop (18)",
+      "expected": "allowed",
+      "actual": "allowed",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-M03",
+      "suite": "drop-experience",
+      "name": "drop (17) -> river (60)",
+      "expected": "allowed",
+      "actual": "allowed",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-M04",
+      "suite": "drop-experience",
+      "name": "river (60) -> river (65)",
+      "expected": "allowed",
+      "actual": "allowed",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-M05",
+      "suite": "drop-experience",
+      "name": "drop (20) -> drop (20)",
+      "expected": "refused",
+      "actual": "refused",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-N01",
+      "suite": "drop-experience",
+      "name": "public name \"Maya Chen\"",
+      "expected": "\"Maya C.\"",
+      "actual": "\"Maya C.\"",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-N02",
+      "suite": "drop-experience",
+      "name": "public name \"Maya\"",
+      "expected": "\"Maya\"",
+      "actual": "\"Maya\"",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-N03",
+      "suite": "drop-experience",
+      "name": "public name \"   \"",
+      "expected": "\"\"",
+      "actual": "\"\"",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-N04",
+      "suite": "drop-experience",
+      "name": "public name \"Liam O'Connor\"",
+      "expected": "\"Liam O.\"",
+      "actual": "\"Liam O.\"",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-S01",
+      "suite": "drop-experience",
+      "name": "question state (waiting)",
+      "expected": "waiting",
+      "actual": "waiting",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-S02",
+      "suite": "drop-experience",
+      "name": "question state (in_progress)",
+      "expected": "in_progress",
+      "actual": "in_progress",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-S03",
+      "suite": "drop-experience",
+      "name": "question state (answered)",
+      "expected": "answered",
+      "actual": "answered",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-S04",
+      "suite": "drop-experience",
+      "name": "question state (waiting)",
+      "expected": "waiting",
+      "actual": "waiting",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-S05",
+      "suite": "drop-experience",
+      "name": "edited modifier",
+      "expected": "true",
+      "actual": "true",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-SIM01",
+      "suite": "drop-experience",
+      "name": "similar questions need 15 characters",
+      "expected": "0",
+      "actual": "0",
+      "status": "pass"
+    },
+    {
+      "id": "DROP-SIM02",
+      "suite": "drop-experience",
+      "name": "keyword overlap ranks the first-job question first",
+      "expected": "q-a",
+      "actual": "q-a",
       "status": "pass"
     }
   ]

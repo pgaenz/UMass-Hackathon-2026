@@ -500,7 +500,7 @@ export function TutorialProvider({
               </li>
               <li className="flex gap-3">
                 <span aria-hidden="true">💬</span>
-                <span>See how to read stories, search, and message someone privately.</span>
+                <span>See how to read stories and search for a memory.</span>
               </li>
             </ul>
 
@@ -512,7 +512,7 @@ export function TutorialProvider({
                 Skip for now
               </Button>
             </div>
-            <p className="mt-3 text-base text-ink/60">
+            <p className="mt-3 text-base text-ink/70">
               You can replay the tour later from the Help page.
             </p>
           </div>
@@ -587,7 +587,7 @@ export function TutorialProvider({
                 type="button"
                 onClick={skipTour}
                 aria-label="Skip the tour"
-                className="ripple grid h-9 w-9 place-items-center rounded-lg text-lg font-bold text-ink/60 hover:bg-seaglass/30 hover:text-ink"
+                className="ripple grid h-9 w-9 place-items-center rounded-lg text-lg font-bold text-ink/70 hover:bg-seaglass/30 hover:text-ink"
               >
                 ✕
               </button>
@@ -618,7 +618,7 @@ export function TutorialProvider({
                 <button
                   type="button"
                   onClick={skipTour}
-                  className="rounded-lg px-2 py-1 text-base font-medium text-ink/60 underline-offset-4 hover:text-ink hover:underline"
+                  className="rounded-lg px-2 py-1 text-base font-medium text-ink/70 underline-offset-4 hover:text-ink hover:underline"
                 >
                   Skip
                 </button>

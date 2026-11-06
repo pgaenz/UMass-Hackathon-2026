@@ -9,7 +9,7 @@ type Sort = "popular" | "newest" | "unanswered";
 const SORTS: Array<{ id: Sort; label: string }> = [
   { id: "popular", label: "Most popular" },
   { id: "newest", label: "Newest" },
-  { id: "unanswered", label: "Unanswered" },
+  { id: "unanswered", label: "Needs an answer" },
 ];
 
 export function QuestionFilterBar({
@@ -56,7 +56,17 @@ export function QuestionFilterBar({
       </div>
 
       <div>
-        <h2 className="text-lg font-semibold text-ink">Show</h2>
+        <h2 className="text-lg font-semibold text-ink">Sort by</h2>
+        {sort === "popular" ? (
+          <p className="mt-0.5 text-base text-ink/70">
+            Questions Rivers and others have upvoted most.
+          </p>
+        ) : null}
+        {sort === "unanswered" ? (
+          <p className="mt-0.5 text-base text-ink/70">
+            “Needs an answer” shows questions with no published story yet.
+          </p>
+        ) : null}
         <ul className="mt-2 flex flex-wrap gap-2">
           {SORTS.map((option) => (
             <li key={option.id}>

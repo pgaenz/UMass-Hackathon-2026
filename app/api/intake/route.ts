@@ -63,6 +63,9 @@ async function handleText(request: Request, authorId: string): Promise<Response>
   if (!text) {
     return fail(400, "Missing text input");
   }
+  if (text.length > 20_000) {
+    return fail(400, "Your answer must be 20,000 characters or fewer.");
+  }
 
   const questionId = await resolveQuestionId(body?.questionId);
   if (questionId instanceof Response) {
@@ -113,10 +116,23 @@ async function handleAudio(request: Request, authorId: string): Promise<Response
   const buffer = Buffer.from(await audio.arrayBuffer());
   await fs.writeFile(path.join(UPLOAD_DIR, storedName), buffer);
 
-  const transcript = await transcribe(audio, filename);
+  // If transcription fails, keep the story and the audio so the River can type
+  // the answer instead of losing the recording (plan §7.4).
+  let transcriptionFailed = false;
+  let transcript = "";
+  try {
+    transcript = await transcribe(audio, filename);
+  } catch (err) {
+    transcriptionFailed = true;
+    console.error("[intake] transcription failed:", err);
+  }
+
   const updated = await updateStory(story.id, {
     transcript,
     rawAudioPath: `data/uploads/${storedName}`,
   });
-  return Response.json({ story: updated ?? story }, { status: 201 });
+  return Response.json(
+    { story: updated ?? story, transcriptionFailed },
+    { status: 201 },
+  );
 }

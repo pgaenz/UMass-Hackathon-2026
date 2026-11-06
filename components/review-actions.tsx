@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import { CheckAgainButton } from "@/components/check-again-button";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 
@@ -20,10 +22,16 @@ export function ReviewActions({
   storyId,
   passed,
   safetyBlocked,
+  publishReady,
+  answerChanged,
+  checkedAt,
 }: {
   storyId: string;
   passed: boolean;
   safetyBlocked: boolean;
+  publishReady: boolean;
+  answerChanged: boolean;
+  checkedAt: string | null;
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("text");
@@ -124,7 +132,7 @@ export function ReviewActions({
       }
       setFeedback("");
       resetAudio();
-      setNotice({ kind: "success", message: "We wrote a new version and reviewed it again." });
+      setNotice({ kind: "success", message: "We wrote a new version and checked it again." });
       router.refresh();
     } catch (err) {
       setNotice({
@@ -149,7 +157,10 @@ export function ReviewActions({
       if (!res.ok) {
         throw new Error(data?.error ?? "We could not publish the story.");
       }
-      setNotice({ kind: "success", message: "Your story is published." });
+      setNotice({
+        kind: "success",
+        message: "Your story is published. You can find it on Read stories.",
+      });
       router.refresh();
     } catch (err) {
       setNotice({
@@ -168,10 +179,11 @@ export function ReviewActions({
       <section aria-labelledby="recreate-heading" className="space-y-4 rounded-2xl glass shadow-water p-6 shadow-sm">
         <div className="space-y-1">
           <h2 id="recreate-heading" className="text-2xl font-semibold text-ink">
-            Not quite right?
+            Ask for a change
           </h2>
           <p className="text-lg text-ink/70">
-            Tell us what to change, or just ask us to try again using the editor&apos;s notes.
+            Tell us what does not sound right. We will write a new story from your answer and
+            check it again before you decide.
           </p>
         </div>
 
@@ -236,39 +248,61 @@ export function ReviewActions({
         )}
 
         <Button size="lg" onClick={regenerate} disabled={working}>
-          {busy === "regenerating" ? "Writing a new version…" : "Re-create story"}
+          {busy === "regenerating" ? "Writing a new version…" : "Ask for a change"}
         </Button>
       </section>
 
       <section aria-labelledby="publish-heading" className="space-y-4 rounded-2xl glass shadow-water p-6 shadow-sm">
         <h2 id="publish-heading" className="text-2xl font-semibold text-ink">
-          Happy with it?
+          Publish this story
         </h2>
         {safetyBlocked ? (
           <p className="rounded-xl bg-brand/15 px-4 py-3 text-lg text-ocean">
-            This story contains something that cannot be published. Re-create it without the
-            flagged part, or change your answer. It cannot be published as it is.
+            This story contains something that cannot be published, so there is no publish button.
+            Edit the story to remove the flagged part, or change your answer.
           </p>
+        ) : !publishReady ? (
+          <div className="space-y-3">
+            <p className="rounded-xl bg-sunset/30 px-4 py-3 text-lg text-ink">
+              {answerChanged
+                ? "Your answer changed after this story was written. Write the story again before publishing."
+                : "This story has not been checked yet. Check it again before publishing."}
+            </p>
+            {answerChanged ? null : <CheckAgainButton storyId={storyId} />}
+          </div>
         ) : passed ? (
           <p className="rounded-xl bg-seaglass/40 px-4 py-3 text-lg text-ocean">
-            The editor review passed. Publish it whenever you are ready.
+            The accuracy and clarity check passed. Publishing puts this story on Read stories,
+            where anyone can see it.
           </p>
         ) : (
           <p className="rounded-xl bg-seaglass/25 px-4 py-3 text-lg text-ocean">
-            The editor review found something to fix. You can re-create the story, or publish it
-            anyway — it is your story.
+            The accuracy and clarity check found something to fix. You can ask for a change, or
+            publish anyway — it is your story. Publishing anyway shows it exactly as written
+            above.
           </p>
         )}
-        {safetyBlocked ? null : (
+        {safetyBlocked || !publishReady ? null : (
           <Button
             size="lg"
             variant={passed ? "primary" : "secondary"}
             onClick={publish}
             disabled={working}
           >
-            {busy === "publishing" ? "Publishing…" : passed ? "Publish story" : "Publish anyway"}
+            {busy === "publishing" ? "Publishing…" : passed ? "Publish this story" : "Publish anyway"}
           </Button>
         )}
+        {safetyBlocked ? null : (
+          <p className="text-base text-ink/70">
+            Nothing is published unless you choose it.
+          </p>
+        )}
+        <Link
+          href="/senior/stories"
+          className="inline-block text-base font-semibold text-brand hover:underline"
+        >
+          Back to My stories
+        </Link>
       </section>
 
       {notice ? (

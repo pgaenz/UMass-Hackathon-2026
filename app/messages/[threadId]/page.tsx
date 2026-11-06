@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { BlockButton } from "@/components/chat/block-button";
 import { MessageThread } from "@/components/chat/message-thread";
 import { ReportButton } from "@/components/report-button";
+import { RoleIcon } from "@/components/role-icon";
 import {
   getOtherParticipant,
   getThread,
@@ -54,8 +55,11 @@ export default async function ThreadPage({
 
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="grid h-14 w-14 place-items-center rounded-2xl bg-seaglass/25 text-3xl" aria-hidden="true">
-              {other.role === "river" ? "🌊" : "💧"}
+            <span
+              className="grid h-14 w-14 place-items-center rounded-2xl bg-seaglass/25 text-brand"
+              aria-hidden="true"
+            >
+              <RoleIcon role={other.role} />
             </span>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-ink">{other.name}</h1>

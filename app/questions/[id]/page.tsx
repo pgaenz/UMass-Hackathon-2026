@@ -15,13 +15,15 @@ import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getPublishedStories } from "@/lib/answers";
+import { deriveDropQuestionState } from "@/lib/drop-question-state";
 import { canSendTo } from "@/lib/chat";
-import { firstName, formatDate, toPlainText, truncate } from "@/lib/format";
+import { firstName, formatDate, publicDisplayName, toPlainText, truncate } from "@/lib/format";
 import { getLikeStates } from "@/lib/likes";
 import { getVoteStates } from "@/lib/question-votes";
 import { getQuestion, getTopics } from "@/lib/questions";
 import { getCurrentUser } from "@/lib/session";
-import { getPublicUserMap, getUser, toPublicUser } from "@/lib/users";
+import { getAllStories } from "@/lib/store";
+import { canLinkPublicProfile, getPublicUserMap, getUser, toPublicUser } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
 
@@ -46,10 +48,11 @@ export default async function QuestionDetailPage({
 }) {
   const { id } = await params;
   const { sort: rawSort } = await searchParams;
-  const [question, topics, stories] = await Promise.all([
+  const [question, topics, stories, allStories] = await Promise.all([
     getQuestion(id),
     getTopics(),
     getPublishedStories(),
+    getAllStories(),
   ]);
   if (!question) notFound();
 
@@ -81,6 +84,12 @@ export default async function QuestionDetailPage({
   const labels = question.topicIds
     .map((topicId) => topics.find((topic) => topic.id === topicId)?.label)
     .filter((label): label is string => Boolean(label));
+  const linkedStories = allStories.filter(
+    (story) => story.questionId === question.id || question.storyIds.includes(story.id),
+  );
+  const dropState = deriveDropQuestionState(question, linkedStories);
+  const isAsker = Boolean(user && question.askedBy === user.id);
+  const canChange = linkedStories.length === 0;
 
   return (
     <article className="mx-auto w-full max-w-5xl space-y-10 px-6 py-10">
@@ -114,16 +123,21 @@ export default async function QuestionDetailPage({
               <span aria-hidden="true">·</span>
               <time dateTime={question.createdAt}>{formatDate(question.createdAt)}</time>
               {askerRef ? (
-                <Link href={`/profile/${askerRef.id}`} className="font-medium text-brand hover:underline">
-                  asked by {askerRef.name}
-                </Link>
+                canLinkPublicProfile(askerRef) ? (
+                  <Link href={`/profile/${askerRef.id}`} className="font-medium text-brand hover:underline">
+                    asked by {publicDisplayName(askerRef)}
+                  </Link>
+                ) : (
+                  <span className="font-medium">asked by {publicDisplayName(askerRef)}</span>
+                )
               ) : (
                 <span>Asked by the community</span>
               )}
               {asker && canSendTo(user, asker) ? (
                 <MessageButton
                   participantId={asker.id}
-                  label={`Ask ${firstName(asker.name)} a Question?`}
+                  label={`Send ${firstName(asker.name)} a message`}
+                  description="Private message. Only you two can see it."
                   variant="secondary"
                 />
               ) : null}
@@ -140,6 +154,34 @@ export default async function QuestionDetailPage({
             </div>
           </div>
         </div>
+
+        {isAsker ? (
+          <div className="rounded-2xl border border-brand/30 bg-seaglass/30 p-5">
+            <p className="text-lg font-semibold text-ink">
+              {dropState.id === "answered"
+                ? `Your question has ${answers.length} ${
+                    answers.length === 1 ? "answer" : "answers"
+                  }. Read ${answers.length === 1 ? "it" : "them"} below.`
+                : dropState.id === "in_progress"
+                  ? "A River is writing an answer. There is nothing you need to do."
+                  : "Waiting for a River. Rivers can see your question on Answer a question."}
+            </p>
+            {canChange ? (
+              <div className="mt-3 flex flex-wrap gap-4 text-base font-semibold text-brand">
+                <Link href={`/questions/mine#${question.id}`} className="hover:underline">
+                  Edit question
+                </Link>
+                <Link href={`/questions/mine#${question.id}`} className="hover:underline">
+                  Withdraw question
+                </Link>
+              </div>
+            ) : (
+              <p className="mt-2 text-base text-ink/70">
+                A River has started an answer, so this question can no longer be changed.
+              </p>
+            )}
+          </div>
+        ) : null}
 
         {canAnswer ? (
           <ButtonLink href={`/senior?question=${question.id}`} size="lg">
@@ -173,12 +215,16 @@ export default async function QuestionDetailPage({
                     <ArticleRenderer markdown={answer.article} />
                     <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-seaglass/40 pt-4 text-base text-ink/70">
                       {answerAuthor ? (
-                        <Link
-                          href={`/profile/${answerAuthor.id}`}
-                          className="font-medium text-brand hover:underline"
-                        >
-                          by {answerAuthor.name}
-                        </Link>
+                        canLinkPublicProfile(answerAuthor) ? (
+                          <Link
+                            href={`/profile/${answerAuthor.id}`}
+                            className="font-medium text-brand hover:underline"
+                          >
+                            by {publicDisplayName(answerAuthor)}
+                          </Link>
+                        ) : (
+                          <span className="font-medium">by {publicDisplayName(answerAuthor)}</span>
+                        )
                       ) : (
                         <span>HistorAI community</span>
                       )}
@@ -195,7 +241,8 @@ export default async function QuestionDetailPage({
                       {answerAuthor && canSendTo(user, answerAuthor) ? (
                         <MessageButton
                           participantId={answerAuthor.id}
-                          label={`Ask ${firstName(answerAuthor.name)} a Question?`}
+                          label={`Send ${firstName(answerAuthor.name)} a message`}
+                          description="Private message. Only you two can see it."
                           variant="secondary"
                         />
                       ) : null}

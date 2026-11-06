@@ -24,6 +24,7 @@
 @layer base {
   :root {
     font-size: 18px; /* +2pt baseline for older readers */
+    --header-height: 4.5rem; /* shared header / sticky-rail offset */
   }
 
   html[data-text-size="large"] {
