@@ -53,6 +53,13 @@ export default async function OnboardingPage({
       </div>
 
       <OnboardingForm role={role} topics={topics} />
+
+      <p className="text-center text-lg text-ink/70">
+        Already have an account?{" "}
+        <Link href="/login" className="font-semibold text-brand underline-offset-4 hover:underline">
+          Sign in
+        </Link>
+      </p>
     </div>
   );
 }

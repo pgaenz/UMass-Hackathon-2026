@@ -1,12 +1,12 @@
 {
   "suite": "offline",
-  "generatedAt": "2026-11-06T02:44:11.109Z",
-  "startedAt": "2026-11-06T02:44:11.088Z",
+  "generatedAt": "2026-11-06T19:02:08.061Z",
+  "startedAt": "2026-11-06T19:02:08.032Z",
   "summary": {
-    "passed": 98,
+    "passed": 102,
     "failed": 0,
     "skipped": 0,
-    "total": 98
+    "total": 102
   },
   "meta": {
     "Node": "v22.23.3",
@@ -283,6 +283,38 @@
       "name": "public profile never exposes the exact age",
       "expected": "ageBand 30-44, no `age` field",
       "actual": "ageBand 30-44",
+      "status": "pass"
+    },
+    {
+      "id": "ENV-01",
+      "suite": "env",
+      "name": "development tolerates missing secrets",
+      "expected": "no throw",
+      "actual": "no throw",
+      "status": "pass"
+    },
+    {
+      "id": "ENV-02",
+      "suite": "env",
+      "name": "production fails closed without DATABASE_URL",
+      "expected": "throws",
+      "actual": "threw",
+      "status": "pass"
+    },
+    {
+      "id": "ENV-03",
+      "suite": "env",
+      "name": "production fails closed without SESSION_SECRET",
+      "expected": "throws",
+      "actual": "threw",
+      "status": "pass"
+    },
+    {
+      "id": "ENV-04",
+      "suite": "env",
+      "name": "production boots when both secrets are present",
+      "expected": "no throw",
+      "actual": "no throw",
       "status": "pass"
     },
     {

@@ -1,0 +1,25 @@
+# Local PostgreSQL 16 for development and tests.
+#   Start:  docker compose up -d db
+#   Stop:   docker compose down
+#   Wipe:   docker compose down -v   (also deletes the data volume)
+services:
+  db:
+    image: postgres:16
+    container_name: historai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: historai
+      POSTGRES_PASSWORD: historai
+      POSTGRES_DB: historai
+    ports:
+      - "5432:5432"
+    volumes:
+      - historai-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U historai -d historai"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  historai-postgres-data:

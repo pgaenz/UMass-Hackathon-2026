@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { ExistingAccountPicker } from "@/components/existing-account-picker";
+import { LoginForm } from "@/components/login-form";
 import { RoleIcon } from "@/components/role-icon";
 import { VisitorButton } from "@/components/visitor-button";
 import { getCurrentUser } from "@/lib/session";
-import { listUsers, toPublicUser } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
 
@@ -33,18 +32,19 @@ const ROLES = [
   },
 ] as const;
 
-export default async function LoginPage() {
-  // Check the actual user record, not just the token: a valid cookie can
-  // reference a user that no longer exists after a data reset.
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ reset?: string }>;
+}) {
+  // Check the actual session, not just the cookie: a stale cookie can outlive
+  // its session after a data reset or logout elsewhere.
   const user = await getCurrentUser();
   if (user) redirect("/");
 
-  const users = (await listUsers())
-    .map(toPublicUser)
-    .sort((a, b) => {
-      if (a.role !== b.role) return a.role === "river" ? -1 : 1;
-      return a.name.localeCompare(b.name);
-    });
+  const { reset } = await searchParams;
+  const notice =
+    reset === "1" ? "Your password was reset. Sign in with your new password." : null;
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-10 px-6 py-14">
@@ -59,51 +59,54 @@ export default async function LoginPage() {
         </p>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2" data-tour="role-choice">
-        {ROLES.map((option) => (
-          <Link
-            key={option.role}
-            href={`/onboarding?role=${option.role}`}
-            data-tour={option.role === "river" ? "role-river" : "role-drop"}
-            className={`ripple flex flex-col gap-4 rounded-3xl border-2 bg-white/60 p-7 shadow-water backdrop-blur transition ${option.accent}`}
-          >
-            <span
-              className="grid h-16 w-16 place-items-center rounded-2xl bg-seaglass/25 text-brand"
-              aria-hidden="true"
-            >
-              <RoleIcon role={option.role} />
-            </span>
-            <span className="space-y-1">
-              <span className="block text-sm font-semibold uppercase tracking-wide text-brand">
-                {option.subtitle}
-              </span>
-              <span className="block text-2xl font-bold text-ink">{option.title}</span>
-            </span>
-            <span className="text-lg text-ink/70">{option.description}</span>
-            <span className="mt-auto text-lg font-semibold text-brand">Continue →</span>
-          </Link>
-        ))}
-      </div>
+      <section
+        className="mx-auto w-full max-w-md space-y-4 rounded-3xl border-2 border-seaglass/60 bg-white/60 p-6 text-left shadow-water backdrop-blur"
+        data-tour="sign-in"
+      >
+        <div className="space-y-1">
+          <h2 className="text-2xl font-bold text-ink">Sign in</h2>
+          <p className="text-lg text-ink/70">
+            Use the email and password for your account.
+          </p>
+        </div>
+        <LoginForm notice={notice} />
+      </section>
 
-      {users.length > 0 ? (
-        <section
-          className="space-y-4 rounded-3xl border-2 border-seaglass/60 bg-white/60 p-6 text-left shadow-water backdrop-blur"
-          data-tour="existing-accounts"
-        >
-          <div className="space-y-1">
-            <h2 className="text-2xl font-bold text-ink">Already have a profile?</h2>
-            <p className="text-lg text-ink/70">
-              Demo sign-in — pick a profile to continue. No password needed.
-            </p>
-          </div>
-          <ExistingAccountPicker users={users} />
-        </section>
-      ) : null}
+      <div className="space-y-5">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-ink">New here?</h2>
+          <p className="text-lg text-ink/70">Choose a role to create your account.</p>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2" data-tour="role-choice">
+          {ROLES.map((option) => (
+            <Link
+              key={option.role}
+              href={`/onboarding?role=${option.role}`}
+              data-tour={option.role === "river" ? "role-river" : "role-drop"}
+              className={`ripple flex flex-col gap-4 rounded-3xl border-2 bg-white/60 p-7 shadow-water backdrop-blur transition ${option.accent}`}
+            >
+              <span
+                className="grid h-16 w-16 place-items-center rounded-2xl bg-seaglass/25 text-brand"
+                aria-hidden="true"
+              >
+                <RoleIcon role={option.role} />
+              </span>
+              <span className="space-y-1">
+                <span className="block text-sm font-semibold uppercase tracking-wide text-brand">
+                  {option.subtitle}
+                </span>
+                <span className="block text-2xl font-bold text-ink">{option.title}</span>
+              </span>
+              <span className="text-lg text-ink/70">{option.description}</span>
+              <span className="mt-auto text-lg font-semibold text-brand">Create account →</span>
+            </Link>
+          ))}
+        </div>
+      </div>
 
       <div className="space-y-4 border-t border-seaglass/40 pt-8 text-center">
         <p className="text-base text-ink/70">
-          No password needed for this demo. Visitors can read every story and question,
-          but cannot ask or answer.
+          Visitors can read every story and question, but cannot ask or answer.
         </p>
         <VisitorButton />
       </div>

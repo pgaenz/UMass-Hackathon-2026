@@ -1,6 +1,12 @@
-// Pure, runtime-agnostic session token helpers (safe to import from middleware,
-// which runs on the edge runtime and cannot use node:crypto).
-import type { Role, SessionData } from "./types";
+// Runtime-agnostic session cookie helpers. This module is imported by
+// `middleware.ts`, which runs on the edge runtime, so it must not import
+// `node:crypto` or touch the database.
+//
+// Sessions are opaque 32-byte tokens (D4). The raw token lives only in the
+// httpOnly cookie; the database stores its SHA-256 hash. Middleware can
+// therefore only check that a token of the expected shape is present — the
+// authoritative lookup (row exists, not expired, not revoked, sessionVersion
+// matches) happens in `lib/session.ts` on the Node runtime.
 
 export const SESSION_COOKIE = "historai_session";
 
@@ -8,79 +14,10 @@ export const SESSION_COOKIE = "historai_session";
 // /login. Not signed, not an identity — just "I chose to browse".
 export const VISITOR_COOKIE = "historai_visitor";
 
-// A server secret should be provided via SESSION_SECRET. The fallback keeps
-// local `pnpm dev` working out of the box; production must set the real value.
-const SECRET = process.env.SESSION_SECRET || "historai-dev-secret-change-me";
+// 32 random bytes encoded as base64url: 43 characters, A–Z a–z 0–9 - _.
+const SESSION_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
 
-function toBase64Url(bytes: Uint8Array): string {
-  let binary = "";
-  for (const byte of bytes) {
-    binary += String.fromCharCode(byte);
-  }
-  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-
-function fromBase64Url(value: string): Uint8Array {
-  const padded = value.replace(/-/g, "+").replace(/_/g, "/");
-  const binary = atob(padded);
-  const bytes = new Uint8Array(binary.length);
-  for (let index = 0; index < binary.length; index += 1) {
-    bytes[index] = binary.charCodeAt(index);
-  }
-  return bytes;
-}
-
-async function sign(payload: string): Promise<string> {
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(SECRET),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
-  return toBase64Url(new Uint8Array(signature));
-}
-
-function safeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let index = 0; index < a.length; index += 1) {
-    diff |= a.charCodeAt(index) ^ b.charCodeAt(index);
-  }
-  return diff === 0;
-}
-
-function isRole(value: unknown): value is Role {
-  return value === "river" || value === "drop";
-}
-
-export async function createSessionToken(data: SessionData): Promise<string> {
-  const payload = toBase64Url(new TextEncoder().encode(JSON.stringify(data)));
-  const signature = await sign(payload);
-  return `${payload}.${signature}`;
-}
-
-export async function verifySessionToken(
-  token: string | undefined | null,
-): Promise<SessionData | null> {
-  if (!token) return null;
-  const [payload, signature] = token.split(".");
-  if (!payload || !signature) return null;
-
-  const expected = await sign(payload);
-  if (!safeEqual(signature, expected)) return null;
-
-  try {
-    const parsed = JSON.parse(new TextDecoder().decode(fromBase64Url(payload))) as {
-      userId?: unknown;
-      role?: unknown;
-    };
-    if (typeof parsed.userId === "string" && isRole(parsed.role)) {
-      return { userId: parsed.userId, role: parsed.role };
-    }
-  } catch {
-    // Malformed payload: treat as no session.
-  }
-  return null;
+/** True when the value looks like one of our opaque session tokens. */
+export function isSessionToken(value: string | undefined | null): value is string {
+  return typeof value === "string" && SESSION_TOKEN_PATTERN.test(value);
 }

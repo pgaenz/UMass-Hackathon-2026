@@ -18,6 +18,7 @@ This repository is a **demonstrable MVP**, not the full product.
 
 - **Node.js 20+** (tested on Node 22) — <https://nodejs.org>
 - **npm** (the repo ships a `package-lock.json`; `pnpm`/`yarn` are not required)
+- **Docker** (for the local PostgreSQL database) — <https://www.docker.com/products/docker-desktop/>
 - An **OpenRouter API key** — <https://openrouter.ai/keys>
 
 ### 1. Install dependencies
@@ -59,7 +60,25 @@ OPENROUTER_API_KEY=sk-or-v1-...
 > `.env` and `.env.local` are git-ignored. Never commit real keys.
 > Next.js loads `.env.local` automatically for local development.
 
-### 3. Start the development server
+### 3. Start PostgreSQL
+
+Data lives in PostgreSQL. Start the local database with Docker and apply the migrations:
+
+```bash
+npm run db:up        # docker compose up -d db
+npm run db:migrate   # prisma migrate dev — creates the schema
+```
+
+`npm run db:check` confirms connectivity. To use a hosted database (Neon) instead of Docker, see
+[`docs/deployment.md`](./docs/deployment.md).
+
+To load the committed sample content (users, stories, questions, chat) for local development:
+
+```bash
+npm run db:seed:test # dev/test only; refuses to run in production
+```
+
+### 4. Start the development server
 
 The `npm` command is the same everywhere — only the terminal you use differs. Follow the block
 for your operating system.
@@ -109,10 +128,10 @@ for your operating system.
 
    …or use **Command Prompt** instead, running `npm.cmd run dev`.
 
-### 4. Try the demo loop
+### 5. Try the demo loop
 
 1. On `/login`, choose **I'm a River** (older adult) or **I'm a Drop** (young person).
-2. Complete onboarding (name + age). No password is required.
+2. Complete onboarding (name, age, email, and password).
 3. As a **Drop**, browse questions and ask a new one.
 4. As a **River**, pick a question and answer it by voice or text. You can also use the
    AI interviewer to have a conversation first.
@@ -131,6 +150,9 @@ npm start
 ```
 
 The app then runs on <http://localhost:3000> by default.
+
+For a hosted deployment (Neon + container host, migrations in CI, backups/restore), follow
+[`docs/deployment.md`](./docs/deployment.md).
 
 To use another port, the syntax differs by shell:
 
@@ -158,8 +180,12 @@ required; everything else has a default.
 
 | Variable | Required | Default | Purpose |
 |----------|----------|---------|---------|
+| `DATABASE_URL` | **Yes** | local Docker default | PostgreSQL connection used at runtime (pooled in production). |
+| `DIRECT_URL` | **Yes** | same as `DATABASE_URL` | Direct PostgreSQL connection used by migrations and backups. |
 | `OPENROUTER_API_KEY` | **Yes** | — | Authenticates all AI requests (chat, speech-to-text, audio conversation, podcasts). |
-| `SESSION_SECRET` | Production | dev fallback | Signs the passwordless session cookie. Set a long random string in production. |
+| `SESSION_SECRET` | Production | — | Required in production (fails closed if missing). Session cookies are opaque DB-backed tokens; the secret is reserved for future signing needs. |
+| `SMTP_HOST` / `SMTP_FROM` (+ port/user/password) | Production | — | Send password-reset and verification email. Unset in production makes sending an error; in development links are logged to the console. Any SMTP provider works (Resend recommended). |
+| `SEED_USER_PASSWORD` | Dev/test | `historai-dev-password` | Shared password assigned to the seeded users by `npm run db:seed:test`; the script refuses to run in production. |
 | `BASE_URL` | No | `https://openrouter.ai/api/v1` | OpenRouter API base URL. |
 | `LLM_MODEL` | No | `openai/gpt-4o-mini` | Fallback model for every agent. |
 | `WRITING_MODEL` | No | `LLM_MODEL` | Model used for article generation and revision. |
@@ -202,8 +228,9 @@ Article appears in the youth feed  →  optional podcast episode
 
 ### Implemented features
 
-- **Passwordless roles & profiles** — River/Drop login, onboarding, editable profiles, public
-  profile pages, and a read-only visitor mode.
+- **Email + password accounts** — River/Drop registration and sign-in, onboarding, editable
+  profiles, public profile pages, and a read-only visitor mode. Sessions are server-side,
+  revocable, and support multiple devices.
 - **Questions** — ask on a dedicated page, see up to three similar existing questions while
   typing, browse, filter by topic, sort, and upvote. Drops can follow each question's state
   (waiting, being answered, answered), edit it while no story is linked, and withdraw it
@@ -237,15 +264,15 @@ Article appears in the youth feed  →  optional podcast episode
   offers to say hello through private messaging.
 - **Reporting** — readers can report a published story, and chat participants can report or
   block each other.
-- **File-based storage** — JSON files in `data/`, no database.
+- **PostgreSQL storage** — all domain data lives in PostgreSQL accessed through Prisma; local development uses a Docker Compose database. Audio uploads remain on local disk (`data/uploads/`, see `docs/deployment.md`).
 
 ### Pages
 
 | Route | Description |
 |-------|-------------|
 | `/` | Question explorer (landing page) |
-| `/login` | Role choice, returning-profile picker, or visitor mode |
-| `/onboarding` | Create a profile |
+| `/login` | Email + password sign-in, role choice for new accounts, or visitor mode |
+| `/onboarding` | Create an account and profile |
 | `/search` | Search questions, stories, and people |
 | `/questions` | Browse questions |
 | `/questions/new` | Ask a question (Drops) |
@@ -293,9 +320,14 @@ Article appears in the youth feed  →  optional podcast episode
 | `POST /api/chat/threads/[id]/read` | Mark a thread read |
 | `POST /api/chat/threads/[id]/block` | Block the other participant |
 | `GET /api/chat/unread` | Unread count for the header badge |
-| `POST /api/auth/login` | Create a passwordless profile + session |
-| `POST /api/auth/session` | Demo sign-in to an existing profile (no password) |
-| `POST /api/auth/logout` | Clear the session |
+| `POST /api/auth/register` | Create a User + Credential and start a session |
+| `POST /api/auth/login` | Sign in with email + password |
+| `POST /api/auth/logout` | Revoke the current session and clear the cookie |
+| `POST /api/auth/password/forgot` | Request a password-reset link (same response for unknown emails) |
+| `POST /api/auth/password/reset` | Consume a reset token and set a new password |
+| `POST /api/auth/password` | Change the password for the signed-in user |
+| `POST /api/auth/verify` | Verify an email address with a token |
+| `POST /api/auth/verify/resend` | Resend the verification email |
 | `PATCH /api/auth/profile` | Update the signed-in profile |
 | `POST /api/auth/visitor` | Enter read-only visitor mode |
 | `POST /api/conversation` | Start an AI interview |
@@ -326,8 +358,8 @@ all live in one codebase — no separate backend service.
 | Styling | Tailwind CSS 4 |
 | Voice | Browser `MediaRecorder` API + streaming PCM audio |
 | AI | OpenRouter (chat, Whisper speech-to-text, native audio conversation, podcast host) |
-| Storage | JSON files in `data/` + local `data/uploads/` (no DB) |
-| Auth | Signed, httpOnly cookie session; passwordless role + profile |
+| Storage | PostgreSQL 16 via Prisma (local Docker Compose; Neon in production) |
+| Auth | Argon2id credentials; opaque httpOnly, DB-backed, revocable sessions |
 
 ```text
 app/
@@ -349,10 +381,13 @@ lib/
   *.ts                    # AI clients, prompts, store, session, domain helpers
 prompts/                  # agent prompt files (writing, review, safety, revision,
                           #   conversation, chat safety, podcast)
-data/                     # JSON "database" (see below)
+data/
   uploads/                # raw audio (git-ignored)
+prisma/                   # Prisma schema + committed migrations
+docs/deployment.md        # hosted Postgres, migrations in CI, backups/restore
 docs/                     # API contract
 eval/                     # evaluation harness + committed results (see below)
+  fixtures/               # committed JSON seed content for tests/dev
 public/                   # static assets (logo, hero art)
 middleware.ts             # coarse route guard
 MVP.md                    # the single build plan
@@ -360,13 +395,18 @@ MVP.md                    # the single build plan
 
 ### Notes on storage
 
-- The "database" is a set of JSON files in `data/`: `users.json`, `questions.json`,
-  `stories.json`, `conversations.json`, `chat.json` (private messages), `likes.json`, and
-  `question-votes.json`.
-- Moderation reports are written to `data/reports.json` at runtime (git-ignored).
-- Uploaded audio is written to `data/uploads/` and is git-ignored.
-- Seed users, questions, and stories are committed so the demo works without prior data.
-- Swapping in a real database later means reimplementing `lib/store.ts` and related helpers.
+- **PostgreSQL is the database.** Domain data (users, credentials, sessions, questions, stories,
+  votes, likes, conversations, chat, and reports) lives in PostgreSQL. The application reaches it
+  through Prisma via `lib/db.ts`; see [`prisma/schema.prisma`](./prisma/schema.prisma).
+- **Local development** uses the Docker Compose database: `npm run db:up`, then `npm run db:migrate`.
+- **Sample content** lives as JSON fixtures in `eval/fixtures/` and can be loaded with
+  `npm run db:seed:test` (dev/test only). Production data lives exclusively in PostgreSQL.
+- **Uploaded audio** is still written to `data/uploads/` and is git-ignored (moving it to object
+  storage is a follow-up; see `docs/deployment.md`).
+- **Sessions** are opaque, httpOnly cookies backed by a `Session` row; passwords are Argon2id hashes.
+  Secrets and required environment variables are listed above.
+- **Production** configuration, pooling, migrations, and the backup/restore runbook live in
+  [`docs/deployment.md`](./docs/deployment.md).
 
 ---
 
@@ -377,9 +417,10 @@ agent quality, and the integrated product can be checked separately:
 
 | Layer | Command | Latest result |
 |-------|---------|---------------|
-| Offline (no network) | `npm run eval` | **61/61** — server-derived verdicts, age validation, chat regex patterns |
+| Offline (no network) | `npm run eval` | **102/102** — server-derived verdicts, age validation, chat regex patterns |
+| DB repositories | `npm run eval:db` | **63/63** — Postgres CRUD, cascades, concurrency, token/session rules |
 | Live agents | `npm run eval:live` | **8/8** — writing, independent grounding review, safety, semantic chat screen |
-| End-to-end HTTP | `npm run dev` + `npm run eval:e2e` | **23/23** + 1 tracked known issue — publish gates, feed isolation, likes/match, chat screening |
+| End-to-end HTTP | `npm run dev` + `npm run eval:e2e` | **62 passed**, 1 tracked known issue, 3 skipped — publish gates, auth lifecycle, feed isolation, likes/match, chat screening |
 
 Every run writes `eval/results/{offline,live,e2e}.{json,md}` with the expected and actual
 outcome, status, and latency per case. The known issue is a reproduced limitation, not an
@@ -398,6 +439,6 @@ term "Drop" (see [`eval/README.md`](./eval/README.md)).
 | Audio upload does not work | Allow microphone access in the browser. On some browsers, `localhost` is required for `MediaRecorder`; use `http://localhost:3000`, not a LAN IP. |
 | PowerShell blocks `npm run …` (`npm.ps1 cannot be loaded`) | Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or use Command Prompt / `npm.cmd`. |
 | Windows Defender Firewall prompt on first `npm run dev` | Allow Node.js access on private networks. |
-| Changes to `data/*.json` do not appear | The dev watcher intentionally ignores `data/`; refresh the page. |
-| Fresh clone has no data | Seed data is committed. If `data/users.json` or `data/stories.json` is missing, restore it from git. |
+| Database connection fails | Start Postgres with `npm run db:up`, then `npm run db:check`. For a hosted database, verify `DATABASE_URL`/`DIRECT_URL` in `.env.local`. |
+| Fresh clone has no data | Run `npm run db:migrate`, then optionally `npm run db:seed:test` for sample content (see Quick Start step 3). |
 

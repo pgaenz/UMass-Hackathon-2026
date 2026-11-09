@@ -11,6 +11,9 @@ import type { Role, Topic } from "@/lib/types";
 
 export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }) {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [bio, setBio] = useState("");
@@ -31,6 +34,18 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
     event.preventDefault();
     setError(null);
 
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    if (password.length < 8) {
+      setError("Please use at least 8 characters for your password.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Those passwords do not match.");
+      return;
+    }
     if (!name.trim()) {
       setError("Please enter your name.");
       return;
@@ -43,13 +58,21 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
 
     setSubmitting(true);
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role, name, age: ageNumber, bio, interests }),
+        body: JSON.stringify({
+          role,
+          name,
+          age: ageNumber,
+          bio,
+          interests,
+          email: email.trim(),
+          password,
+        }),
       });
       const data = (await res.json().catch(() => null)) as { error?: string } | null;
-      if (!res.ok) throw new Error(data?.error ?? "We could not create your profile.");
+      if (!res.ok) throw new Error(data?.error ?? "We could not create your account.");
 
       router.push("/");
       router.refresh();
@@ -64,6 +87,62 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
       onSubmit={handleSubmit}
       className="space-y-6 rounded-2xl glass shadow-water p-6 shadow-sm"
     >
+      <div className="space-y-2">
+        <label htmlFor="profile-email" className="text-lg font-semibold text-ink">
+          Email <span className="text-brand">*</span>
+        </label>
+        <input
+          id="profile-email"
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          autoComplete="email"
+          required
+          className="w-full rounded-xl border-2 border-seaglass p-4 text-lg text-ink placeholder:text-ink/75 focus:border-brand"
+          placeholder="you@example.com"
+        />
+        <p className="text-base text-ink/70">
+          We use your email to sign you in. It is never shown on your public profile.
+        </p>
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="profile-password" className="text-lg font-semibold text-ink">
+          Password <span className="text-brand">*</span>
+        </label>
+        <input
+          id="profile-password"
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          autoComplete="new-password"
+          minLength={8}
+          required
+          aria-describedby="profile-password-hint"
+          className="w-full rounded-xl border-2 border-seaglass p-4 text-lg text-ink placeholder:text-ink/75 focus:border-brand"
+          placeholder="At least 8 characters"
+        />
+        <p id="profile-password-hint" className="text-base text-ink/70">
+          Use at least 8 characters. You can change it later.
+        </p>
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="profile-confirm-password" className="text-lg font-semibold text-ink">
+          Confirm password <span className="text-brand">*</span>
+        </label>
+        <input
+          id="profile-confirm-password"
+          type="password"
+          value={confirmPassword}
+          onChange={(event) => setConfirmPassword(event.target.value)}
+          autoComplete="new-password"
+          required
+          className="w-full rounded-xl border-2 border-seaglass p-4 text-lg text-ink placeholder:text-ink/75 focus:border-brand"
+          placeholder="Type it again"
+        />
+      </div>
+
       <div className="space-y-2">
         <label htmlFor="profile-name" className="text-lg font-semibold text-ink">
           Your name <span className="text-brand">*</span>
@@ -164,7 +243,7 @@ export function OnboardingForm({ role, topics }: { role: Role; topics: Topic[] }
       ) : null}
 
       <Button type="submit" size="lg" disabled={submitting}>
-        {submitting ? "Creating your profile…" : "Continue"}
+        {submitting ? "Creating your account…" : "Create account"}
       </Button>
     </form>
   );

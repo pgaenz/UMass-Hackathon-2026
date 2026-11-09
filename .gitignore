@@ -16,9 +16,6 @@ next-env.d.ts
 # raw audio uploads
 /data/uploads/
 
-# runtime moderation queue
-/data/reports.json
-
 # misc
 .DS_Store
 *.pem

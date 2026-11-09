@@ -1,9 +1,9 @@
 # HistorAI evaluation — offline
 
-Generated: 2026-11-06T02:44:11.109Z  
-Started: 2026-11-06T02:44:11.088Z
+Generated: 2026-11-06T19:02:08.061Z  
+Started: 2026-11-06T19:02:08.032Z
 
-**Summary:** 98 passed · 0 failed · 0 skipped · 98 total
+**Summary:** 102 passed · 0 failed · 0 skipped · 102 total
 
 - **Node:** v22.23.3
 - **Network:** none (deterministic logic only)
@@ -44,6 +44,10 @@ Started: 2026-11-06T02:44:11.088Z
 | AGE-17 | age 13.5 (limits 13–120) | rejected | rejected | pass | — |
 | AGE-18 | age NaN (limits 13–120) | rejected | rejected | pass | — |
 | AGE-19 | public profile never exposes the exact age | ageBand 30-44, no `age` field | ageBand 30-44 | pass | — |
+| ENV-01 | development tolerates missing secrets | no throw | no throw | pass | — |
+| ENV-02 | production fails closed without DATABASE_URL | throws | threw | pass | — |
+| ENV-03 | production fails closed without SESSION_SECRET | throws | threw | pass | — |
+| ENV-04 | production boots when both secrets are present | no throw | no throw | pass | — |
 | CHAT-S01 | What was your first job, and how did you get it? | no flags | no flags | pass | — |
 | CHAT-S02 | I loved growing up in Boston. The summers felt endless. | no flags | no flags | pass | — |
 | CHAT-S03 | Your story reminded me of my grandmother's kitchen. | no flags | no flags | pass | — |

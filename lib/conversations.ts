@@ -1,54 +1,18 @@
 import { randomUUID } from "node:crypto";
-import path from "node:path";
 
-import { mutateJson, readJson } from "./json-file";
+import { Prisma } from "@prisma/client";
+
+import { dbConversationToDomain } from "./db-mappers";
+import { prisma } from "./db";
 import type {
   Conversation,
   ConversationStatus,
   ConversationTurn,
 } from "./types";
 
-interface ConversationStoreData {
-  conversations: Conversation[];
-}
-
-const STORE_PATH = path.join(process.cwd(), "data", "conversations.json");
-const EMPTY: ConversationStoreData = { conversations: [] };
-
-function normalizeTurn(turn: ConversationTurn): ConversationTurn {
-  return {
-    ...turn,
-    user: turn.user ?? null,
-    assistant: turn.assistant ?? null,
-  };
-}
-
-function normalizeConversation(conversation: Conversation): Conversation {
-  const turns = Array.isArray(conversation.turns) ? conversation.turns : [];
-  return {
-    ...conversation,
-    questionId: conversation.questionId ?? null,
-    userId: conversation.userId ?? null,
-    status: conversation.status ?? "active",
-    turns: turns
-      .map(normalizeTurn)
-      .sort((a, b) => a.index - b.index)
-      .map((turn, index) => ({ ...turn, index })),
-  };
-}
-
-function normalize(parsed: Partial<ConversationStoreData>): ConversationStoreData {
-  const conversations = Array.isArray(parsed.conversations) ? parsed.conversations : [];
-  return { conversations: conversations.map(normalizeConversation) };
-}
-
-async function readStore(): Promise<ConversationStoreData> {
-  return normalize(await readJson<ConversationStoreData>(STORE_PATH, EMPTY));
-}
-
 export async function getConversation(id: string): Promise<Conversation | null> {
-  const { conversations } = await readStore();
-  return conversations.find((conversation) => conversation.id === id) ?? null;
+  const row = await prisma.conversation.findUnique({ where: { id } });
+  return row ? dbConversationToDomain(row) : null;
 }
 
 export async function createConversation(input: {
@@ -57,11 +21,8 @@ export async function createConversation(input: {
   questionId?: string | null;
   userId?: string | null;
 }): Promise<Conversation> {
-  let created!: Conversation;
-  await mutateJson<ConversationStoreData>(STORE_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    const now = new Date().toISOString();
-    created = {
+  const row = await prisma.conversation.create({
+    data: {
       id: randomUUID(),
       storyId: input.storyId,
       prompt: input.prompt,
@@ -69,28 +30,18 @@ export async function createConversation(input: {
       userId: input.userId ?? null,
       status: "active",
       turns: [],
-      createdAt: now,
-      updatedAt: now,
-    };
-    data.conversations.push(created);
-    return data;
+    },
   });
-  return created;
+  return dbConversationToDomain(row);
 }
 
 /** Removes every conversation for a story and returns the removed records. */
 export async function removeConversationsForStory(storyId: string): Promise<Conversation[]> {
-  let removed: Conversation[] = [];
-  await mutateJson<ConversationStoreData>(STORE_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    removed = data.conversations.filter((conversation) => conversation.storyId === storyId);
-    return {
-      conversations: data.conversations.filter(
-        (conversation) => conversation.storyId !== storyId,
-      ),
-    };
-  });
-  return removed;
+  const rows = await prisma.conversation.findMany({ where: { storyId } });
+  if (rows.length > 0) {
+    await prisma.conversation.deleteMany({ where: { storyId } });
+  }
+  return rows.map(dbConversationToDomain);
 }
 
 export interface AppendTurnInput {
@@ -98,62 +49,47 @@ export interface AppendTurnInput {
   assistant?: ConversationTurn["assistant"];
 }
 
-/** Appends a completed turn under the file lock and assigns its index. */
+/** Appends a completed turn and assigns its index. */
 export async function appendTurn(
   conversationId: string,
   input: AppendTurnInput,
 ): Promise<{ conversation: Conversation; turn: ConversationTurn } | null> {
-  let result: { conversation: Conversation; turn: ConversationTurn } | null = null;
+  return prisma.$transaction(async (tx) => {
+    const row = await tx.conversation.findUnique({ where: { id: conversationId } });
+    if (!row) return null;
 
-  await mutateJson<ConversationStoreData>(STORE_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    const index = data.conversations.findIndex(
-      (conversation) => conversation.id === conversationId,
-    );
-    if (index === -1) {
-      return data;
-    }
-
-    const conversation = data.conversations[index];
+    const turns = (row.turns as unknown as ConversationTurn[]) ?? [];
     const turn: ConversationTurn = {
       id: randomUUID(),
-      index: conversation.turns.length,
+      index: turns.length,
       user: input.user ?? null,
       assistant: input.assistant ?? null,
       createdAt: new Date().toISOString(),
     };
-    const updated: Conversation = {
-      ...conversation,
-      turns: [...conversation.turns, turn],
-      updatedAt: new Date().toISOString(),
-    };
-    data.conversations[index] = updated;
-    result = { conversation: updated, turn };
-    return data;
+    const updated = await tx.conversation.update({
+      where: { id: conversationId },
+      data: { turns: [...turns, turn] as unknown as Prisma.InputJsonValue },
+    });
+    return { conversation: dbConversationToDomain(updated), turn };
   });
-
-  return result;
 }
 
 export async function setConversationStatus(
   id: string,
   status: ConversationStatus,
 ): Promise<Conversation | null> {
-  let updated: Conversation | null = null;
-  await mutateJson<ConversationStoreData>(STORE_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    const index = data.conversations.findIndex((conversation) => conversation.id === id);
-    if (index !== -1) {
-      updated = {
-        ...data.conversations[index],
-        status,
-        updatedAt: new Date().toISOString(),
-      };
-      data.conversations[index] = updated;
+  try {
+    const row = await prisma.conversation.update({
+      where: { id },
+      data: { status },
+    });
+    return dbConversationToDomain(row);
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+      return null;
     }
-    return data;
-  });
-  return updated;
+    throw err;
+  }
 }
 
 /**

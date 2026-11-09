@@ -1,0 +1,68 @@
+# Apply committed Prisma migrations to the hosted PostgreSQL database.
+#
+# This is the *existing database* half of the Phase 7 acceptance: CI proves
+# migrations build a fresh database (`.github/workflows/ci.yml`), and this job
+# applies the same migrations to the long-lived production/staging database.
+#
+# Setup (see docs/deployment.md):
+#   - Repository secret `DATABASE_URL`  -> Neon **pooled** connection string
+#   - Repository secret `DIRECT_URL`    -> Neon **direct** connection string
+#   - A GitHub Environment named `production` with required reviewers, so a
+#     migration needs manual approval before it touches the hosted database.
+#
+# Prisma uses `DIRECT_URL` for migrations; the pooled `DATABASE_URL` is for the
+# running app. Both must be present when Prisma loads the schema.
+name: Migrate database
+
+on:
+  # Manual runs cover the first deploy and any backfill.
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: Type "migrate" to apply migrations to the hosted database
+        required: true
+        type: string
+  # Automatic runs when migration files land on the release branch.
+  push:
+    branches: [main]
+    paths:
+      - "prisma/migrations/**"
+      - "prisma/schema.prisma"
+
+concurrency:
+  group: migrate-production
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: production
+    # A manual run must confirm intent; an automatic push is already gated by
+    # the environment's required reviewers.
+    if: github.event_name != 'workflow_dispatch' || inputs.confirm == 'migrate'
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Show pending migrations
+        run: npx prisma migrate status
+
+      - name: Apply migrations
+        run: npx prisma migrate deploy
+
+      - name: Confirm database is up to date
+        run: npx prisma migrate status
