@@ -244,19 +244,28 @@ export interface PublicUser {
   createdAt: string;
 }
 
-// Signed-cookie session payload.
+// Server-side session identity. The cookie holds only an opaque token; this is
+// resolved from the database on each request.
 export interface SessionData {
   userId: string;
   role: Role;
 }
 
-// POST /api/auth/login — passwordless: choose a role and create a profile.
+// POST /api/auth/login — sign in with an email and password.
 export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+// POST /api/auth/register — create a profile plus credentials.
+export interface RegisterRequest {
   role: Role;
   name: string;
   age: number;
   bio?: string;
   interests?: string[];
+  email: string;
+  password: string;
 }
 
 // PATCH /api/auth/profile — edit the signed-in user's own profile.
@@ -268,7 +277,7 @@ export interface UpdateProfileRequest {
 }
 
 // ---------------------------------------------------------------------------
-// Questions & topics (see data/questions.json)
+// Questions & topics (seed fixtures: eval/fixtures/questions.json)
 // ---------------------------------------------------------------------------
 
 export interface Topic {

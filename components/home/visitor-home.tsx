@@ -32,12 +32,12 @@ export function VisitorHome({ data }: { data: HomeData }) {
 
       <p className="rounded-2xl border border-seaglass/40 bg-seaglass/25 px-5 py-4 text-lg text-ink/80">
         You can read everything without signing in. To ask a question or answer one, create a
-        free profile — it takes a moment and needs no password.{" "}
+        free account — it takes a moment and just needs an email and a password.{" "}
         <Link
           href="/login"
           className="font-semibold text-brand underline-offset-4 hover:underline"
         >
-          Create a profile
+          Create an account
         </Link>
       </p>
 

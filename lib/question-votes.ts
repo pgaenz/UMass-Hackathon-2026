@@ -1,45 +1,16 @@
-import path from "node:path";
-
-import { mutateJson, readJson } from "./json-file";
-import type { QuestionVote, QuestionVoteState } from "./types";
-
-interface VotesData {
-  votes: QuestionVote[];
-}
-
-const VOTES_PATH = path.join(process.cwd(), "data", "question-votes.json");
-const EMPTY: VotesData = { votes: [] };
-
-function normalize(parsed: Partial<VotesData>): VotesData {
-  const votes = Array.isArray(parsed.votes) ? parsed.votes : [];
-  return {
-    votes: votes
-      .filter(
-        (vote): vote is QuestionVote =>
-          Boolean(vote) &&
-          typeof vote.questionId === "string" &&
-          typeof vote.userId === "string",
-      )
-      .map((vote) => ({
-        ...vote,
-        createdAt:
-          typeof vote.createdAt === "string" ? vote.createdAt : new Date(0).toISOString(),
-      })),
-  };
-}
-
-async function readStore(): Promise<VotesData> {
-  return normalize(await readJson<VotesData>(VOTES_PATH, EMPTY));
-}
+import { prisma } from "./db";
+import type { QuestionVoteState } from "./types";
 
 export async function countVotes(questionId: string): Promise<number> {
-  const { votes } = await readStore();
-  return votes.filter((vote) => vote.questionId === questionId).length;
+  return prisma.questionVote.count({ where: { questionId } });
 }
 
 export async function isVoted(questionId: string, userId: string): Promise<boolean> {
-  const { votes } = await readStore();
-  return votes.some((vote) => vote.questionId === questionId && vote.userId === userId);
+  const row = await prisma.questionVote.findUnique({
+    where: { questionId_userId: { questionId, userId } },
+    select: { questionId: true },
+  });
+  return row !== null;
 }
 
 /**
@@ -55,14 +26,14 @@ export async function getVoteStates(
   for (const id of questionIds) {
     states[id] = { voted: false };
   }
-  if (!viewerId) return states;
+  if (!viewerId || questionIds.length === 0) return states;
 
-  const wanted = new Set(questionIds);
-  const { votes } = await readStore();
-  for (const vote of votes) {
-    if (vote.userId === viewerId && wanted.has(vote.questionId)) {
-      states[vote.questionId].voted = true;
-    }
+  const rows = await prisma.questionVote.findMany({
+    where: { userId: viewerId, questionId: { in: questionIds } },
+    select: { questionId: true },
+  });
+  for (const row of rows) {
+    states[row.questionId].voted = true;
   }
   return states;
 }
@@ -80,33 +51,22 @@ export async function setVote(
   userId: string,
   voted: boolean,
 ): Promise<number> {
-  let delta = 0;
-  await mutateJson<VotesData>(VOTES_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    const index = data.votes.findIndex(
-      (vote) => vote.questionId === questionId && vote.userId === userId,
-    );
-    if (voted && index === -1) {
-      data.votes.push({ questionId, userId, createdAt: new Date().toISOString() });
-      delta = 1;
-    } else if (!voted && index !== -1) {
-      data.votes.splice(index, 1);
-      delta = -1;
-    }
-    return data;
-  });
-  return delta;
+  if (voted) {
+    // `createMany` uses INSERT ... ON CONFLICT DO NOTHING, so concurrent
+    // requests cannot race into a duplicate-key error.
+    const result = await prisma.questionVote.createMany({
+      data: [{ questionId, userId }],
+      skipDuplicates: true,
+    });
+    return result.count > 0 ? 1 : 0;
+  }
+
+  const result = await prisma.questionVote.deleteMany({ where: { questionId, userId } });
+  return result.count > 0 ? -1 : 0;
 }
 
 /** Removes every stored vote for a withdrawn question. */
 export async function removeVotesForQuestion(questionId: string): Promise<number> {
-  let removed = 0;
-  await mutateJson<VotesData>(VOTES_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    const next = data.votes.filter((vote) => vote.questionId !== questionId);
-    removed = data.votes.length - next.length;
-    data.votes = next;
-    return data;
-  });
-  return removed;
+  const result = await prisma.questionVote.deleteMany({ where: { questionId } });
+  return result.count;
 }

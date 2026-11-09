@@ -14,23 +14,23 @@ export interface TourStep {
 /** The pre-sign-in tour. It runs on /login, where first-time visitors land. */
 export const LOGIN_STEPS: readonly TourStep[] = [
   {
+    title: "Sign in",
+    body: "If you already have an account, type the email and password you registered with here.",
+    target: '[data-tour="sign-in"]',
+  },
+  {
     title: "Being a River",
-    body: "Choose this card if you would like to answer questions, record your memories, and turn them into stories. No password is needed for this demo.",
+    body: "Choose this card if you would like to answer questions, record your memories, and turn them into stories. You create an account with your email and a password.",
     target: '[data-tour="role-river"]',
   },
   {
     title: "Being a Drop",
-    body: "Choose this card if you would like to ask questions, read stories, and start private conversations with Rivers. No password is needed for this demo.",
+    body: "Choose this card if you would like to ask questions, read stories, and start private conversations with Rivers. You create an account with your email and a password.",
     target: '[data-tour="role-drop"]',
   },
   {
-    title: "Already have a profile?",
-    body: "If you have used HistorAI on this device before, choose your name here to sign back in. Your profile and stories will still be here.",
-    target: '[data-tour="existing-accounts"]',
-  },
-  {
     title: "Just looking around?",
-    body: "You can read every question and story without creating a profile. Choosing a role later lets you ask, answer, upvote, like, and send messages.",
+    body: "You can read every question and story without creating an account. Choosing a role later lets you ask, answer, upvote, like, and send messages.",
     target: '[data-tour="visitor"]',
   },
 ];

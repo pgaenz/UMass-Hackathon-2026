@@ -1,27 +1,19 @@
 import { randomUUID } from "node:crypto";
-import path from "node:path";
 
-import { mutateJson, readJson } from "./json-file";
+import { Prisma } from "@prisma/client";
+
+import { dbChatThreadToDomain } from "./db-mappers";
+import { prisma } from "./db";
 import type {
-  ChatBlock,
   ChatMessage,
   ChatMessageView,
   ChatThread,
-  ChatThreadStatus,
   OtherParticipant,
   Role,
   ThreadSummary,
   User,
 } from "./types";
 import { getPublicUserMap } from "./users";
-
-interface ChatData {
-  threads: ChatThread[];
-  blocks: ChatBlock[];
-}
-
-const CHAT_PATH = path.join(process.cwd(), "data", "chat.json");
-const EMPTY: ChatData = { threads: [], blocks: [] };
 
 /** Minimal identity needed by the messaging rule. */
 export interface MessagingUser {
@@ -67,43 +59,7 @@ function sortedPair(a: string, b: string): [string, string] {
   return (a < b ? [a, b] : [b, a]) as [string, string];
 }
 
-function normalizeMessage(message: ChatMessage): ChatMessage {
-  return {
-    ...message,
-    kind: "text",
-    body: message.body ?? "",
-    safety: message.safety ?? { verdict: "allow", flags: [] },
-    readBy: Array.isArray(message.readBy) ? message.readBy : [message.senderId],
-    deletedAt: message.deletedAt ?? null,
-  };
-}
-
-function normalizeThread(thread: ChatThread): ChatThread {
-  const participants = sortedPair(thread.participantIds?.[0] ?? "", thread.participantIds?.[1] ?? "");
-  const messages = Array.isArray(thread.messages) ? thread.messages.map(normalizeMessage) : [];
-  const lastMessageAt = thread.lastMessageAt ?? messages.at(-1)?.createdAt ?? thread.createdAt;
-  const status: ChatThreadStatus = thread.status === "archived" ? "archived" : "active";
-  return {
-    ...thread,
-    participantIds: participants,
-    pairKey: pairKeyFor(participants[0], participants[1]),
-    status,
-    messages,
-    createdAt: thread.createdAt ?? new Date().toISOString(),
-    updatedAt: thread.updatedAt ?? lastMessageAt,
-    lastMessageAt,
-  };
-}
-
-function normalize(parsed: Partial<ChatData>): ChatData {
-  const threads = Array.isArray(parsed.threads) ? parsed.threads.map(normalizeThread) : [];
-  const blocks = Array.isArray(parsed.blocks) ? parsed.blocks : [];
-  return { threads, blocks };
-}
-
-async function readStore(): Promise<ChatData> {
-  return normalize(await readJson<ChatData>(CHAT_PATH, EMPTY));
-}
+const MESSAGE_ORDER = [{ createdAt: "asc" as const }, { id: "asc" as const }];
 
 export function isParticipant(thread: ChatThread, userId: string): boolean {
   return thread.participantIds.includes(userId);
@@ -129,20 +85,25 @@ export function toMessageView(
 }
 
 export async function getThread(id: string): Promise<ChatThread | null> {
-  const { threads } = await readStore();
-  return threads.find((thread) => thread.id === id) ?? null;
+  const row = await prisma.chatThread.findUnique({
+    where: { id },
+    include: { messages: { orderBy: MESSAGE_ORDER } },
+  });
+  return row ? dbChatThreadToDomain(row) : null;
 }
 
 export async function getThreadByPair(a: string, b: string): Promise<ChatThread | null> {
-  const key = pairKeyFor(a, b);
-  const { threads } = await readStore();
-  return threads.find((thread) => thread.pairKey === key) ?? null;
+  const row = await prisma.chatThread.findUnique({
+    where: { pairKey: pairKeyFor(a, b) },
+    include: { messages: { orderBy: MESSAGE_ORDER } },
+  });
+  return row ? dbChatThreadToDomain(row) : null;
 }
 
 /**
  * Returns the existing 1:1 thread for the pair or creates one. The permission
- * matrix is re-checked here so a caller can never bypass it. The pairKey plus
- * the file lock guarantee no duplicate thread is ever created.
+ * matrix is re-checked by the caller. The unique `pairKey` makes the upsert
+ * race-safe, so no duplicate thread is ever created.
  */
 export async function getOrCreateThread(a: User, b: User): Promise<ChatThread> {
   if (a.id === b.id) {
@@ -150,37 +111,51 @@ export async function getOrCreateThread(a: User, b: User): Promise<ChatThread> {
   }
 
   const key = pairKeyFor(a.id, b.id);
-  let result!: ChatThread;
+  const include = { messages: { orderBy: MESSAGE_ORDER } } as const;
 
-  await mutateJson<ChatData>(CHAT_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    const existing = data.threads.find((thread) => thread.pairKey === key);
-    if (existing) {
-      result = existing;
-      return data;
+  const existing = await prisma.chatThread.findUnique({ where: { pairKey: key }, include });
+  if (existing) return dbChatThreadToDomain(existing);
+
+  try {
+    const row = await prisma.chatThread.create({
+      data: {
+        id: `t-${randomUUID()}`,
+        participantIds: sortedPair(a.id, b.id),
+        pairKey: key,
+        status: "active",
+        lastMessageAt: new Date(),
+      },
+      include,
+    });
+    return dbChatThreadToDomain(row);
+  } catch (err) {
+    // A concurrent request won the unique pairKey race; return its thread.
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      const raced = await prisma.chatThread.findUnique({ where: { pairKey: key }, include });
+      if (raced) return dbChatThreadToDomain(raced);
     }
-    const now = new Date().toISOString();
-    result = {
-      id: `t-${randomUUID()}`,
-      participantIds: sortedPair(a.id, b.id),
-      pairKey: key,
-      status: "active",
-      messages: [],
-      createdAt: now,
-      updatedAt: now,
-      lastMessageAt: now,
-    };
-    data.threads.push(result);
-    return data;
-  });
-
-  return result;
+    throw err;
+  }
 }
 
 /** Inbox rows for the signed-in user, newest first. */
 export async function listThreadsForUser(userId: string): Promise<ThreadSummary[]> {
-  const { threads, blocks } = await readStore();
-  const mine = threads.filter((thread) => thread.participantIds.includes(userId));
+  const [threads, blocks] = await Promise.all([
+    prisma.chatThread.findMany({
+      where: { participantIds: { has: userId } },
+      include: { messages: { orderBy: MESSAGE_ORDER } },
+    }),
+    prisma.chatBlock.findMany({
+      where: { OR: [{ blockerId: userId }, { blockedId: userId }] },
+    }),
+  ]);
+
+  const blockedIds = new Set<string>();
+  for (const block of blocks) {
+    blockedIds.add(block.blockerId === userId ? block.blockedId : block.blockerId);
+  }
+
+  const mine = threads.map(dbChatThreadToDomain);
   const otherIds = mine.map((thread) => otherParticipantId(thread, userId));
   const people = await getPublicUserMap(otherIds);
 
@@ -210,20 +185,12 @@ export async function listThreadsForUser(userId: string): Promise<ThreadSummary[
           message.senderId !== userId &&
           !message.readBy.includes(userId),
       ).length,
-      blocked: isBlockedIn(blocks, userId, otherId),
+      blocked: blockedIds.has(otherId),
       updatedAt: thread.lastMessageAt,
     });
   }
 
   return summaries.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
-}
-
-function isBlockedIn(blocks: ChatBlock[], a: string, b: string): boolean {
-  return blocks.some(
-    (block) =>
-      (block.blockerId === a && block.blockedId === b) ||
-      (block.blockerId === b && block.blockedId === a),
-  );
 }
 
 /** Thread history for a participant. `afterId` returns only newer messages. */
@@ -245,113 +212,107 @@ export async function getThreadMessages(
   return visible.map((message) => toMessageView(message, viewerId, otherId));
 }
 
-/** Appends a screened message under the file lock and denormalizes the thread. */
+/** Appends a screened message and denormalizes the thread's last-message time. */
 export async function appendMessage(
   threadId: string,
   senderId: string,
   body: string,
   safety: ChatMessage["safety"],
 ): Promise<ChatMessage | null> {
-  let created: ChatMessage | null = null;
-
-  await mutateJson<ChatData>(CHAT_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    const index = data.threads.findIndex((thread) => thread.id === threadId);
-    if (index === -1) {
-      return data;
+  try {
+    return await prisma.$transaction(async (tx) => {
+      const row = await tx.chatMessage.create({
+        data: {
+          id: `m-${randomUUID()}`,
+          threadId,
+          senderId,
+          body,
+          safety: safety as unknown as Prisma.InputJsonValue,
+          readBy: [senderId],
+        },
+      });
+      await tx.chatThread.update({
+        where: { id: threadId },
+        data: { lastMessageAt: row.createdAt, updatedAt: row.createdAt },
+      });
+      return {
+        id: row.id,
+        senderId: row.senderId,
+        kind: "text" as const,
+        body: row.body,
+        safety: row.safety as unknown as ChatMessage["safety"],
+        readBy: row.readBy,
+        createdAt: row.createdAt.toISOString(),
+        deletedAt: row.deletedAt ? row.deletedAt.toISOString() : null,
+      };
+    });
+  } catch (err) {
+    // A missing thread violates the FK; the old store returned null.
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2003") {
+      return null;
     }
-    const thread = data.threads[index];
-    const now = new Date().toISOString();
-    created = {
-      id: `m-${randomUUID()}`,
-      senderId,
-      kind: "text",
-      body,
-      safety,
-      readBy: [senderId],
-      createdAt: now,
-      deletedAt: null,
-    };
-    data.threads[index] = {
-      ...thread,
-      messages: [...thread.messages, created],
-      updatedAt: now,
-      lastMessageAt: now,
-    };
-    return data;
-  });
-
-  return created;
+    throw err;
+  }
 }
 
 /** Marks every message from the other person as read. Returns unread after. */
 export async function markThreadRead(threadId: string, userId: string): Promise<number> {
-  await mutateJson<ChatData>(CHAT_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    const index = data.threads.findIndex((thread) => thread.id === threadId);
-    if (index === -1) {
-      return data;
-    }
-    const thread = data.threads[index];
-    if (!thread.participantIds.includes(userId)) {
-      return data;
-    }
-    const messages = thread.messages.map((message) =>
-      message.senderId !== userId && !message.readBy.includes(userId)
-        ? { ...message, readBy: [...message.readBy, userId] }
-        : message,
-    );
-    data.threads[index] = { ...thread, messages };
-    return data;
+  const thread = await prisma.chatThread.findUnique({
+    where: { id: threadId },
+    select: { participantIds: true },
   });
-
+  if (thread?.participantIds.includes(userId)) {
+    await prisma.chatMessage.updateMany({
+      where: {
+        threadId,
+        senderId: { not: userId },
+        deletedAt: null,
+        NOT: { readBy: { has: userId } },
+      },
+      data: { readBy: { push: userId } },
+    });
+  }
   return countUnread(userId);
 }
 
 /** Total unread messages across every thread the user participates in. */
 export async function countUnread(userId: string): Promise<number> {
-  const { threads } = await readStore();
-  let count = 0;
-  for (const thread of threads) {
-    if (!thread.participantIds.includes(userId)) continue;
-    for (const message of thread.messages) {
-      if (
-        !message.deletedAt &&
-        message.senderId !== userId &&
-        !message.readBy.includes(userId)
-      ) {
-        count += 1;
-      }
-    }
-  }
-  return count;
+  return prisma.chatMessage.count({
+    where: {
+      deletedAt: null,
+      senderId: { not: userId },
+      NOT: { readBy: { has: userId } },
+      thread: { is: { participantIds: { has: userId } } },
+    },
+  });
 }
 
 export async function isBlocked(a: string, b: string): Promise<boolean> {
-  const { blocks } = await readStore();
-  return isBlockedIn(blocks, a, b);
+  const row = await prisma.chatBlock.findFirst({
+    where: {
+      OR: [
+        { blockerId: a, blockedId: b },
+        { blockerId: b, blockedId: a },
+      ],
+    },
+    select: { blockerId: true },
+  });
+  return row !== null;
 }
 
 /** Blocks another user and archives any thread the pair already shares. */
 export async function blockUser(blockerId: string, blockedId: string): Promise<void> {
   if (blockerId === blockedId) return;
-  const key = pairKeyFor(blockerId, blockedId);
-
-  await mutateJson<ChatData>(CHAT_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    const already = isBlockedIn(data.blocks, blockerId, blockedId);
-    if (!already) {
-      data.blocks.push({
-        blockerId,
-        blockedId,
-        createdAt: new Date().toISOString(),
-      });
-    }
-    data.threads = data.threads.map((thread) =>
-      thread.pairKey === key ? { ...thread, status: "archived" as const } : thread,
-    );
-    return data;
-  });
+  await prisma.$transaction([
+    prisma.chatBlock.createMany({
+      data: [{ blockerId, blockedId }],
+      skipDuplicates: true,
+    }),
+    prisma.chatThread.updateMany({
+      where: { pairKey: pairKeyFor(blockerId, blockedId) },
+      data: { status: "archived" },
+    }),
+  ]);
 }
 
 /** Public participant view for a thread, or null when unknown. */

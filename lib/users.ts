@@ -1,8 +1,10 @@
 import { randomUUID } from "node:crypto";
-import path from "node:path";
+
+import { Prisma } from "@prisma/client";
 
 import { MAX_AGE, MIN_AGE } from "./age";
-import { mutateJson, readJson } from "./json-file";
+import { dbUserToDomain, dbDate } from "./db-mappers";
+import { prisma } from "./db";
 import type { AgeBand, PublicUser, Role, User } from "./types";
 
 export { publicDisplayName } from "./format";
@@ -16,13 +18,6 @@ export function canLinkPublicProfile(person: {
 }
 
 export { MAX_AGE, MIN_AGE } from "./age";
-
-interface UsersData {
-  users: User[];
-}
-
-const USERS_PATH = path.join(process.cwd(), "data", "users.json");
-const EMPTY: UsersData = { users: [] };
 
 /** The product does not admit children under 13 (see plan/PROFILES.md). */
 export function isValidAge(age: number): boolean {
@@ -52,35 +47,14 @@ export function toPublicUser(user: User): PublicUser {
   };
 }
 
-function normalizeUser(user: User): User {
-  return {
-    ...user,
-    role: user.role === "river" || user.role === "drop" ? user.role : "drop",
-    name: user.name ?? "",
-    age: typeof user.age === "number" ? user.age : MIN_AGE,
-    bio: user.bio ?? "",
-    interests: Array.isArray(user.interests) ? user.interests : [],
-    createdAt: user.createdAt ?? new Date().toISOString(),
-  };
-}
-
-function normalize(parsed: Partial<UsersData>): UsersData {
-  const users = Array.isArray(parsed.users) ? parsed.users : [];
-  return { users: users.map(normalizeUser) };
-}
-
-async function readStore(): Promise<UsersData> {
-  return normalize(await readJson<UsersData>(USERS_PATH, EMPTY));
-}
-
 export async function getUser(id: string): Promise<User | null> {
-  const { users } = await readStore();
-  return users.find((user) => user.id === id) ?? null;
+  const row = await prisma.user.findUnique({ where: { id } });
+  return row ? dbUserToDomain(row) : null;
 }
 
 export async function listUsers(): Promise<User[]> {
-  const { users } = await readStore();
-  return users;
+  const rows = await prisma.user.findMany();
+  return rows.map(dbUserToDomain);
 }
 
 export async function createUser(input: {
@@ -90,36 +64,37 @@ export async function createUser(input: {
   bio?: string;
   interests?: string[];
 }): Promise<User> {
-  let created!: User;
-  await mutateJson<UsersData>(USERS_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    created = {
+  const row = await prisma.user.create({
+    data: {
       id: `u-${randomUUID()}`,
       role: input.role,
       name: input.name.trim(),
       age: input.age,
       bio: input.bio?.trim() ?? "",
       interests: input.interests ?? [],
-      createdAt: new Date().toISOString(),
-    };
-    data.users.push(created);
-    return data;
+    },
   });
-  return created;
+  return dbUserToDomain(row);
 }
 
 export async function updateUser(id: string, patch: Partial<User>): Promise<User | null> {
-  let updated: User | null = null;
-  await mutateJson<UsersData>(USERS_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    const index = data.users.findIndex((user) => user.id === id);
-    if (index !== -1) {
-      updated = { ...data.users[index], ...patch, id };
-      data.users[index] = updated;
+  const data: Prisma.UserUncheckedUpdateInput = {};
+  if (patch.role !== undefined) data.role = patch.role;
+  if (patch.name !== undefined) data.name = patch.name;
+  if (patch.age !== undefined) data.age = patch.age;
+  if (patch.bio !== undefined) data.bio = patch.bio;
+  if (patch.interests !== undefined) data.interests = patch.interests;
+  if (patch.createdAt !== undefined) data.createdAt = dbDate(patch.createdAt) ?? new Date();
+
+  try {
+    const row = await prisma.user.update({ where: { id }, data });
+    return dbUserToDomain(row);
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+      return null;
     }
-    return data;
-  });
-  return updated;
+    throw err;
+  }
 }
 
 /**
@@ -129,15 +104,13 @@ export async function updateUser(id: string, patch: Partial<User>): Promise<User
 export async function getPublicUserMap(
   ids: (string | null | undefined)[],
 ): Promise<Record<string, PublicUser>> {
-  const wanted = new Set(ids.filter((id): id is string => Boolean(id)));
-  if (wanted.size === 0) return {};
+  const wanted = [...new Set(ids.filter((id): id is string => Boolean(id)))];
+  if (wanted.length === 0) return {};
 
-  const { users } = await readStore();
+  const rows = await prisma.user.findMany({ where: { id: { in: wanted } } });
   const map: Record<string, PublicUser> = {};
-  for (const user of users) {
-    if (wanted.has(user.id)) {
-      map[user.id] = toPublicUser(user);
-    }
+  for (const row of rows) {
+    map[row.id] = toPublicUser(dbUserToDomain(row));
   }
   return map;
 }

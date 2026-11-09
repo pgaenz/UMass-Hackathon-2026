@@ -492,7 +492,7 @@ export function TutorialProvider({
             <ul className="mt-5 space-y-2 text-lg text-ink/80">
               <li className="flex gap-3">
                 <span aria-hidden="true">🌊</span>
-                <span>Create a profile as a River or a Drop — no password needed.</span>
+                <span>Create an account as a River or a Drop with your email and a password.</span>
               </li>
               <li className="flex gap-3">
                 <span aria-hidden="true">🎙️</span>

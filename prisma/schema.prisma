@@ -1,0 +1,357 @@
+// Prisma schema for the Postgres migration.
+// Field names mirror lib/types.ts so Phase 3 repositories can keep the same
+// exported shapes. See plan/postgres-migration.md §5 and §5.4 for the
+// representation decisions this schema encodes.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums (mirror lib/types.ts unions)
+// ---------------------------------------------------------------------------
+
+enum Role {
+  river
+  drop
+}
+
+enum InputType {
+  audio
+  text
+  conversation
+}
+
+enum StoryStatus {
+  draft
+  reviewed
+  published
+}
+
+enum ConversationStatus {
+  active
+  ended
+  abandoned
+}
+
+enum ChatThreadStatus {
+  active
+  archived
+}
+
+enum ReportTargetType {
+  question
+  story
+  answer
+  message
+  user
+}
+
+enum ReportStatus {
+  open
+}
+
+// ---------------------------------------------------------------------------
+// Users
+// ---------------------------------------------------------------------------
+
+model User {
+  id             String   @id @default(cuid())
+  role           Role
+  name           String
+  age            Int
+  bio            String   @default("")
+  // Postgres text[] keeps the array semantics of the JSON store. Membership in
+  // Topic is enforced by the importer, not a FK (see §5.4).
+  interests      String[] @default([])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  // Bumped on password change; sessions with a lower version are rejected.
+  sessionVersion Int      @default(0)
+
+  credential              Credential?
+  sessions                Session[]
+  passwordResetTokens     PasswordResetToken[]
+  emailVerificationTokens EmailVerificationToken[]
+  authAudits              AuthAudit[]
+
+  stories        Story[]
+  questions      Question[]     @relation("QuestionAskedBy")
+  likes          StoryLike[]
+  questionVotes  QuestionVote[]
+  conversations  Conversation[]
+  chatMessages   ChatMessage[]
+  blocksMade     ChatBlock[]    @relation("Blocker")
+  blocksReceived ChatBlock[]    @relation("Blocked")
+
+  @@index([role])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Auth (§5.2) — the compact in-repo credential/session design (D3)
+// ---------------------------------------------------------------------------
+
+model Credential {
+  userId          String    @id
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Normalized lowercase before write. Unique so an email maps to one account.
+  email           String    @unique
+  passwordHash    String
+  emailVerifiedAt DateTime?
+  failedAttempts  Int       @default(0)
+  lockedUntil     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Session {
+  // SHA-256 hash of the opaque 32-byte token; the raw token never reaches the DB.
+  id             String    @id
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt      DateTime
+  createdAt      DateTime  @default(now())
+  userAgent      String?
+  ip             String?
+  revokedAt      DateTime?
+  // Snapshot of User.sessionVersion when the session was created. A password
+  // change bumps User.sessionVersion, which invalidates every older session.
+  sessionVersion Int       @default(0)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  tokenHash String    @id
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model EmailVerificationToken {
+  tokenHash String    @id
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+// Security-relevant account events (§5.2, optional but low-cost). Kept even if
+// the user is later deleted so the trail survives (userId -> NULL).
+model AuthAudit {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  // e.g. login.success, login.failure, password.change, password.reset, email.verified
+  event     String
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Topics & questions
+// ---------------------------------------------------------------------------
+
+model Topic {
+  id    String @id
+  label String
+}
+
+model Question {
+  id          String    @id
+  text        String
+  // References Topic.id. Kept as an array (no FK) to match the JSON shape.
+  topicIds    String[]  @default([])
+  askedBy     String?
+  askedByUser User?     @relation("QuestionAskedBy", fields: [askedBy], references: [id], onDelete: SetNull)
+  upvotes     Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  editedAt    DateTime?
+
+  stories Story[]
+  votes   QuestionVote[]
+
+  @@index([createdAt])
+  @@index([askedBy])
+}
+
+model QuestionVote {
+  questionId String
+  userId     String
+  createdAt  DateTime @default(now())
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([questionId, userId])
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// Stories
+// ---------------------------------------------------------------------------
+
+model Story {
+  id                  String      @id
+  prompt              String
+  // Single source of truth for the question link; Question.storyIds is derived.
+  questionId          String?
+  question            Question?   @relation(fields: [questionId], references: [id], onDelete: SetNull)
+  authorId            String?
+  author              User?       @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  inputType           InputType
+  rawAudioPath        String?
+  transcript          String      @default("")
+  conversationContext String?
+  metadata            Json
+  article             String      @default("")
+  // Agent output is kept as JSON rather than over-normalized.
+  review              Json?
+  safety              Json?
+  feedback            Json        @default("[]")
+  groundingScore      Float       @default(0)
+  piiDetected         Boolean     @default(false)
+  status              StoryStatus @default(draft)
+
+  // Optional pointer to the active voice conversation.
+  conversationId String?       @unique
+  conversation   Conversation? @relation("StoryActiveConversation", fields: [conversationId], references: [id], onDelete: SetNull)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  publishedAt     DateTime?
+  riverEdited     Boolean   @default(false)
+  checkedAt       DateTime?
+  checkError      String?
+  writtenFromHash String?
+  previousArticle String?
+
+  likes         StoryLike[]
+  conversations Conversation[] @relation("ConversationStory")
+
+  @@index([status])
+  @@index([authorId])
+  @@index([questionId])
+  @@index([createdAt])
+  @@index([status, createdAt])
+}
+
+model StoryLike {
+  storyId   String
+  userId    String
+  createdAt DateTime @default(now())
+
+  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([storyId, userId])
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// Live voice conversations (turns stored as JSON — §5.4)
+// ---------------------------------------------------------------------------
+
+model Conversation {
+  id         String             @id
+  storyId    String?
+  prompt     String
+  questionId String?
+  userId     String?
+  user       User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  status     ConversationStatus @default(active)
+  turns      Json               @default("[]")
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  // Two relations to Story (the story this conversation is about, and the
+  // story's active conversation) — both named and nullable to break the cycle.
+  story     Story? @relation("ConversationStory", fields: [storyId], references: [id], onDelete: SetNull)
+  activeFor Story? @relation("StoryActiveConversation")
+
+  @@index([storyId])
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// 1:1 private messaging
+// ---------------------------------------------------------------------------
+
+model ChatThread {
+  id             String           @id @default(cuid())
+  participantIds String[]
+  // Sorted "a|b" pair; unique so a pair shares one thread.
+  pairKey        String           @unique
+  status         ChatThreadStatus @default(active)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  lastMessageAt  DateTime
+
+  messages ChatMessage[]
+
+  @@index([lastMessageAt])
+}
+
+model ChatMessage {
+  id        String     @id @default(cuid())
+  threadId  String
+  thread    ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User       @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  kind      String     @default("text")
+  body      String
+  safety    Json
+  readBy    String[]   @default([])
+  createdAt DateTime   @default(now())
+  deletedAt DateTime?
+
+  @@index([threadId, createdAt])
+}
+
+model ChatBlock {
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+
+  blocker User @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@id([blockerId, blockedId])
+}
+
+// ---------------------------------------------------------------------------
+// Moderation reports
+// ---------------------------------------------------------------------------
+
+model Report {
+  id         String           @id
+  targetType ReportTargetType
+  targetId   String
+  reason     String
+  details    String           @default("")
+  status     ReportStatus     @default(open)
+  createdAt  DateTime         @default(now())
+
+  @@index([targetType, targetId])
+  @@index([status])
+}

@@ -2,12 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { ChangePasswordForm } from "@/components/change-password-form";
 import { LogoutButton } from "@/components/logout-button";
 import { ProfileForm } from "@/components/profile-form";
 import { QuestionCard } from "@/components/question-card";
+import { VerifyEmailStatus } from "@/components/verify-email-status";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { countAnswersByQuestion, getPublishedStories } from "@/lib/answers";
+import { getEmailVerificationStatus } from "@/lib/auth";
 import { getArticleTitle } from "@/lib/format";
 import { deriveRiverState } from "@/lib/river-story-state";
 import { getVoteStates } from "@/lib/question-votes";
@@ -28,6 +31,7 @@ export default async function ProfilePage() {
 
   const topics = await getTopics();
   const isRiver = user.role === "river";
+  const emailStatus = await getEmailVerificationStatus(user.id);
   const profile = toPublicUser(user);
   const author = {
     id: user.id,
@@ -60,6 +64,26 @@ export default async function ProfilePage() {
       </div>
 
       <ProfileForm user={user} topics={topics} />
+
+      <section
+        aria-labelledby="account-security-heading"
+        className="space-y-6 rounded-2xl glass shadow-water p-6 shadow-sm"
+      >
+        <div className="space-y-1">
+          <h2 id="account-security-heading" className="text-2xl font-semibold text-ink">
+            Account security
+          </h2>
+          {emailStatus ? (
+            <p className="text-lg text-ink/70">Signed in as {emailStatus.email}</p>
+          ) : null}
+        </div>
+
+        {emailStatus ? <VerifyEmailStatus verified={emailStatus.verified} /> : null}
+
+        <div className="border-t border-seaglass/40 pt-6">
+          <ChangePasswordForm />
+        </div>
+      </section>
 
       <section aria-labelledby="contributions-heading" className="space-y-5">
         <div className="flex flex-wrap items-end justify-between gap-3">

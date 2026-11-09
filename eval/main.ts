@@ -17,6 +17,7 @@ import path from "node:path";
 import { scanMessage } from "../lib/chat-patterns";
 import { canMessage } from "../lib/chat";
 import { deriveDropQuestionState } from "../lib/drop-question-state";
+import { assertProductionSecrets } from "../lib/env";
 import { publicDisplayName } from "../lib/format";
 import { validateQuestionText, validateQuestionTopics } from "../lib/question-rules";
 import { findSimilarQuestions } from "../lib/similar-questions";
@@ -221,7 +222,85 @@ function runAgeCases(): void {
 }
 
 // ---------------------------------------------------------------------------
-// Offline suite 3 — chat screening layer 1 (lib/chat-patterns.ts)
+// Offline suite 3 — production secret policy (lib/env.ts, D11)
+// ---------------------------------------------------------------------------
+
+function runEnvPolicyCases(): void {
+  type MutableEnv = Record<string, string | undefined>;
+  const env = process.env as MutableEnv;
+  const saved = {
+    nodeEnv: env.NODE_ENV,
+    databaseUrl: env.DATABASE_URL,
+    sessionSecret: env.SESSION_SECRET,
+  };
+
+  function accepts(nodeEnv: string, values: { databaseUrl?: string; sessionSecret?: string }): boolean {
+    env.NODE_ENV = nodeEnv;
+    if (values.databaseUrl === undefined) delete env.DATABASE_URL;
+    else env.DATABASE_URL = values.databaseUrl;
+    if (values.sessionSecret === undefined) delete env.SESSION_SECRET;
+    else env.SESSION_SECRET = values.sessionSecret;
+    try {
+      assertProductionSecrets();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function expectAcceptance(
+    id: string,
+    name: string,
+    nodeEnv: string,
+    values: { databaseUrl?: string; sessionSecret?: string },
+    expected: boolean,
+  ): void {
+    const actual = accepts(nodeEnv, values);
+    expectCase({
+      id,
+      suite: "env",
+      name,
+      expected: expected ? "no throw" : "throws",
+      actual: actual ? "no throw" : "threw",
+      ok: actual === expected,
+    });
+  }
+
+  try {
+    expectAcceptance("ENV-01", "development tolerates missing secrets", "development", {}, true);
+    expectAcceptance(
+      "ENV-02",
+      "production fails closed without DATABASE_URL",
+      "production",
+      { sessionSecret: "secret" },
+      false,
+    );
+    expectAcceptance(
+      "ENV-03",
+      "production fails closed without SESSION_SECRET",
+      "production",
+      { databaseUrl: "postgres://user@host/db" },
+      false,
+    );
+    expectAcceptance(
+      "ENV-04",
+      "production boots when both secrets are present",
+      "production",
+      { databaseUrl: "postgres://user@host/db", sessionSecret: "secret" },
+      true,
+    );
+  } finally {
+    if (saved.nodeEnv === undefined) delete env.NODE_ENV;
+    else env.NODE_ENV = saved.nodeEnv;
+    if (saved.databaseUrl === undefined) delete env.DATABASE_URL;
+    else env.DATABASE_URL = saved.databaseUrl;
+    if (saved.sessionSecret === undefined) delete env.SESSION_SECRET;
+    else env.SESSION_SECRET = saved.sessionSecret;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Offline suite 4 — chat screening layer 1 (lib/chat-patterns.ts)
 // ---------------------------------------------------------------------------
 
 interface ChatCase {
@@ -1048,6 +1127,7 @@ async function main(): Promise<void> {
 
   runVerdictCases();
   runAgeCases();
+  runEnvPolicyCases();
   runChatPatternCases();
   runRiverExperienceCases();
   runDropExperienceCases();

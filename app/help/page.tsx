@@ -65,11 +65,11 @@ export default function HelpPage() {
           </p>
         </FaqItem>
 
-        <FaqItem id="password" question="Do I need a password?">
+        <FaqItem id="password" question="How do I sign in?">
           <p>
-            No. You choose whether you are a River or a Drop, then enter your name and age.
-            That creates your profile for this demo, and you can come back in the same
-            browser without a password.
+            HistorAI uses an email address and a password. When you create an account, you
+            choose whether you are a River or a Drop, enter your name and age, then choose
+            an email and a password. Use those same details to sign in again on any device.
           </p>
         </FaqItem>
 
@@ -132,7 +132,16 @@ export default function HelpPage() {
         <FaqItem id="sign-out" question="How do I sign out?">
           <p>
             Use the <strong>Sign out</strong> button next to your name at the top of the page.
-            You can sign back in later with the same role, name, and age.
+            You can sign back in later with the same email and password.
+          </p>
+        </FaqItem>
+
+        <FaqItem id="forgot-password" question="What if I forget my password?">
+          <p>
+            On the <Link href="/login">sign-in page</Link>, choose{" "}
+            <Link href="/forgot-password">Forgot password?</Link> and enter your email. If
+            an account exists for that address, we will email a link that lets you choose a
+            new password. The link works once and expires in one hour.
           </p>
         </FaqItem>
       </section>

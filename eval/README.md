@@ -7,9 +7,10 @@ reproduce most of the results.
 
 | Layer | Command | Network | What it proves |
 |-------|---------|---------|----------------|
-| **Offline** | `npm run eval` | none | Server-derived verdicts, age validation, public age bands, and the chat regex screen behave exactly as specified. |
+| **Offline** | `npm run eval` | none | Server-derived verdicts, age validation, public age bands, the production secret policy (fail-closed env), and the chat regex screen behave exactly as specified. |
+| **DB repositories** | `npm run eval:db` | Postgres | Every swapped repository module reads/writes Postgres; vote/like writes stay consistent under concurrency; reset/verification tokens are hashed, single-use, and expiring; a password change bumps `sessionVersion` and revokes sessions. |
 | **Live agents** | `npm run eval:live` | OpenRouter | Writing, independent review/grounding, safety classification, and the semantic chat screen work on real model calls. |
-| **End-to-end** | `npm run dev` + `npm run eval:e2e` | localhost (some cases also use OpenRouter) | The real HTTP routes enforce the publish gates, feed isolation, likes/match, and chat screening. |
+| **End-to-end** | `npm run dev` + `npm run eval:e2e` | localhost (some cases also use OpenRouter) | The real HTTP routes enforce registration/login/logout, session revocation, the forgot/reset/verify lifecycle, same-origin CSRF on writes, the publish gates, feed isolation, likes/match, and chat screening. |
 
 ## Running
 
@@ -22,16 +23,22 @@ npm run eval
 # 2. Offline + live agent checks (reads OPENROUTER_API_KEY from .env / .env.local)
 npm run eval:live
 
-# 3. Black-box HTTP checks — start the app first
+# 3. DB repository checks (uses DATABASE_URL; cleans up after itself)
+npm run eval:db
+
+# 4. Black-box HTTP checks — start the app first
 npm run dev            # terminal A
 npm run eval:e2e       # terminal B
 ```
 
 For the E2E layer, set `E2E_BASE_URL` to point somewhere other than
-`http://localhost:3000`. The script snapshots `data/stories.json`,
-`data/users.json`, `data/likes.json`, `data/chat.json`, and
-`data/question-votes.json` before the first request and restores them
-afterwards, so the seeded demo data is not polluted.
+`http://localhost:3000`. **Point the dev server at a test database**: before the
+first request the harness runs `prisma migrate reset` and seeds the committed
+`eval/fixtures/*.json` content via `scripts/seed-test-db.ts`, which also gives the
+seeded users credentials (password from `SEED_USER_PASSWORD`), so the run starts
+from a known state and can exercise real login. The reset is
+destructive to whatever database `DATABASE_URL` names. `npm run eval:db` is
+non-destructive: it creates uniquely-tagged rows and removes them again.
 
 ## Results
 
@@ -70,6 +77,11 @@ The numbers quoted in the project document come from these files.
 - **Fail-closed semantics.** The semantic chat screen returns `block` when it
   errors or times out; the E2E suite asserts that blocked messages are rejected
   with `422` and are never stored.
+- **One-time tokens in E2E.** The reset/verify routes never return the raw token
+  (only its SHA-256 hash is stored), so the E2E harness mints a valid token by
+  inserting the matching hash directly, then exercises the real consume routes.
+- **No lockout.** Phase 5 deliberately ships no failed-attempt counter or lockout
+  (owner decision); login stays a single generic `401`.
 - **Seeded fixtures for gates.** The publish-gate cases reuse committed seed
   stories (one hard-blocked draft, one story that failed its review) so the
   gate behavior is deterministic and costs no model calls.

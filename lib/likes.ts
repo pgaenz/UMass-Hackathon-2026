@@ -1,50 +1,28 @@
-import path from "node:path";
-
+import { iso } from "./db-mappers";
+import { prisma } from "./db";
 import { isBlocked } from "./chat";
-import { mutateJson, readJson } from "./json-file";
 import { getTopics } from "./questions";
-import type { LikeMatch, StoryLike, StoryLikeState, User } from "./types";
+import type { LikeMatch, StoryLikeState, User } from "./types";
 import { getUser, listUsers, toPublicUser } from "./users";
 
-interface LikesData {
-  likes: StoryLike[];
-}
-
-const LIKES_PATH = path.join(process.cwd(), "data", "likes.json");
-const EMPTY: LikesData = { likes: [] };
-
-function normalize(parsed: Partial<LikesData>): LikesData {
-  const likes = Array.isArray(parsed.likes) ? parsed.likes : [];
-  return {
-    likes: likes
-      .filter(
-        (like): like is StoryLike =>
-          Boolean(like) && typeof like.storyId === "string" && typeof like.userId === "string",
-      )
-      .map((like) => ({
-        ...like,
-        createdAt: typeof like.createdAt === "string" ? like.createdAt : new Date(0).toISOString(),
-      })),
-  };
-}
-
-async function readStore(): Promise<LikesData> {
-  return normalize(await readJson<LikesData>(LIKES_PATH, EMPTY));
-}
-
 export async function countLikes(storyId: string): Promise<number> {
-  const { likes } = await readStore();
-  return likes.filter((like) => like.storyId === storyId).length;
+  return prisma.storyLike.count({ where: { storyId } });
 }
 
 export async function isLiked(storyId: string, userId: string): Promise<boolean> {
-  const { likes } = await readStore();
-  return likes.some((like) => like.storyId === storyId && like.userId === userId);
+  const row = await prisma.storyLike.findUnique({
+    where: { storyId_userId: { storyId, userId } },
+    select: { storyId: true },
+  });
+  return row !== null;
 }
 
 export async function likerIds(storyId: string): Promise<string[]> {
-  const { likes } = await readStore();
-  return likes.filter((like) => like.storyId === storyId).map((like) => like.userId);
+  const rows = await prisma.storyLike.findMany({
+    where: { storyId },
+    select: { userId: true },
+  });
+  return rows.map((row) => row.userId);
 }
 
 /**
@@ -55,17 +33,21 @@ export async function getLikeStates(
   storyIds: string[],
   viewerId: string | null,
 ): Promise<Record<string, StoryLikeState>> {
-  const { likes } = await readStore();
-  const wanted = new Set(storyIds);
   const states: Record<string, StoryLikeState> = {};
   for (const id of storyIds) {
     states[id] = { liked: false, count: 0 };
   }
-  for (const like of likes) {
-    const state = wanted.has(like.storyId) ? states[like.storyId] : undefined;
+  if (storyIds.length === 0) return states;
+
+  const rows = await prisma.storyLike.findMany({
+    where: { storyId: { in: storyIds } },
+    select: { storyId: true, userId: true },
+  });
+  for (const row of rows) {
+    const state = states[row.storyId];
     if (!state) continue;
     state.count += 1;
-    if (viewerId && like.userId === viewerId) {
+    if (viewerId && row.userId === viewerId) {
       state.liked = true;
     }
   }
@@ -81,33 +63,25 @@ export async function setLike(
   userId: string,
   liked: boolean,
 ): Promise<number> {
-  let count = 0;
-  await mutateJson<LikesData>(LIKES_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    const index = data.likes.findIndex(
-      (like) => like.storyId === storyId && like.userId === userId,
-    );
-    if (liked && index === -1) {
-      data.likes.push({ storyId, userId, createdAt: new Date().toISOString() });
-    } else if (!liked && index !== -1) {
-      data.likes.splice(index, 1);
+  return prisma.$transaction(async (tx) => {
+    if (liked) {
+      // `createMany` uses INSERT ... ON CONFLICT DO NOTHING, so concurrent
+      // requests cannot race into a duplicate-key error.
+      await tx.storyLike.createMany({
+        data: [{ storyId, userId }],
+        skipDuplicates: true,
+      });
+    } else {
+      await tx.storyLike.deleteMany({ where: { storyId, userId } });
     }
-    count = data.likes.filter((like) => like.storyId === storyId).length;
-    return data;
+    return tx.storyLike.count({ where: { storyId } });
   });
-  return count;
 }
 
 /** Removes every like for a story (used by the delete cascade). */
 export async function removeLikesForStory(storyId: string): Promise<number> {
-  let removed = 0;
-  await mutateJson<LikesData>(LIKES_PATH, EMPTY, (current) => {
-    const data = normalize(current);
-    const next = data.likes.filter((like) => like.storyId !== storyId);
-    removed = data.likes.length - next.length;
-    return { likes: next };
-  });
-  return removed;
+  const result = await prisma.storyLike.deleteMany({ where: { storyId } });
+  return result.count;
 }
 
 /**
@@ -125,10 +99,9 @@ export async function findLikeMatch(
   storyId: string,
   viewerId: string,
 ): Promise<LikeMatch | null> {
-  const { likes } = await readStore();
-  const storyLikes = likes.filter(
-    (like) => like.storyId === storyId && like.userId !== viewerId,
-  );
+  const storyLikes = await prisma.storyLike.findMany({
+    where: { storyId, userId: { not: viewerId } },
+  });
   if (storyLikes.length === 0) return null;
 
   const [viewer, users, topics] = await Promise.all([
@@ -152,7 +125,7 @@ export async function findLikeMatch(
 
     candidates.push({
       user,
-      likedAt: like.createdAt,
+      likedAt: iso(like.createdAt),
       shared: user.interests.filter((interest) => viewerInterests.has(interest)),
     });
   }

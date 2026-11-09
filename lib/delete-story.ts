@@ -59,6 +59,6 @@ export async function deleteStoryCascade(storyId: string): Promise<boolean> {
   await unlinkStoryFromQuestion(storyId);
   // 5. Files inside data/uploads/ only.
   await Promise.all(audioPaths.map((audioPath) => deleteUploadFile(audioPath)));
-  // 6. data/reports.json intentionally untouched (D7).
+  // 6. Reports are intentionally left in place (they reference the target by id).
   return true;
 }

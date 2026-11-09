@@ -14,8 +14,8 @@
 | Input | **Voice and typed text** |
 | Output format | **Text article only** (podcast + video deferred) |
 | Grounding review | **Kept** — no fabricated facts |
-| Storage | **`data/stories.json` + local uploads** — no database |
-| Login | **None now**, but routes/current-user helper are built so auth drops in later |
+| Storage | **PostgreSQL via Prisma** + local uploads (see [`plan/postgres-migration.md`](./plan/postgres-migration.md)) |
+| Login | **Email + password** with server-side sessions (Argon2id, opaque cookies) |
 | Demo | **Local** (`pnpm dev`) |
 | Docs | Old detail archived in [`docs/future/`](./docs/future/) |
 
@@ -65,44 +65,27 @@ Full details in [`component/README.md`](./component/README.md).
 
 **Integrations:** `C-INT-01` OpenAI GPT · `C-INT-02` Whisper
 
-**Data & Ops:** `C-DATA-01` JSON store · `C-OPS-01` config & secrets ·
+**Data & Ops:** `C-DATA-01` PostgreSQL store (Prisma) · `C-OPS-01` config & secrets ·
 `C-OPS-06` mock fallback
 
 Everything else is deferred — see [`docs/future/README.md`](./docs/future/README.md).
 
 ---
 
-## 4. Data model (no database)
+## 4. Data model (PostgreSQL)
 
-One JSON file, `data/stories.json`:
+Domain data (users, credentials, sessions, stories, questions, topics, votes, likes,
+conversations, chat, reports) lives in PostgreSQL, modeled in
+[`prisma/schema.prisma`](./prisma/schema.prisma) and reached through Prisma from the `lib/*`
+repositories. A `Story` keeps its prompt, transcript, generated `article`, `metadata`,
+`groundingScore`, `piiDetected`, and `status` (`draft | reviewed | published`) as columns/JSON.
 
-```jsonc
-{
-  "stories": [
-    {
-      "id": "uuid",
-      "prompt": "What was your first job?",
-      "inputType": "audio | text",
-      "rawAudioPath": "data/uploads/abc.webm | null",
-      "transcript": "verbatim transcript",
-      "metadata": { "topic": "Career", "summary": "..." },
-      "article": "# My first job\n...",
-      "groundingScore": 5,
-      "piiDetected": false,
-      "status": "draft | reviewed | published",
-      "createdAt": "ISO timestamp"
-    }
-  ]
-}
-```
+- Raw audio → `data/uploads/` (git-ignored); moving it to object storage is a follow-up.
+- Committed sample content lives in `eval/fixtures/` and is loaded with `npm run db:seed:test`.
+- Helpers live in `lib/store.ts` and the other `lib/*` repository modules.
 
-- Raw audio → `data/uploads/` (git-ignored).
-- One fallback story is committed so the demo works offline.
-- Helpers live in `lib/store.ts`; swapping to a real DB later means reimplementing that file.
-
-**Login-ready design:** `lib/user.ts` returns the current user, and every route already lives
-under `/senior` or `/youth`. Adding Supabase Auth later means changing `lib/user.ts` and
-wrapping routes — not restructuring the app.
+**Auth:** registration and login are email + password; passwords are Argon2id hashes and
+sessions are opaque, DB-backed, httpOnly cookies. See [`plan/postgres-migration.md`](./plan/postgres-migration.md).
 
 ---
 

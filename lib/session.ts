@@ -1,21 +1,59 @@
-import { cookies } from "next/headers";
+import { createHash, randomBytes } from "node:crypto";
+
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-import {
-  SESSION_COOKIE,
-  VISITOR_COOKIE,
-  createSessionToken,
-  verifySessionToken,
-} from "./session-token";
+import { prisma } from "./db";
+import { SESSION_COOKIE, VISITOR_COOKIE, isSessionToken } from "./session-token";
 import type { Role, SessionData, User } from "./types";
 import { getUser } from "./users";
 
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
+const SESSION_TTL_MS = COOKIE_MAX_AGE * 1000;
 
-/** Reads and verifies the session cookie. Safe during render. */
+/** The database stores only the SHA-256 hash of the opaque cookie token. */
+function hashToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+/** Best-effort request metadata for the session row. */
+async function requestMeta(): Promise<{ userAgent: string | null; ip: string | null }> {
+  try {
+    const store = await headers();
+    const forwarded = store.get("x-forwarded-for");
+    return {
+      userAgent: store.get("user-agent"),
+      ip: forwarded ? (forwarded.split(",")[0]?.trim() ?? null) : null,
+    };
+  } catch {
+    return { userAgent: null, ip: null };
+  }
+}
+
+/**
+ * Reads and verifies the session cookie against the database. Safe during
+ * render. Returns null when the token is missing/malformed, the row is gone,
+ * expired, revoked, or was issued before the user's latest `sessionVersion`.
+ *
+ * This is the single authoritative check: `authorize()` and every page guard
+ * route through it, so a revoked or expired session is rejected everywhere.
+ */
 export async function getSession(): Promise<SessionData | null> {
   const store = await cookies();
-  return verifySessionToken(store.get(SESSION_COOKIE)?.value);
+  const token = store.get(SESSION_COOKIE)?.value;
+  if (!isSessionToken(token)) return null;
+
+  const row = await prisma.session.findUnique({
+    where: { id: hashToken(token) },
+    include: {
+      user: { select: { id: true, role: true, sessionVersion: true } },
+    },
+  });
+  if (!row || row.revokedAt) return null;
+  if (row.expiresAt.getTime() <= Date.now()) return null;
+  if (row.sessionVersion !== row.user.sessionVersion) return null;
+
+  return { userId: row.user.id, role: row.user.role };
 }
 
 /** True when this browser has chosen read-only visitor mode. */
@@ -52,9 +90,32 @@ export async function requireRole(role: Role): Promise<SessionData> {
   return session;
 }
 
-/** Sets the session cookie. Only valid inside a route handler or server action. */
+/**
+ * Creates a server-side session row and sets the opaque cookie. Only valid
+ * inside a route handler or server action.
+ */
 export async function setSession(data: SessionData): Promise<void> {
-  const token = await createSessionToken(data);
+  const user = await prisma.user.findUnique({
+    where: { id: data.userId },
+    select: { sessionVersion: true },
+  });
+  if (!user) {
+    throw new Error("Cannot create a session for a missing user.");
+  }
+
+  const token = randomBytes(32).toString("base64url");
+  const meta = await requestMeta();
+  await prisma.session.create({
+    data: {
+      id: hashToken(token),
+      userId: data.userId,
+      expiresAt: new Date(Date.now() + SESSION_TTL_MS),
+      sessionVersion: user.sessionVersion,
+      userAgent: meta.userAgent,
+      ip: meta.ip,
+    },
+  });
+
   const store = await cookies();
   store.set(SESSION_COOKIE, token, {
     httpOnly: true,
@@ -78,9 +139,16 @@ export async function setVisitor(): Promise<void> {
   });
 }
 
-/** Clears the session cookie. Only valid inside a route handler or server action. */
+/** Revokes the current session row and clears the cookie. */
 export async function clearSession(): Promise<void> {
   const store = await cookies();
+  const token = store.get(SESSION_COOKIE)?.value;
+  if (isSessionToken(token)) {
+    await prisma.session.updateMany({
+      where: { id: hashToken(token), revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+  }
   store.delete(SESSION_COOKIE);
   store.delete(VISITOR_COOKIE);
 }

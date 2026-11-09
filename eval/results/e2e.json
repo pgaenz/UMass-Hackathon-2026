@@ -1,78 +1,78 @@
 {
   "suite": "e2e",
-  "generatedAt": "2026-11-06T02:40:46.486Z",
-  "startedAt": "2026-11-06T02:40:30.034Z",
-  "base": "http://localhost:3001",
+  "generatedAt": "2026-11-06T19:01:25.849Z",
+  "startedAt": "2026-11-06T19:00:02.199Z",
+  "base": "http://localhost:3000",
   "summary": {
-    "passed": 40,
+    "passed": 62,
     "failed": 0,
     "known": 1,
     "skipped": 3,
-    "total": 44
+    "total": 66
   },
   "cases": [
     {
       "id": "E2E-AGE-01",
       "suite": "e2e",
-      "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"name\":\"Eval Age 12\",\"age\":12}",
+      "name": "POST /api/auth/register rejects {\"role\":\"drop\",\"name\":\"Eval Age 12\",\"age\":12}",
       "expected": "400 (invalid profile)",
       "actual": "400 Please enter an age between 16 and 30.",
       "status": "pass",
-      "latencyMs": 28
+      "latencyMs": 779
     },
     {
       "id": "E2E-AGE-02",
       "suite": "e2e",
-      "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"name\":\"Eval Age 121\",\"age\":121}",
+      "name": "POST /api/auth/register rejects {\"role\":\"drop\",\"name\":\"Eval Age 121\",\"age\":121}",
       "expected": "400 (invalid profile)",
       "actual": "400 Please enter an age between 16 and 30.",
       "status": "pass",
-      "latencyMs": 14
+      "latencyMs": 84
     },
     {
       "id": "E2E-AGE-03",
       "suite": "e2e",
-      "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"name\":\"Eval Age Fraction\",\"age\":13.5}",
+      "name": "POST /api/auth/register rejects {\"role\":\"drop\",\"name\":\"Eval Age Fraction\",\"age\":13.5}",
       "expected": "400 (invalid profile)",
       "actual": "400 Please enter an age between 16 and 30.",
       "status": "pass",
-      "latencyMs": 14
+      "latencyMs": 68
     },
     {
       "id": "E2E-AGE-04",
       "suite": "e2e",
-      "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"name\":\"Eval Age Text\",\"age\":\"abc\"}",
+      "name": "POST /api/auth/register rejects {\"role\":\"drop\",\"name\":\"Eval Age Text\",\"age\":\"abc\"}",
       "expected": "400 (invalid profile)",
       "actual": "400 Please enter an age between 16 and 30.",
       "status": "pass",
-      "latencyMs": 15
+      "latencyMs": 81
     },
     {
       "id": "E2E-AGE-05",
       "suite": "e2e",
-      "name": "POST /api/auth/login rejects {\"role\":\"drop\",\"age\":30}",
+      "name": "POST /api/auth/register rejects {\"role\":\"drop\",\"age\":30}",
       "expected": "400 (invalid profile)",
       "actual": "400 Please enter your name.",
       "status": "pass",
-      "latencyMs": 19
+      "latencyMs": 70
     },
     {
       "id": "E2E-AGE-06",
       "suite": "e2e",
-      "name": "POST /api/auth/login rejects {\"role\":\"adult\",\"name\":\"Eval Age Role\",\"age\":30}",
+      "name": "POST /api/auth/register rejects {\"role\":\"adult\",\"name\":\"Eval Age Role\",\"age\":30}",
       "expected": "400 (invalid profile)",
       "actual": "400 Choose whether you are a River or a Drop.",
       "status": "pass",
-      "latencyMs": 14
+      "latencyMs": 83
     },
     {
       "id": "E2E-AGE-07",
       "suite": "e2e",
-      "name": "POST /api/auth/login accepts age 16 and returns only the age band",
+      "name": "POST /api/auth/register accepts age 16 and returns only the age band",
       "expected": "201, ageBand 13-17, no `age` field",
       "actual": "201, ageBand=13-17",
       "status": "pass",
-      "latencyMs": 844
+      "latencyMs": 1395
     },
     {
       "id": "E2E-AGE-08",
@@ -81,7 +81,205 @@
       "expected": "201 (benign name accepted)",
       "actual": "422 Please choose a different name, as this one may imply harmful behavior.",
       "status": "known",
-      "latencyMs": 1450
+      "latencyMs": 2094
+    },
+    {
+      "id": "E2E-AUTH-01",
+      "suite": "e2e",
+      "name": "registration creates an account, signs in, and leaks no secrets",
+      "expected": "201, user id, no email/passwordHash field",
+      "actual": "201",
+      "status": "pass",
+      "latencyMs": 3208
+    },
+    {
+      "id": "E2E-AUTH-02",
+      "suite": "e2e",
+      "name": "registration rejects a duplicate email",
+      "expected": "409",
+      "actual": "409",
+      "status": "pass",
+      "latencyMs": 3644
+    },
+    {
+      "id": "E2E-AUTH-03",
+      "suite": "e2e",
+      "name": "registration rejects a weak password",
+      "expected": "400",
+      "actual": "400 Please use at least 8 characters.",
+      "status": "pass",
+      "latencyMs": 67
+    },
+    {
+      "id": "E2E-AUTH-04",
+      "suite": "e2e",
+      "name": "login rejects a wrong password with a generic message",
+      "expected": "401 Invalid email or password.",
+      "actual": "401 Invalid email or password.",
+      "status": "pass",
+      "latencyMs": 129
+    },
+    {
+      "id": "E2E-AUTH-05",
+      "suite": "e2e",
+      "name": "two devices sign in to the same account independently",
+      "expected": "200 and 200",
+      "actual": "200 and 200",
+      "status": "pass",
+      "latencyMs": 130
+    },
+    {
+      "id": "E2E-AUTH-06",
+      "suite": "e2e",
+      "name": "a protected route returns 401 without a session",
+      "expected": "401",
+      "actual": "401",
+      "status": "pass",
+      "latencyMs": 871
+    },
+    {
+      "id": "E2E-AUTH-07",
+      "suite": "e2e",
+      "name": "a protected route returns 403 for the wrong role",
+      "expected": "403",
+      "actual": "403",
+      "status": "pass",
+      "latencyMs": 531
+    },
+    {
+      "id": "E2E-AUTH-08",
+      "suite": "e2e",
+      "name": "logout revokes only the current session",
+      "expected": "200 logout; A 401; B 200",
+      "actual": "200; A 401; B 200",
+      "status": "pass",
+      "latencyMs": 525
+    },
+    {
+      "id": "E2E-AUTH-09",
+      "suite": "e2e",
+      "name": "the passwordless demo sign-in endpoint is gone",
+      "expected": "404",
+      "actual": "404",
+      "status": "pass",
+      "latencyMs": 1235
+    },
+    {
+      "id": "E2E-AUTH-10",
+      "suite": "e2e",
+      "name": "a bumped sessionVersion invalidates older sessions",
+      "expected": "401",
+      "actual": "401",
+      "status": "pass",
+      "latencyMs": 96
+    },
+    {
+      "id": "E2E-AUTH-11",
+      "suite": "e2e",
+      "name": "the lifecycle test account registers",
+      "expected": "201 with a user id",
+      "actual": "201, id=u-aa59aa45-08b4-481a-a274-c712ece835d5",
+      "status": "pass",
+      "latencyMs": 2168
+    },
+    {
+      "id": "E2E-AUTH-12",
+      "suite": "e2e",
+      "name": "forgot password does not reveal whether an email exists",
+      "expected": "200 {ok:true} for both",
+      "actual": "200 {\"ok\":true} / 200 {\"ok\":true}",
+      "status": "pass",
+      "latencyMs": 766
+    },
+    {
+      "id": "E2E-AUTH-13",
+      "suite": "e2e",
+      "name": "a reset link rotates the password and works once",
+      "expected": "200 reset; 200 new login; 401 old login; 400 reuse",
+      "actual": "200; 200; 401; 400",
+      "status": "pass",
+      "latencyMs": 743
+    },
+    {
+      "id": "E2E-AUTH-14",
+      "suite": "e2e",
+      "name": "a reset revokes sessions issued before it",
+      "expected": "401",
+      "actual": "401",
+      "status": "pass",
+      "latencyMs": 88
+    },
+    {
+      "id": "E2E-AUTH-15",
+      "suite": "e2e",
+      "name": "an email verification token is single-use and stamps the credential",
+      "expected": "200 then 400; emailVerifiedAt set",
+      "actual": "200; 400; verified=true",
+      "status": "pass",
+      "latencyMs": 664
+    },
+    {
+      "id": "E2E-AUTH-16",
+      "suite": "e2e",
+      "name": "a password change keeps the current device and revokes the rest",
+      "expected": "200 change; current 200; stale 401; new-password login 200",
+      "actual": "200; 200; 401; 200",
+      "status": "pass",
+      "latencyMs": 821
+    },
+    {
+      "id": "E2E-AUTH-17",
+      "suite": "e2e",
+      "name": "cross-origin state-changing requests are rejected",
+      "expected": "cross-origin 403; same-origin 200",
+      "actual": "403; 200",
+      "status": "pass",
+      "latencyMs": 32
+    },
+    {
+      "id": "E2E-UI-01",
+      "suite": "e2e",
+      "name": "the sign-in page shows email, password, forgot-password, and visitor controls",
+      "expected": "200 with Email, Password, Forgot password?, visitor option",
+      "actual": "200; email=true; password=true; forgot=true; visitor=true",
+      "status": "pass",
+      "latencyMs": 644
+    },
+    {
+      "id": "E2E-UI-02",
+      "suite": "e2e",
+      "name": "the sign-in page no longer offers a passwordless account picker",
+      "expected": "no 'no password' or 'Choose your profile' copy",
+      "actual": "passwordless=false; picker=false",
+      "status": "pass",
+      "latencyMs": 644
+    },
+    {
+      "id": "E2E-UI-03",
+      "suite": "e2e",
+      "name": "the forgot-password page is reachable",
+      "expected": "200 with the reset request form",
+      "actual": "200; form=true",
+      "status": "pass",
+      "latencyMs": 1513
+    },
+    {
+      "id": "E2E-UI-04",
+      "suite": "e2e",
+      "name": "a reset link without a token is rejected in the UI",
+      "expected": "200 with an invalid or expired message",
+      "actual": "200; message=true",
+      "status": "pass",
+      "latencyMs": 1311
+    },
+    {
+      "id": "E2E-UI-05",
+      "suite": "e2e",
+      "name": "a verification link without a token is rejected in the UI",
+      "expected": "200 with a missing-token message",
+      "actual": "200; message=true",
+      "status": "pass",
+      "latencyMs": 1298
     },
     {
       "id": "E2E-GATE-01",
@@ -99,7 +297,7 @@
       "expected": "409 without override",
       "actual": "409 The review flagged this story. Confirm you want to publish it anyway.",
       "status": "pass",
-      "latencyMs": 55
+      "latencyMs": 860
     },
     {
       "id": "E2E-GATE-03",
@@ -108,7 +306,7 @@
       "expected": "200, status published",
       "actual": "200, status published",
       "status": "pass",
-      "latencyMs": 51
+      "latencyMs": 98
     },
     {
       "id": "E2E-GATE-04",
@@ -117,7 +315,7 @@
       "expected": "409",
       "actual": "409 There is no article to publish yet",
       "status": "pass",
-      "latencyMs": 40
+      "latencyMs": 79
     },
     {
       "id": "E2E-PIPE-01",
@@ -126,7 +324,7 @@
       "expected": "201, status draft, transcript echoed",
       "actual": "201, status draft, transcript match",
       "status": "pass",
-      "latencyMs": 57
+      "latencyMs": 117
     },
     {
       "id": "E2E-PIPE-02",
@@ -135,7 +333,7 @@
       "expected": "200, non-empty article, safety verdict present",
       "actual": "200, 174 chars, safety=allow, review=pass",
       "status": "pass",
-      "latencyMs": 5546
+      "latencyMs": 8875
     },
     {
       "id": "E2E-PIPE-03",
@@ -152,7 +350,7 @@
       "expected": "200, status published",
       "actual": "200, status published",
       "status": "pass",
-      "latencyMs": 48
+      "latencyMs": 109
     },
     {
       "id": "E2E-PIPE-05",
@@ -178,7 +376,7 @@
       "expected": "200/201 with a thread id",
       "actual": "200, thread t-seed-maya-ruth",
       "status": "pass",
-      "latencyMs": 73
+      "latencyMs": 1423
     },
     {
       "id": "E2E-CHAT-01",
@@ -187,7 +385,7 @@
       "expected": "201",
       "actual": "201",
       "status": "pass",
-      "latencyMs": 1180
+      "latencyMs": 3715
     },
     {
       "id": "E2E-CHAT-02",
@@ -196,7 +394,7 @@
       "expected": "422 with pii:phone",
       "actual": "422 flags [pii:phone]",
       "status": "pass",
-      "latencyMs": 93
+      "latencyMs": 162
     },
     {
       "id": "E2E-CHAT-03",
@@ -205,7 +403,7 @@
       "expected": "422 with scam:money",
       "actual": "422 flags [scam:money]",
       "status": "pass",
-      "latencyMs": 66
+      "latencyMs": 99
     },
     {
       "id": "E2E-CHAT-04",
@@ -214,7 +412,7 @@
       "expected": "422 (semantic screen)",
       "actual": "422 flags [scam:money]",
       "status": "pass",
-      "latencyMs": 1317
+      "latencyMs": 1383
     },
     {
       "id": "E2E-CHAT-05",
@@ -223,7 +421,7 @@
       "expected": "422 with crisis=true",
       "actual": "422, crisis=true",
       "status": "pass",
-      "latencyMs": 104
+      "latencyMs": 149
     },
     {
       "id": "E2E-RIV-01",
@@ -232,7 +430,7 @@
       "expected": "401",
       "actual": "401",
       "status": "pass",
-      "latencyMs": 113
+      "latencyMs": 2498
     },
     {
       "id": "E2E-RIV-02",
@@ -241,7 +439,7 @@
       "expected": "401",
       "actual": "401",
       "status": "pass",
-      "latencyMs": 48
+      "latencyMs": 123
     },
     {
       "id": "E2E-RIV-03",
@@ -250,7 +448,7 @@
       "expected": "401",
       "actual": "401",
       "status": "pass",
-      "latencyMs": 98
+      "latencyMs": 2362
     },
     {
       "id": "E2E-RIV-04",
@@ -259,7 +457,7 @@
       "expected": "401",
       "actual": "401",
       "status": "pass",
-      "latencyMs": 117
+      "latencyMs": 2223
     },
     {
       "id": "E2E-RIV-05",
@@ -268,7 +466,7 @@
       "expected": "401",
       "actual": "401",
       "status": "pass",
-      "latencyMs": 134
+      "latencyMs": 2323
     },
     {
       "id": "E2E-RIV-06",
@@ -277,7 +475,7 @@
       "expected": "403",
       "actual": "403 This story belongs to another River.",
       "status": "pass",
-      "latencyMs": 71
+      "latencyMs": 159
     },
     {
       "id": "E2E-RIV-07",
@@ -295,7 +493,7 @@
       "expected": "201, article empty",
       "actual": "201, article=\"\"",
       "status": "pass",
-      "latencyMs": 57
+      "latencyMs": 111
     },
     {
       "id": "E2E-RIV-09",
@@ -304,7 +502,7 @@
       "expected": "200, article still empty",
       "actual": "200, article=\"\"",
       "status": "pass",
-      "latencyMs": 65
+      "latencyMs": 104
     },
     {
       "id": "E2E-RIV-10",
@@ -313,16 +511,16 @@
       "expected": "200, status reviewed or draft",
       "actual": "200, status draft",
       "status": "pass",
-      "latencyMs": 88
+      "latencyMs": 156
     },
     {
       "id": "E2E-RIV-11",
       "suite": "e2e",
       "name": "delete removes the story, its likes, and its question links",
-      "expected": "200, 0 likes, 0 question links",
-      "actual": "200, 0 likes, 0 links",
+      "expected": "200, 0 likes, story gone",
+      "actual": "200, 0 likes, gone",
       "status": "pass",
-      "latencyMs": 85
+      "latencyMs": 131
     },
     {
       "id": "E2E-DROP-01",

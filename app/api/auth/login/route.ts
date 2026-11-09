@@ -1,8 +1,7 @@
-import { ageRequirement, isValidAgeForRole } from "@/lib/age";
-import { checkSafety } from "@/lib/agents";
+import { authenticate } from "@/lib/auth";
+import { recordAuthAudit } from "@/lib/auth-audit";
 import { setSession } from "@/lib/session";
-import { createUser, toPublicUser } from "@/lib/users";
-import type { Role } from "@/lib/types";
+import { toPublicUser } from "@/lib/users";
 
 export const runtime = "nodejs";
 
@@ -10,76 +9,27 @@ function fail(status: number, message: string): Response {
   return Response.json({ error: message }, { status });
 }
 
-function isRole(value: unknown): value is Role {
-  return value === "river" || value === "drop";
-}
-
-function cleanInterests(value: unknown): string[] {
-  if (!Array.isArray(value)) return [];
-  const unique = new Set<string>();
-  for (const item of value) {
-    if (typeof item === "string" && item.trim()) {
-      unique.add(item.trim());
-    }
-  }
-  return [...unique].slice(0, 20);
-}
-
-// POST /api/auth/login — passwordless start: role + profile, sets the session.
+// POST /api/auth/login — sign in with an email and password (Phase 4).
 export async function POST(request: Request): Promise<Response> {
   const body = (await request.json().catch(() => null)) as {
-    role?: unknown;
-    name?: unknown;
-    age?: unknown;
-    bio?: unknown;
-    interests?: unknown;
+    email?: unknown;
+    password?: unknown;
   } | null;
 
-  if (!isRole(body?.role)) {
-    return fail(400, "Choose whether you are a River or a Drop.");
+  const email = typeof body?.email === "string" ? body.email : "";
+  const password = typeof body?.password === "string" ? body.password : "";
+  if (!email.trim() || !password) {
+    return fail(400, "Enter your email and password.");
   }
 
-  const name = typeof body?.name === "string" ? body.name.trim() : "";
-  if (!name) {
-    return fail(400, "Please enter your name.");
+  const user = await authenticate(email, password);
+  if (!user) {
+    // Same message whether the email is unknown or the password is wrong.
+    await recordAuthAudit("login.failure");
+    return fail(401, "Invalid email or password.");
   }
-  if (name.length > 80) {
-    return fail(400, "That name is too long.");
-  }
-
-  const age = typeof body?.age === "number" ? body.age : Number(body?.age);
-  if (!isValidAgeForRole(age, body.role)) {
-    return fail(400, ageRequirement(body.role));
-  }
-
-  // Safety gate: a display name is public and cannot be auto-cleaned, so any
-  // flagged name is rejected rather than rewritten.
-  try {
-    const safety = await checkSafety({ content: name, kind: "name" });
-    if (safety.verdict !== "allow") {
-      return fail(
-        422,
-        safety.summary || "That name cannot be used. Please choose a different one.",
-      );
-    }
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "We could not create your profile.";
-    return fail(
-      err instanceof Error && err.message.startsWith("OpenRouter") ? 502 : 500,
-      message,
-    );
-  }
-
-  const bio = typeof body?.bio === "string" ? body.bio.trim().slice(0, 300) : "";
-
-  const user = await createUser({
-    role: body.role,
-    name,
-    age,
-    bio,
-    interests: cleanInterests(body?.interests),
-  });
 
   await setSession({ userId: user.id, role: user.role });
-  return Response.json({ user: toPublicUser(user) }, { status: 201 });
+  await recordAuthAudit("login.success", user.id);
+  return Response.json({ user: toPublicUser(user) });
 }

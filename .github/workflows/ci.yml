@@ -1,0 +1,78 @@
+# Continuous integration.
+#
+# Runs against a throwaway PostgreSQL 16 service container, so it also proves
+# that `prisma migrate deploy` can build a *fresh* database from the committed
+# migrations (plan/postgres-migration.md §6 Phase 7).
+#
+# The production migration job lives in `.github/workflows/migrate.yml`.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: historai
+          POSTGRES_PASSWORD: historai
+          POSTGRES_DB: historai
+        ports:
+          - 5432:5432
+        # Wait for the server to accept connections before the job starts.
+        options: >-
+          --health-cmd "pg_isready -U historai -d historai"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://historai:historai@localhost:5432/historai?schema=public
+      DIRECT_URL: postgresql://historai:historai@localhost:5432/historai?schema=public
+      # Dummy secrets: the app reads OPENROUTER_API_KEY at import time and
+      # `next build` needs it; no live model calls happen in this job.
+      OPENROUTER_API_KEY: ci-dummy-key
+      SESSION_SECRET: ci-dummy-session-secret
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Fresh-database check: every committed migration applies cleanly to an
+      # empty database. `migrate deploy` is the same command used in production.
+      - name: Apply migrations to a fresh database
+        run: npx prisma migrate deploy
+
+      - name: Verify no schema drift
+        run: npx prisma migrate diff --from-migrations ./prisma/migrations --to-schema-datamodel ./prisma/schema.prisma --shadow-database-url "$DATABASE_URL" --exit-code
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      - name: Offline evaluation (pure)
+        run: npm run eval
+
+      - name: Repository evaluation (Postgres)
+        run: npm run eval:db

@@ -14,27 +14,45 @@
  * Config:
  *   E2E_BASE_URL   default http://localhost:3000
  *
- * The `data/` files touched by the run are snapshotted before the first request
- * and restored afterwards, so repeated runs stay reproducible.
+ * The run resets the Postgres database the dev server is using and re-seeds it
+ * from the committed `eval/fixtures/*.json` files before the first request, so
+ * repeated runs stay reproducible. Point the server at a test database before
+ * running this suite: the reset is destructive.
  */
+import { execFileSync } from "node:child_process";
+import { createHash, randomBytes } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { PrismaClient } from "@prisma/client";
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const BASE = process.env.E2E_BASE_URL || "http://localhost:3000";
-const DATA_DIR = path.join(ROOT, "data");
+const FIXTURES_DIR = path.join(ROOT, "eval", "fixtures");
 const RESULTS_DIR = path.join(ROOT, "eval", "results");
-const SNAPSHOT_FILES = [
-  "stories.json",
-  "users.json",
-  "likes.json",
-  "chat.json",
-  "question-votes.json",
-  "questions.json",
-  "conversations.json",
-];
-const UPLOAD_DIR = path.join(DATA_DIR, "uploads");
+const UPLOAD_DIR = path.join(ROOT, "data", "uploads");
+const prisma = new PrismaClient();
+
+// Seed users get credentials from scripts/seed-test-db.ts (run by
+// resetAndSeed). Keep this mapping in sync with that script.
+const SEED_PASSWORD = process.env.SEED_USER_PASSWORD || "historai-dev-password";
+const SEED_EMAIL_DOMAIN = "seed.historai.test";
+
+function seedEmail(userId) {
+  return `${userId}@${SEED_EMAIL_DOMAIN}`;
+}
+
+// One-time-token helpers. The routes only ever receive the raw token; the
+// database stores its SHA-256 hash, so the harness can mint a valid token by
+// inserting the hash directly (the real email link is not returned by the API).
+function hashToken(token) {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+function newOpaqueToken() {
+  return randomBytes(32).toString("base64url");
+}
 
 /** Upload files that existed before the run, so any new ones can be cleaned up. */
 function listUploads() {
@@ -105,8 +123,8 @@ function makeJar() {
   };
 }
 
-async function req(jar, method, route, body) {
-  const headers = { Cookie: jar.header() };
+async function req(jar, method, route, body, extraHeaders = {}) {
+  const headers = { Cookie: jar.header(), ...extraHeaders };
   let payload;
   if (body !== undefined) {
     headers["Content-Type"] = "application/json";
@@ -126,7 +144,10 @@ async function req(jar, method, route, body) {
 }
 
 async function signIn(jar, userId) {
-  return req(jar, "POST", "/api/auth/session", { userId });
+  return req(jar, "POST", "/api/auth/login", {
+    email: seedEmail(userId),
+    password: SEED_PASSWORD,
+  });
 }
 
 async function waitForServer(timeoutMs) {
@@ -144,44 +165,36 @@ async function waitForServer(timeoutMs) {
 }
 
 // ---------------------------------------------------------------------------
-// Data snapshot / restore
+// Database reset / seed
 // ---------------------------------------------------------------------------
 
+/**
+ * Fixture discovery reads the committed JSON fixtures under `eval/fixtures/`,
+ * which are also the seed source. The database is reset from those files before
+ * every run, so the two always agree at the start of the suite.
+ */
 function readData(name) {
-  return JSON.parse(readFileSync(path.join(DATA_DIR, name), "utf8"));
+  return JSON.parse(readFileSync(path.join(FIXTURES_DIR, name), "utf8"));
 }
 
-function takeSnapshot() {
-  const snapshot = {};
-  for (const file of SNAPSHOT_FILES) {
-    const full = path.join(DATA_DIR, file);
-    snapshot[file] = existsSync(full) ? readFileSync(full, "utf8") : null;
+/** Drops the schema, re-applies migrations, and imports the committed JSON. */
+function resetAndSeed() {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL is required to reset the e2e database.");
   }
-  return snapshot;
-}
-
-/** Temporarily rewrites a story's status on disk (restored by the snapshot). */
-function patchStoryStatus(storyId, status) {
-  const file = path.join(DATA_DIR, "stories.json");
-  const data = JSON.parse(readFileSync(file, "utf8"));
-  const story = data.stories.find((entry) => entry.id === storyId);
-  if (story) {
-    story.status = status;
-    writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
-  }
-}
-
-function restoreSnapshot(snapshot) {
-  for (const [file, content] of Object.entries(snapshot)) {
-    const full = path.join(DATA_DIR, file);
-    if (content === null) {
-      if (existsSync(full)) {
-        writeFileSync(full, "");
-      }
-    } else {
-      writeFileSync(full, content);
-    }
-  }
+  console.log(`Resetting the e2e database (${databaseUrl.replace(/:[^:@/]+@/, ":***@")})…`);
+  const env = { ...process.env, DATABASE_URL: databaseUrl, DIRECT_URL: process.env.DIRECT_URL || databaseUrl };
+  execFileSync("npx", ["prisma", "migrate", "reset", "--force", "--skip-seed"], {
+    cwd: ROOT,
+    env,
+    stdio: "inherit",
+  });
+  execFileSync("npx", ["tsx", "scripts/seed-test-db.ts"], {
+    cwd: ROOT,
+    env: { ...env, SEED_USER_PASSWORD: SEED_PASSWORD },
+    stdio: "inherit",
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -200,10 +213,10 @@ async function ageCases() {
   ];
 
   for (const testCase of invalid) {
-    const res = await req(jar, "POST", "/api/auth/login", testCase.body);
+    const res = await req(jar, "POST", "/api/auth/register", testCase.body);
     expectCase({
       id: testCase.id,
-      name: `POST /api/auth/login rejects ${JSON.stringify(testCase.body)}`,
+      name: `POST /api/auth/register rejects ${JSON.stringify(testCase.body)}`,
       expected: "400 (invalid profile)",
       actual: `${res.status} ${res.json?.error ?? ""}`.trim(),
       ok: res.status === 400,
@@ -211,17 +224,19 @@ async function ageCases() {
     });
   }
 
-  const valid = await req(jar, "POST", "/api/auth/login", {
+  const valid = await req(jar, "POST", "/api/auth/register", {
     role: "drop",
     name: "Alice Johnson",
     age: 16,
+    email: "alice.johnson@e2e.example.test",
+    password: SEED_PASSWORD,
   });
   const user = valid.json?.user;
   const leaksAge = user ? "age" in user : true;
   const ok = valid.status === 201 && user?.ageBand === "13-17" && !leaksAge;
   expectCase({
     id: "E2E-AGE-07",
-    name: "POST /api/auth/login accepts age 16 and returns only the age band",
+    name: "POST /api/auth/register accepts age 16 and returns only the age band",
     expected: "201, ageBand 13-17, no `age` field",
     actual: `${valid.status}, ageBand=${user?.ageBand ?? "—"}${leaksAge ? ", LEAKED age" : ""}`,
     ok,
@@ -232,10 +247,12 @@ async function ageCases() {
   // the word "Drop", which is the product's own term for young users. The model
   // gives inconsistent reasons ("harmful reference" / "dangerous behavior" /
   // "inappropriate") and there is no human-review path for a rejected name.
-  const dropName = await req(jar, "POST", "/api/auth/login", {
+  const dropName = await req(jar, "POST", "/api/auth/register", {
     role: "drop",
     name: "Drop Test",
     age: 25,
+    email: "drop.test@e2e.example.test",
+    password: SEED_PASSWORD,
   });
   expectCase({
     id: "E2E-AGE-08",
@@ -288,9 +305,8 @@ async function gateCases() {
   );
   if (flagged) {
     // The seeded fixture may have been published during development. Reset it
-    // to `reviewed` on disk so the gate can be tested deterministically; the
-    // snapshot restores the original file at the end of the run.
-    patchStoryStatus(flagged.id, "reviewed");
+    // to `reviewed` in the database so the gate can be tested deterministically.
+    await prisma.story.update({ where: { id: flagged.id }, data: { status: "reviewed" } });
     const jar = makeJar();
     await signIn(jar, flagged.authorId);
     const withoutOverride = await req(jar, "POST", "/api/approve", { id: flagged.id });
@@ -413,7 +429,11 @@ async function pipelineCases() {
       path.join(process.env.E2E_DUMP_DIR, "story-at-before.json"),
       JSON.stringify(generated, null, 2),
     );
-    writeFileSync(path.join(process.env.E2E_DUMP_DIR, "data-at-before.json"), readFileSync(path.join(DATA_DIR, "stories.json"), "utf8"));
+    const dbStory = await prisma.story.findUnique({ where: { id: story.id } });
+    writeFileSync(
+      path.join(process.env.E2E_DUMP_DIR, "data-at-before.json"),
+      JSON.stringify(dbStory, null, 2),
+    );
   }
   expectCase({
     id: "E2E-PIPE-03",
@@ -663,10 +683,10 @@ async function riverExperienceCases() {
 
   if (newId) {
     // 5. A transcript-only PATCH never touches the article.
-    const before = readData("stories.json").stories.find((story) => story.id === newId);
+    const before = await prisma.story.findUnique({ where: { id: newId } });
     const patch = await req(owner, "PATCH", `/api/stories/${newId}`, {
       transcript: "EVAL-RIVEMARKER corrected answer.",
-      expectedUpdatedAt: before?.updatedAt,
+      expectedUpdatedAt: before?.updatedAt?.toISOString(),
     });
     expectCase({
       id: "E2E-RIV-09",
@@ -705,16 +725,14 @@ async function riverExperienceCases() {
     const jar = makeJar();
     await signIn(jar, liked.authorId);
     const res = await req(jar, "DELETE", `/api/stories/${liked.id}`);
-    const likesAfter = readData("likes.json").likes.filter((like) => like.storyId === liked.id);
-    const linksAfter = readData("questions.json").questions.filter((question) =>
-      question.storyIds.includes(liked.id),
-    );
+    const likesAfter = await prisma.storyLike.count({ where: { storyId: liked.id } });
+    const storyAfter = await prisma.story.findUnique({ where: { id: liked.id } });
     expectCase({
       id: "E2E-RIV-11",
       name: "delete removes the story, its likes, and its question links",
-      expected: "200, 0 likes, 0 question links",
-      actual: `${res.status}, ${likesAfter.length} likes, ${linksAfter.length} links`,
-      ok: res.status === 200 && likesAfter.length === 0 && linksAfter.length === 0,
+      expected: "200, 0 likes, story gone",
+      actual: `${res.status}, ${likesAfter} likes, ${storyAfter ? "present" : "gone"}`,
+      ok: res.status === 200 && likesAfter === 0 && storyAfter === null,
       latencyMs: res.ms,
     });
   } else {
@@ -736,14 +754,13 @@ async function dropExperienceCases() {
     (question) =>
       question.askedBy &&
       users.find((user) => user.id === question.askedBy)?.role === "drop" &&
-      question.storyIds.length === 0 &&
       !hasLinkedStory(question.id),
   );
   const linked = questions.find(
     (question) =>
       question.askedBy &&
       users.find((user) => user.id === question.askedBy)?.role === "drop" &&
-      question.storyIds.length > 0,
+      hasLinkedStory(question.id),
   );
 
   if (owned) {
@@ -793,16 +810,15 @@ async function dropExperienceCases() {
 
     const owner = makeJar();
     await signIn(owner, owned.askedBy);
-    const votesBefore = readData("question-votes.json").votes.filter(
-      (vote) => vote.questionId === owned.id,
-    ).length;
+    const votesBefore = await prisma.questionVote.count({
+      where: { questionId: owned.id },
+    });
     const deleted = await req(owner, "DELETE", `/api/questions/${owned.id}`);
-    const votesAfter = readData("question-votes.json").votes.filter(
-      (vote) => vote.questionId === owned.id,
-    ).length;
-    const stillListed = readData("questions.json").questions.some(
-      (question) => question.id === owned.id,
-    );
+    const votesAfter = await prisma.questionVote.count({
+      where: { questionId: owned.id },
+    });
+    const stillListed =
+      (await prisma.question.findUnique({ where: { id: owned.id } })) !== null;
     expectCase({
       id: "E2E-DROP-04",
       name: "withdraw removes the question and its votes",
@@ -894,6 +910,378 @@ async function dropExperienceCases() {
 }
 
 // ---------------------------------------------------------------------------
+// E2E-G: credentials, sessions, and revocation over HTTP (Phase 4)
+// ---------------------------------------------------------------------------
+
+async function authCases() {
+  const email = "e2e.auth@example.test";
+  const password = "correct-horse-battery";
+  // A plain human name, matching E2E-AGE-07, avoids the flaky name-safety
+  // model that rejects agent-y strings like "E2E Auth User" (see E2E-AGE-08).
+  const base = { role: "drop", name: "Alice Johnson", age: 22, email, password };
+
+  const registered = await req(makeJar(), "POST", "/api/auth/register", base);
+  const publicUser = registered.json?.user ?? {};
+  expectCase({
+    id: "E2E-AUTH-01",
+    name: "registration creates an account, signs in, and leaks no secrets",
+    expected: "201, user id, no email/passwordHash field",
+    actual: String(registered.status),
+    ok:
+      registered.status === 201 &&
+      Boolean(publicUser.id) &&
+      !("email" in publicUser) &&
+      !("passwordHash" in publicUser),
+    latencyMs: registered.ms,
+  });
+
+  const duplicate = await req(makeJar(), "POST", "/api/auth/register", {
+    ...base,
+    name: "Alice Thompson",
+  });
+  expectCase({
+    id: "E2E-AUTH-02",
+    name: "registration rejects a duplicate email",
+    expected: "409",
+    actual: String(duplicate.status),
+    ok: duplicate.status === 409,
+    latencyMs: duplicate.ms,
+  });
+
+  const weak = await req(makeJar(), "POST", "/api/auth/register", {
+    ...base,
+    email: "e2e.weak@example.test",
+    password: "short",
+  });
+  expectCase({
+    id: "E2E-AUTH-03",
+    name: "registration rejects a weak password",
+    expected: "400",
+    actual: `${weak.status} ${weak.json?.error ?? ""}`.trim(),
+    ok: weak.status === 400,
+    latencyMs: weak.ms,
+  });
+
+  const wrongPassword = await req(makeJar(), "POST", "/api/auth/login", {
+    email,
+    password: "not-the-password",
+  });
+  expectCase({
+    id: "E2E-AUTH-04",
+    name: "login rejects a wrong password with a generic message",
+    expected: "401 Invalid email or password.",
+    actual: `${wrongPassword.status} ${wrongPassword.json?.error ?? ""}`.trim(),
+    ok: wrongPassword.status === 401 && wrongPassword.json?.error === "Invalid email or password.",
+    latencyMs: wrongPassword.ms,
+  });
+
+  const sessionA = makeJar();
+  const loginA = await req(sessionA, "POST", "/api/auth/login", { email, password });
+  const sessionB = makeJar();
+  const loginB = await req(sessionB, "POST", "/api/auth/login", { email, password });
+  expectCase({
+    id: "E2E-AUTH-05",
+    name: "two devices sign in to the same account independently",
+    expected: "200 and 200",
+    actual: `${loginA.status} and ${loginB.status}`,
+    ok: loginA.status === 200 && loginB.status === 200,
+    latencyMs: loginA.ms,
+  });
+
+  const anon = await req(makeJar(), "POST", "/api/questions", { text: "E2E auth anon." });
+  expectCase({
+    id: "E2E-AUTH-06",
+    name: "a protected route returns 401 without a session",
+    expected: "401",
+    actual: String(anon.status),
+    ok: anon.status === 401,
+    latencyMs: anon.ms,
+  });
+
+  const wrongRole = await req(sessionA, "POST", "/api/intake", {
+    inputType: "text",
+    prompt: "E2E auth role",
+    text: "A Drop must not be able to save a River story.",
+  });
+  expectCase({
+    id: "E2E-AUTH-07",
+    name: "a protected route returns 403 for the wrong role",
+    expected: "403",
+    actual: String(wrongRole.status),
+    ok: wrongRole.status === 403,
+    latencyMs: wrongRole.ms,
+  });
+
+  const logout = await req(sessionA, "POST", "/api/auth/logout");
+  const aAfter = await req(sessionA, "GET", "/api/chat/unread");
+  const bAfter = await req(sessionB, "GET", "/api/chat/unread");
+  expectCase({
+    id: "E2E-AUTH-08",
+    name: "logout revokes only the current session",
+    expected: "200 logout; A 401; B 200",
+    actual: `${logout.status}; A ${aAfter.status}; B ${bAfter.status}`,
+    ok: logout.status === 200 && aAfter.status === 401 && bAfter.status === 200,
+    latencyMs: logout.ms,
+  });
+
+  const demo = await req(makeJar(), "POST", "/api/auth/session", { userId: "u-seed-ruth" });
+  expectCase({
+    id: "E2E-AUTH-09",
+    name: "the passwordless demo sign-in endpoint is gone",
+    expected: "404",
+    actual: String(demo.status),
+    ok: demo.status === 404,
+    latencyMs: demo.ms,
+  });
+
+  // A password change (Phase 5) bumps sessionVersion; every older session must
+  // stop authenticating immediately, even though its row still exists.
+  await prisma.user.update({
+    where: { id: publicUser.id },
+    data: { sessionVersion: { increment: 1 } },
+  });
+  const afterVersionBump = await req(sessionB, "GET", "/api/chat/unread");
+  expectCase({
+    id: "E2E-AUTH-10",
+    name: "a bumped sessionVersion invalidates older sessions",
+    expected: "401",
+    actual: String(afterVersionBump.status),
+    ok: afterVersionBump.status === 401,
+    latencyMs: afterVersionBump.ms,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// E2E-H: password lifecycle + request hardening (Phase 5)
+// ---------------------------------------------------------------------------
+
+async function passwordLifecycleCases() {
+  const email = "e2e.lifecycle@example.test";
+  const originalPassword = "original-password-1";
+  const rotatedPassword = "rotated-password-2";
+  const changedPassword = "changed-password-3";
+
+  const registered = await req(makeJar(), "POST", "/api/auth/register", {
+    role: "river",
+    name: "Alice Johnson",
+    age: 45,
+    email,
+    password: originalPassword,
+  });
+  const userId = registered.json?.user?.id;
+  expectCase({
+    id: "E2E-AUTH-11",
+    name: "the lifecycle test account registers",
+    expected: "201 with a user id",
+    actual: `${registered.status}, id=${userId ?? "—"}`,
+    ok: registered.status === 201 && Boolean(userId),
+    latencyMs: registered.ms,
+  });
+
+  // "Forgot password" must answer identically for known and unknown emails.
+  const known = await req(makeJar(), "POST", "/api/auth/password/forgot", { email });
+  const unknown = await req(makeJar(), "POST", "/api/auth/password/forgot", {
+    email: "nobody-here@example.test",
+  });
+  expectCase({
+    id: "E2E-AUTH-12",
+    name: "forgot password does not reveal whether an email exists",
+    expected: "200 {ok:true} for both",
+    actual: `${known.status} ${JSON.stringify(known.json)} / ${unknown.status} ${JSON.stringify(unknown.json)}`,
+    ok:
+      known.status === 200 &&
+      unknown.status === 200 &&
+      JSON.stringify(known.json) === JSON.stringify(unknown.json),
+    latencyMs: known.ms,
+  });
+
+  const resetToken = newOpaqueToken();
+  await prisma.passwordResetToken.create({
+    data: {
+      tokenHash: hashToken(resetToken),
+      userId,
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+    },
+  });
+
+  // A session issued before the reset must not survive it.
+  const otherDevice = makeJar();
+  await req(otherDevice, "POST", "/api/auth/login", { email, password: originalPassword });
+
+  const reset = await req(makeJar(), "POST", "/api/auth/password/reset", {
+    token: resetToken,
+    password: rotatedPassword,
+  });
+  const loginNew = await req(makeJar(), "POST", "/api/auth/login", {
+    email,
+    password: rotatedPassword,
+  });
+  const loginOld = await req(makeJar(), "POST", "/api/auth/login", {
+    email,
+    password: originalPassword,
+  });
+  const reuse = await req(makeJar(), "POST", "/api/auth/password/reset", {
+    token: resetToken,
+    password: "another-password-4",
+  });
+  const revoked = await req(otherDevice, "GET", "/api/chat/unread");
+
+  expectCase({
+    id: "E2E-AUTH-13",
+    name: "a reset link rotates the password and works once",
+    expected: "200 reset; 200 new login; 401 old login; 400 reuse",
+    actual: `${reset.status}; ${loginNew.status}; ${loginOld.status}; ${reuse.status}`,
+    ok:
+      reset.status === 200 &&
+      loginNew.status === 200 &&
+      loginOld.status === 401 &&
+      reuse.status === 400,
+    latencyMs: reset.ms,
+  });
+  expectCase({
+    id: "E2E-AUTH-14",
+    name: "a reset revokes sessions issued before it",
+    expected: "401",
+    actual: String(revoked.status),
+    ok: revoked.status === 401,
+    latencyMs: revoked.ms,
+  });
+
+  const verifyToken = newOpaqueToken();
+  await prisma.emailVerificationToken.create({
+    data: {
+      tokenHash: hashToken(verifyToken),
+      userId,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    },
+  });
+  const verified = await req(makeJar(), "POST", "/api/auth/verify", { token: verifyToken });
+  const verifyReuse = await req(makeJar(), "POST", "/api/auth/verify", { token: verifyToken });
+  const credential = await prisma.credential.findUnique({ where: { userId } });
+  expectCase({
+    id: "E2E-AUTH-15",
+    name: "an email verification token is single-use and stamps the credential",
+    expected: "200 then 400; emailVerifiedAt set",
+    actual: `${verified.status}; ${verifyReuse.status}; verified=${Boolean(credential?.emailVerifiedAt)}`,
+    ok:
+      verified.status === 200 &&
+      verifyReuse.status === 400 &&
+      Boolean(credential?.emailVerifiedAt),
+    latencyMs: verified.ms,
+  });
+
+  const current = makeJar();
+  await req(current, "POST", "/api/auth/login", { email, password: rotatedPassword });
+  const stale = makeJar();
+  await req(stale, "POST", "/api/auth/login", { email, password: rotatedPassword });
+  const changed = await req(current, "POST", "/api/auth/password", {
+    currentPassword: rotatedPassword,
+    newPassword: changedPassword,
+  });
+  const currentAfter = await req(current, "GET", "/api/chat/unread");
+  const staleAfter = await req(stale, "GET", "/api/chat/unread");
+  const loginChanged = await req(makeJar(), "POST", "/api/auth/login", {
+    email,
+    password: changedPassword,
+  });
+  expectCase({
+    id: "E2E-AUTH-16",
+    name: "a password change keeps the current device and revokes the rest",
+    expected: "200 change; current 200; stale 401; new-password login 200",
+    actual: `${changed.status}; ${currentAfter.status}; ${staleAfter.status}; ${loginChanged.status}`,
+    ok:
+      changed.status === 200 &&
+      currentAfter.status === 200 &&
+      staleAfter.status === 401 &&
+      loginChanged.status === 200,
+    latencyMs: changed.ms,
+  });
+
+  // CSRF: a same-origin browser request passes, a cross-origin one is rejected.
+  const crossOrigin = await req(
+    makeJar(),
+    "POST",
+    "/api/auth/login",
+    { email, password: changedPassword },
+    { Origin: "https://evil.example" },
+  );
+  const sameOrigin = await req(
+    makeJar(),
+    "POST",
+    "/api/auth/login",
+    { email, password: changedPassword },
+    { Origin: BASE },
+  );
+  expectCase({
+    id: "E2E-AUTH-17",
+    name: "cross-origin state-changing requests are rejected",
+    expected: "cross-origin 403; same-origin 200",
+    actual: `${crossOrigin.status}; ${sameOrigin.status}`,
+    ok: crossOrigin.status === 403 && sameOrigin.status === 200,
+    latencyMs: crossOrigin.ms,
+  });
+}
+
+// E2E-I: auth UI surfaces (Phase 6)
+// ---------------------------------------------------------------------------
+
+async function authUiCases() {
+  const loginPage = await req(makeJar(), "GET", "/login");
+  expectCase({
+    id: "E2E-UI-01",
+    name: "the sign-in page shows email, password, forgot-password, and visitor controls",
+    expected: "200 with Email, Password, Forgot password?, visitor option",
+    actual: `${loginPage.status}; email=${loginPage.text.includes("Email")}; password=${loginPage.text.includes("Password")}; forgot=${loginPage.text.includes("Forgot password?")}; visitor=${loginPage.text.includes("Continue as a visitor")}`,
+    ok:
+      loginPage.status === 200 &&
+      loginPage.text.includes("Email") &&
+      loginPage.text.includes("Password") &&
+      loginPage.text.includes("Forgot password?") &&
+      loginPage.text.includes("Continue as a visitor"),
+    latencyMs: loginPage.ms,
+  });
+
+  expectCase({
+    id: "E2E-UI-02",
+    name: "the sign-in page no longer offers a passwordless account picker",
+    expected: "no 'no password' or 'Choose your profile' copy",
+    actual: `passwordless=${/no password/i.test(loginPage.text)}; picker=${loginPage.text.includes("Choose your profile")}`,
+    ok: !/no password/i.test(loginPage.text) && !loginPage.text.includes("Choose your profile"),
+    latencyMs: loginPage.ms,
+  });
+
+  const forgot = await req(makeJar(), "GET", "/forgot-password");
+  expectCase({
+    id: "E2E-UI-03",
+    name: "the forgot-password page is reachable",
+    expected: "200 with the reset request form",
+    actual: `${forgot.status}; form=${forgot.text.includes("Send reset link")}`,
+    ok: forgot.status === 200 && forgot.text.includes("Send reset link"),
+    latencyMs: forgot.ms,
+  });
+
+  const reset = await req(makeJar(), "GET", "/reset-password");
+  expectCase({
+    id: "E2E-UI-04",
+    name: "a reset link without a token is rejected in the UI",
+    expected: "200 with an invalid or expired message",
+    actual: `${reset.status}; message=${reset.text.includes("invalid or has expired")}`,
+    ok: reset.status === 200 && reset.text.includes("invalid or has expired"),
+    latencyMs: reset.ms,
+  });
+
+  const verify = await req(makeJar(), "GET", "/verify-email");
+  expectCase({
+    id: "E2E-UI-05",
+    name: "a verification link without a token is rejected in the UI",
+    expected: "200 with a missing-token message",
+    actual: `${verify.status}; message=${verify.text.includes("missing its token")}`,
+    ok: verify.status === 200 && verify.text.includes("missing its token"),
+    latencyMs: verify.ms,
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Reports
 // ---------------------------------------------------------------------------
 
@@ -956,26 +1344,32 @@ async function main() {
     process.exit(1);
   }
 
+  // Start from a known state: reset the schema and seed the committed fixtures.
+  resetAndSeed();
+
   // Fail fast if the seed data or server is not what we expect.
   const probeJar = makeJar();
   const probe = await signIn(probeJar, "u-seed-ruth");
   if (probe.status !== 200) {
-    console.error(`Seed sign-in failed (${probe.status}). Is data/users.json intact?`);
+    console.error(`Seed sign-in failed (${probe.status}). Is the database seeded?`);
+    await prisma.$disconnect();
     process.exit(1);
   }
 
-  const snapshot = takeSnapshot();
   const uploadsBefore = listUploads();
   try {
     await ageCases();
+    await authCases();
+    await passwordLifecycleCases();
+    await authUiCases();
     await gateCases();
     await pipelineCases();
     await likesAndChatCases();
     await riverExperienceCases();
     await dropExperienceCases();
   } finally {
-    restoreSnapshot(snapshot);
     removeNewUploads(uploadsBefore);
+    await prisma.$disconnect();
   }
 
   writeReports();
